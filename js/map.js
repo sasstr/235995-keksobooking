@@ -21,15 +21,6 @@ var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'co
 var OFFER_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
 var map = document.querySelector('.map');
-// массив из строк расположенных в произвольном порядке
-/* "location": {«x»:  // случайное число, координата x метки на карте. Значение ограничено раз
-мерами блока, в котором перетаскивается метка. map.clientWidth 1200  map.clientHeight 750
-map.clientLeft  0 map.clientTop 0 «y»: случайное число, координата y метки на карте от 130 до 630. */
-
-// Функция возращает случайный номер элемента
-var getRandomInteger = function (min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
-};
 
 // функция возращает случайный элемент массива
 var getRendomItemOfArray = function (array) {
@@ -47,10 +38,17 @@ var getRandomInteger = function (min, max) {
 };
 
 // Функция перемешивает элементы массива
- var jumbleElemetsOfArray = function (array) {
-  return array.sort(function (a, b) {
-    return Math.random() - 0.5;
-  }).join(', ').split(', ');
+//TODO  Поссылке на один и тот же объект поэтому во всех объектах один и тот же результат.
+var jumbleElemetsOfArray = function (array) {
+  var j;
+  var temp;
+  for (var i = array.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    temp = array[j];
+    array[j] = array[i];
+    array[i] = temp;
+  }
+  return array;
 };
 
 // Функция возращает случайной длины массив от исходного массива
@@ -70,7 +68,7 @@ var createArrayAddressesImages = function () {
 // Функция создает объект с данными соседних жилищ
 var createAds = function (numberOfAds) {
   var similiarAds = [];
-  var arrayOfAddressesImages= createArrayAddressesImages(numberOfAds);
+  var arrayOfAddressesImages = createArrayAddressesImages(numberOfAds);
   var location = {
     x: 600,
     y: 350
@@ -80,28 +78,27 @@ var createAds = function (numberOfAds) {
 
     similiarAds.push({
       'author': {
-        'avatar':  cutRandomElementOfArray(arrayOfAddressesImages)  // - идут родряд!
-      },
+        'avatar': cutRandomElementOfArray(arrayOfAddressesImages),  // TODO Доделать идут подряд
 
-      'offer': {
-        'title': cutRandomElementOfArray(OFFER_TITLES),  // - идут родряд!
-        'address': location.x +', ' + location.y,
-        'price': getRandomInteger(MIN_PRICE, MAX_PRICE),
-        'type': getRendomItemOfArray(TYPES_OF_DWELLING),
-        'guests': getRandomInteger(MIN_ROOMS, MAX_ROOMS),
-        'checkin': getRendomItemOfArray(TIMES_OF_REGISTRATION),
-        'checkout': getRendomItemOfArray(TIMES_OF_REGISTRATION),
-        'features': getRandomLengthArray(OFFER_FEATURES),
-        'description': '',
-        'photos': jumbleElemetsOfArray(OFFER_PHOTOS)
-      },
+        'offer': {
+          'title': cutRandomElementOfArray(OFFER_TITLES),  // TODO Доделать идут подряд
+          'address': location.x + ', ' + location.y,
+          'price': getRandomInteger(MIN_PRICE, MAX_PRICE),
+          'type': getRendomItemOfArray(TYPES_OF_DWELLING),
+          'guests': getRandomInteger(MIN_ROOMS, MAX_ROOMS),
+          'checkin': getRendomItemOfArray(TIMES_OF_REGISTRATION),
+          'checkout': getRendomItemOfArray(TIMES_OF_REGISTRATION),
+          'features': getRandomLengthArray(OFFER_FEATURES),
+          'description': '',
+          'photos': jumbleElemetsOfArray(OFFER_PHOTOS)
+        },
 
-      'location': ['string']
+        'location': ['string']  // TODO Доделать написать функцию.
+      }
     });
   }
   return similiarAds;
 };
-
 var similiarAds = createAds(NUMBER_OF_ADS);
 console.log(similiarAds);
 
