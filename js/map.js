@@ -14,16 +14,8 @@ var MIN_X_ADDRESS = 0;
 var MAX_X_ADDRESS = 1200;
 var MIN_Y_ADDRESS = 0;
 var MAX_Y_ADDRESS = 600;
-var OFFER_TITLES = ['Большая уютная квартира',
-  'Маленькая неуютная квартира',
-  'Огромный прекрасный дворец',
-  'Маленький ужасный дворец',
-  'Красивый гостевой домик',
-  'Некрасивый негостеприимный домик',
-  'Уютное бунгало далеко от моря',
-  'Неуютное бунгало по колено в воде'
-];
-var TYPES_OF_DWELLING = ['palace', 'flat', 'house', 'bungalo'];
+var OFFER_TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик','Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
+var TYPES_OF_DWELLING = {'palace': 'Дворец', 'flat': 'Квартира', 'house': 'Дом', 'bungalo': 'Бунгало'};
 var MIN_PRICE = 1000;
 var MAX_PRICE = 1000000;
 var TIMES_OF_REGISTRATION = ['12:00', '13:00', '14:00'];
@@ -31,6 +23,17 @@ var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'co
 var OFFER_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
 var map = document.querySelector('.map');
+
+// Функция возращает случайный элемент из массива
+/* var getRandomElementOfArray = function (array) {
+  var randomElement = array[Math.floor(Math.random() * array.length)];
+  return randomElement;
+}; */
+
+//  Функция возращает случайное целое число между min и max - включительно
+var getRandomInteger = function (min, max) {
+  return Math.round(Math.random() * (max - min)) + min;
+};
 
 //  Функция возращает случайный элемент массива
 var getRendomItemOfArray = function (array) {
@@ -40,11 +43,6 @@ var getRendomItemOfArray = function (array) {
 //  Функция вырезает случайный элемент массива
 var cutRandomElementOfArray = function (array) {
   return array.splice(getRendomItemOfArray(array), 1).join();
-};
-
-//  Функция возращает случайное целое число между min и max - включительно
-var getRandomInteger = function (min, max) {
-  return Math.round(Math.random() * (max - min)) + min;
 };
 
 //  Функция перемешивает элементы массива
@@ -68,9 +66,9 @@ var getRandomLengthArray = function (array) {
 };
 
 //  Функция создает массив с адресами картинок 8 шт.
-var createArrayAddressesImages = function () {
+var createArrayAddressesImages = function (numberOfImages) {
   var arrayAddressesImages = [];
-  for (var i = NUMBER_OF_IMAGES; i > 0; i--) {
+  for (var i = numberOfImages; i > 0; i--) {
     arrayAddressesImages.push('img/avatars/user' + '0' + i + '.png');
   }
   return arrayAddressesImages;
@@ -79,8 +77,8 @@ var createArrayAddressesImages = function () {
 //  Функция создает объект с данными соседних жилищ
 var createAds = function (numberOfAds) {
   var similiarAds = [];
-  var arrayOfAddressesImages = createArrayAddressesImages(numberOfAds);
-
+  var arrayOfAddressesImages = createArrayAddressesImages(NUMBER_OF_IMAGES);
+  var TYPES_OF_DWELLING_ARRAY = [TYPES_OF_DWELLING.palace, TYPES_OF_DWELLING.flat, TYPES_OF_DWELLING.house, TYPES_OF_DWELLING.bungalo];
   for (var i = 0; i < numberOfAds; i++) {
     var location = { // TODO Доделать случайные значения в нужном диапозоне
       'x': getRandomInteger(MIN_X_ADDRESS, MAX_X_ADDRESS),
@@ -94,7 +92,7 @@ var createAds = function (numberOfAds) {
           'title': cutRandomElementOfArray(OFFER_TITLES), // TODO Доделать идут подряд
           'address': location.x + ', ' + location.y,
           'price': getRandomInteger(MIN_PRICE, MAX_PRICE),
-          'type': getRendomItemOfArray(TYPES_OF_DWELLING),
+          'type': getRendomItemOfArray(TYPES_OF_DWELLING_ARRAY), // TODO Переделать на смешевиание элеменов объекта
           'rooms': getRandomInteger(MIN_ROOMS, MAX_ROOMS),
           'guests': getRandomInteger(MIN_GUESTS, MAX_GUESTS),
           'checkin': getRendomItemOfArray(TIMES_OF_REGISTRATION),
@@ -120,38 +118,68 @@ console.log(similiarAds);
 map.classList.remove('map--faded');
 
 var adCard = document.querySelector('#card').content.querySelector('.map__card');
+var pin = document.querySelector('#pin');
 var adPin = document.querySelector('#pin').content.querySelector('.map__pin');
 var mapPin = document.querySelector('.map__pins');
 var features = adCard.querySelectorAll('.popup__feature');
 
-/*   console.log(adCard);
-  console.log(adPin);
-  console.log(features);
-  console.log(mapPin); */
-console.log(similiarAds[0].author.offer.title);
+// Функция удаляет всех потомков элемнета дом
+var removeChildrenOfParent = function (domElement) {
+  while (domElement.firstChild) {
+    domElement.removeChild(domElement.firstChild);
+  }
+};
 
-var createAdCard = function (ads) {
+// Функция создает массив пинов похожих объявлений
+/* var createPins = function (ads) {
+  var pinDomElement = adPin.cloneNode(true);
+  removeChildrenOfParent(pin);
+  var pinsArray = [];
+  for (var i = 0; i < ads.length; i++) {
+    pinDomElement.querySelector('.map__pin').src = ads[i].author.avatar;
+    pinDomElement.querySelector('.map__pin').style = 'left: 200px' + ads[i].author.location.x + 'px; ' + 'top: ' + ads[i].author.location.y + 'px;';
+
+    pinsArray.push(pinDomElement);
+  }
+  return pinsArray;
+};
+
+console.log(createPins(similiarAds)); */
+
+// Функция создает массив с HTML элементами features готовыми для вставки в разметку
+var createFeatureDomElements = function (ad) {
+  var popupFeatures = adCard.cloneNode();
+  for (var i = 0; i < ad.author.offer.features.length; i++) {
+    popupFeatures.appendChild('<li class="popup__feature popup__feature--' + ad.author.offer.features[i] + '"></li>');
+  }
+  return popupFeatures;
+};
+
+console.log(createFeatureDomElements(similiarAds[2]));
+
+// Функция создает объявление
+var createAdCard = function (ad) {
   var adDomElement = adCard.cloneNode(true);
 
-  for (var i = 0; i < similiarAds.length; i++) {
-    adDomElement.querySelector('.popup__avatar').src = ads[i].author.avatar;
-    adDomElement.querySelector('.popup__title').textContent = ads[i].author.offer.title;
-    adDomElement.querySelector('.popup__text--price').textContent = (ads[i].author.offer.price + RUBLE_CURRENCY + '/ночь');
-    adDomElement.querySelector('.popup__type').textContent = similiarAds[i].author.offer.type;
-    adDomElement.querySelector('.popup__text--capacity').textContent = (ads[i].author.offer.rooms + ' комнаты для ' + ads[i].author.offer.guests + ' гостей');
-    adDomElement.querySelector('.popup__text--time').textContent = ('Заезд после ' + ads[i].author.offer.checkin + ', выезд до ' + ads[i].author.offer.checkout);
-    if (similiarAds[i].author.offer.features.length) {
+  adDomElement.querySelector('.popup__avatar').src = ad.author.avatar;
+  adDomElement.querySelector('.popup__title').textContent = ad.author.offer.title;
+  adDomElement.querySelector('.popup__text--price').textContent = (ad.author.offer.price + RUBLE_CURRENCY + '/ночь');
+  adDomElement.querySelector('.popup__type').textContent = ad.author.offer.type;
+  adDomElement.querySelector('.popup__text--capacity').textContent = (ad.author.offer.rooms + ' комнаты для ' + ad.author.offer.guests + ' гостей');
+  adDomElement.querySelector('.popup__text--time').textContent = ('Заезд после ' + ad.author.offer.checkin + ', выезд до ' + ad.author.offer.checkout);
+  adDomElement.querySelector('popup__description').innerHTML = createFeatureDomElements(ad);
+  adDomElement.querySelector('popup__description').textContent = ad.author.offer.description;
+  //adDomElement.querySelector('popup__photos').innerHTML = ;
 
-    }
-    adDomElement.querySelector('popup__description').textContent = similiarAds[i].author.offer.description;
-    for (var j = 0; j < similiarAds[i].author.offer.photos.length; j++) {
-      adDomElement.querySelector('popup__photos').appendChild();
-    }
-  }
   return adDomElement;
 };
-console.log(createAdCard(similiarAds));
+//  console.log(createAdCard(similiarAds));
+
 /*
+  console.log(adCard);
+  console.log(adPin);
+  console.log(features);
+  console.log(mapPin);
 В файле index.html подключите ваш файл при помощи тега script.  +++++++++
 
 1.  Создайте массив, состоящий из 8 сгенерированных JS объектов,  ++++ -----
