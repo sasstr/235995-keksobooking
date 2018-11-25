@@ -175,6 +175,25 @@ var createPopupPhotos = function (ad) {
   return popupPhotoDiv;
 };
 
+// Функция вставляет верное написание слова гость
+var getCorrectWord = function (numberOfGuests) {
+  if (numberOfGuests % 10 === 1) {
+    return 'гостя';
+  }
+  return (numberOfGuests % 100 > 4 && numberOfGuests % 100 < 21) ? 'гостей' : 'гостей';
+};
+
+// Функция вставляет верное написание слова комнат
+var getCorrectWordRoom = function (numberOfRooms) {
+  if (numberOfRooms % 10 === 1) {
+    return 'комната';
+  }
+  else if (numberOfRooms % 10 > 1 && numberOfRooms % 10 < 5) {
+    return 'комнаты';
+  }
+  return (numberOfRooms % 100 > 4 && numberOfRooms % 100 < 21) ? 'комнат' : 'комнат';
+};
+
 // Функция создает объявление
 var createAdCard = function (ad) {
   var adDomElement = adCard.cloneNode(true);
@@ -183,7 +202,7 @@ var createAdCard = function (ad) {
   adDomElement.querySelector('.popup__title').textContent = ad.author.offer.title;
   adDomElement.querySelector('.popup__text--price').textContent = (ad.author.offer.price + RUBLE_CURRENCY + '/ночь');
   adDomElement.querySelector('.popup__type').textContent = ad.author.offer.type;
-  adDomElement.querySelector('.popup__text--capacity').textContent = (ad.author.offer.rooms + ' комнаты для ' + ad.author.offer.guests + ' гостей');
+  adDomElement.querySelector('.popup__text--capacity').textContent = (ad.author.offer.rooms + ' ' + getCorrectWordRoom(ad.author.offer.rooms) + ' для ' + ad.author.offer.guests + ' ' + getCorrectWord(ad.author.offer.guests));
   adDomElement.querySelector('.popup__text--time').textContent = ('Заезд после ' + ad.author.offer.checkin + ', выезд до ' + ad.author.offer.checkout);
   adDomElement.replaceChild(createFeatureDomElements(ad), adDomElement.querySelector('.popup__features'));
   // adDomElement.querySelector('popup__description').textContent = ad.author.offer.description;
