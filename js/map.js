@@ -184,11 +184,11 @@ var getCorrectWord = function (numberOfGuests) {
 };
 
 // Функция вставляет верное написание слова комнат
+// return (numberOfRooms % 10 === 1) ? 'комната' : (numberOfRooms % 10 > 1 && numberOfRooms % 10 < 5 ? 'комнаты' : (numberOfRooms % 100 > 4 && numberOfRooms % 100 < 21 ? 'комнат' : 'комнат'));
 var getCorrectWordRoom = function (numberOfRooms) {
   if (numberOfRooms % 10 === 1) {
     return 'комната';
-  }
-  else if (numberOfRooms % 10 > 1 && numberOfRooms % 10 < 5) {
+  } else if (numberOfRooms % 10 > 1 && numberOfRooms % 10 < 5) {
     return 'комнаты';
   }
   return (numberOfRooms % 100 > 4 && numberOfRooms % 100 < 21) ? 'комнат' : 'комнат';
