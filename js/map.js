@@ -207,7 +207,7 @@ var createAdCard = function (ad) {
   adDomElement.querySelector('.popup__text--capacity').textContent = (ad.offer.rooms + ' ' + getCorrectWordRoom(ad.offer.rooms) + ' для ' + ad.offer.guests + ' ' + getCorrectWord(ad.offer.guests));
   adDomElement.querySelector('.popup__text--time').textContent = ('Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout);
   adDomElement.replaceChild(createFeatureDomElements(ad), adDomElement.querySelector('.popup__features'));
-  // adDomElement.querySelector('popup__description').textContent = ad.offer.description;
+  adDomElement.querySelector('.popup__description').textContent = ad.offer.description;
   adDomElement.replaceChild(createPopupPhotos(ad), adDomElement.querySelector('.popup__photos'));
 
   return adDomElement;
