@@ -4,7 +4,7 @@ var NUMBER_OF_ADS = 8;
 var RUBLE_CURRENCY = '\u20BD';
 var PIN_HEIGHT = 70;
 var PIN_WIDTH = 50;
-var MAX_ROOMS = 5;
+var MAX_ROOMS = 12;
 var MIN_ROOMS = 1;
 var MAX_GUESTS = 5;
 var MIN_GUESTS = 1;
@@ -31,6 +31,11 @@ var getRandomInteger = function (min, max) {
   return Math.round(Math.random() * (max - min)) + min;
 };
 
+//  Функция возращает случайной длины массив от исходного массива
+var getRandomLengthArray = function (array) {
+  return array.slice(0, Math.round(getRandomInteger(1, array.length)));
+};
+
 //  Функция возращает случайный элемент массива
 var getRendomItemOfArray = function (array) {
   return array[getRandomInteger(0, array.length - 1)];
@@ -43,21 +48,16 @@ var cutRandomElementOfArray = function (array) {
 
 //  Функция перемешивает элементы массива
 var jumbleElemetsOfArray = function (array) {
-  array.slice();
+  var cloneArray = array.slice();
   var j;
   var temp;
-  for (var i = 0; i < array.length; i++) {
+  for (var i = 0; i < cloneArray.length; i++) {
     j = Math.floor(Math.random() * (i + 1));
-    temp = array[j];
-    array[j] = array[i];
-    array[i] = temp;
+    temp = cloneArray[j];
+    cloneArray[j] = cloneArray[i];
+    cloneArray[i] = temp;
   }
-  return array;
-};
-
-//  Функция возращает случайной длины массив от исходного массива
-var getRandomLengthArray = function (array) {
-  return array.slice(Math.floor(getRandomInteger(1, array.length)));
+  return cloneArray;
 };
 
 //  Функция создает массив с адресами картинок.
@@ -68,7 +68,8 @@ var createArrayAddressesImages = function (numberOfImages) {
   }
   return arrayAddressesImages;
 };
-var arrayOfAddressesImages = createArrayAddressesImages(NUMBER_OF_IMAGES);
+var arrayOfLinksImages = createArrayAddressesImages(NUMBER_OF_IMAGES);
+
 //  Функция создает один элемент массива с данными соседних жилищ
 var createAd = function (arrayOfImages) {
   var TYPES_OF_DWELLING_ARRAY = [TYPES_OF_DWELLING.palace, TYPES_OF_DWELLING.flat, TYPES_OF_DWELLING.house, TYPES_OF_DWELLING.bungalo];
@@ -107,7 +108,7 @@ var createAd = function (arrayOfImages) {
 var createArrayOfAds = function (numderOfAds) {
   var ArrayOfAds = [];
   for (var i = 0; i < numderOfAds; i++) {
-    ArrayOfAds.push(createAd(arrayOfAddressesImages));
+    ArrayOfAds.push(createAd(arrayOfLinksImages));
   }
   return ArrayOfAds;
 };
@@ -180,7 +181,7 @@ var createPopupPhotos = function (ad) {
 // Функция вставляет верное написание слова гость
 var getCorrectWord = function (numberOfGuests) {
   if (numberOfGuests % 10 === 1) {
-    return 'гость';
+    return 'гостя';
   }
   return (numberOfGuests % 100 > 4 && numberOfGuests % 100 < 21) ? 'гостей' : 'гостей';
 };
@@ -188,12 +189,14 @@ var getCorrectWord = function (numberOfGuests) {
 // Функция вставляет верное написание слова комнат
 // return (numberOfRooms % 10 === 1) ? 'комната' : (numberOfRooms % 10 > 1 && numberOfRooms % 10 < 5 ? 'комнаты' : (numberOfRooms % 100 > 4 && numberOfRooms % 100 < 21 ? 'комнат' : 'комнат'));
 var getCorrectWordRoom = function (numberOfRooms) {
-  if (numberOfRooms % 10 === 1) {
+  if (numberOfRooms % 100 > 4 && numberOfRooms % 100 < 21) {
+    return 'комнат';
+  } else if (numberOfRooms % 10 === 1) {
     return 'комната';
   } else if (numberOfRooms % 10 > 1 && numberOfRooms % 10 < 5) {
     return 'комнаты';
   }
-  return (numberOfRooms % 100 > 4 && numberOfRooms % 100 < 21) ? 'комнат' : 'комнат';
+  return 'комнат';
 };
 
 // Функция создает объявление
