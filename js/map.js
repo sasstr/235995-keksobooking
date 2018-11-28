@@ -195,12 +195,5 @@ var createAdCard = function (ad) {
   return adDomElement;
 };
 
-// Функция отрисует первую карточку из массива
-var renderCard = function () {
-  var cardFragment = document.createDocumentFragment();
-  cardFragment.appendChild(createAdCard(ads[0]));
-
-  return cardFragment;
-};
 // Добавляем первую карточку из массива сгенерированных карточек
-map.insertBefore(renderCard(), mapPins.querySelector('.map__filters-container'));
+map.insertBefore(createAdCard(ads[0]), mapPins.querySelector('.map__filters-container'));
