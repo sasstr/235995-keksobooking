@@ -196,11 +196,11 @@ var createAdCard = function (ad) {
 };
 
 // Функция отрисует первую карточку из массива
-var renderCard = function (createCardAd, arrayOfAds) {
+var renderCard = function () {
   var cardFragment = document.createDocumentFragment();
-  cardFragment.appendChild(createCardAd(arrayOfAds[0]));
+  cardFragment.appendChild(createAdCard(ads[0]));
 
   return cardFragment;
 };
 // Добавляем первую карточку из массива сгенерированных карточек
-map.insertBefore(renderCard(createAdCard, ads), mapPins.querySelector('.map__filters-container'));
+map.insertBefore(renderCard(), mapPins.querySelector('.map__filters-container'));
