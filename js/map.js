@@ -1,8 +1,8 @@
 'use strict';
 var NUMBER_OF_ADS = 8;
 var RUBLE_CURRENCY = '\u20BD';
+var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
-/* var PIN_WIDTH = 50; */
 var MAX_ROOMS = 5;
 var MIN_ROOMS = 1;
 var MAX_GUESTS = 5;
@@ -26,7 +26,7 @@ var map = document.querySelector('.map');
 
 //  Функция возращает случайное целое число между min и max - включительно
 var getRandomInteger = function (min, max) {
-  return Math.round(Math.random() * (max - min)) + min;
+  return Math.floor(Math.random() * (max - min)) + min;
 };
 
 //  Функция возращает случайной длины массив от исходного массива
@@ -36,12 +36,7 @@ var getRandomLengthArray = function (array) {
 
 //  Функция возращает случайный элемент массива
 var getRendomItemOfArray = function (array) {
-  return array[getRandomInteger(0, array.length - 1)];
-};
-
-//  Функция вырезает случайный элемент массива
-var cutRandomElementOfArray = function (array) {
-  return array.splice(getRandomInteger(0, array.length - 1), 1).join();
+  return array[getRandomInteger(0, array.length)];
 };
 
 //  Функция перемешивает элементы массива
@@ -70,7 +65,7 @@ var createAd = function (index) {
       'avatar': 'img/avatars/user0' + (index + 1) + '.png',
     },
     'offer': {
-      'title': cutRandomElementOfArray(OFFER_TITLES),
+      'title': OFFER_TITLES[index],
       'address': location.x + ', ' + location.y,
       'price': getRandomInteger(MIN_PRICE, MAX_PRICE),
       'type': getRendomItemOfArray(TYPES_OF_DWELLING_ARRAY),
@@ -82,23 +77,21 @@ var createAd = function (index) {
       'description': '',
       'photos': jumbleElemetsOfArray(OFFER_PHOTOS)
     },
-
     'location': {
       x: location.x,
       y: location.y
     }
-
   };
   return similiarAd;
 };
 
 // Функция создает массив объявлений
 var createArrayOfAds = function (numderOfAds) {
-  var ArrayOfAds = [];
+  var ads = [];
   for (var i = 0; i < numderOfAds; i++) {
-    ArrayOfAds.push(createAd(i));
+    ads.push(createAd(i));
   }
-  return ArrayOfAds;
+  return ads;
 };
 
 map.classList.remove('map--faded');
@@ -112,8 +105,8 @@ var createPin = function (ad) {
   var pinChildImg = document.createElement('img');
 
   pinElement.classList.add('map__pin');
-  pinElement.style.left = ad.location.x + 'px';
-  pinElement.style.top = (ad.location.y + PIN_HEIGHT / 2) + 'px';
+  pinElement.style.left = (ad.location.x + PIN_WIDTH / 2) + 'px';
+  pinElement.style.top = (ad.location.y - PIN_HEIGHT) + 'px';
   pinChildImg.src = ad.author.avatar;
   pinChildImg.width = 40;
   pinChildImg.height = 40;
@@ -125,15 +118,15 @@ var createPin = function (ad) {
 };
 
 // Функция отрисует все пины
-var renderPins = function (numberOfPins) {
+var renderPins = function () {
   var pinsFragment = document.createDocumentFragment();
-  for (var i = 0; i < numberOfPins; i++) {
+  for (var i = 0; i < NUMBER_OF_ADS; i++) {
     pinsFragment.appendChild(createPin(ads[i]));
   }
   return pinsFragment;
 };
 // Добавляем пины на карту
-mapPins.appendChild(renderPins(NUMBER_OF_ADS));
+mapPins.appendChild(renderPins());
 
 // Функция создает массив с HTML элементами features готовыми для вставки в разметку
 var createFeatureDomElements = function (adOfferFeatures) {
@@ -167,12 +160,12 @@ var createPopupPhotos = function (ad) {
 };
 
 // Функция вставляет верное написание слова из массива
-var getCorrectWord = function (numberOfRooms, words) {
-  if (numberOfRooms % 100 > 4 && numberOfRooms % 100 < 21) {
+var getCorrectWord = function (items, words) {
+  if (items % 100 > 4 && items % 100 < 21) {
     return words[0];
-  } else if (numberOfRooms % 10 === 1) {
+  } else if (items % 10 === 1) {
     return words[1];
-  } else if (numberOfRooms % 10 > 1 && numberOfRooms % 10 < 5) {
+  } else if (items % 10 > 1 && items % 10 < 5) {
     return words[2];
   }
   return words[0];
@@ -195,5 +188,8 @@ var createAdCard = function (ad) {
   return adDomElement;
 };
 
+var showCard = function (itemOfAds) {
+  map.insertBefore(createAdCard(itemOfAds), mapPins.querySelector('.map__filters-container'));
+};
 // Добавляем первую карточку из массива сгенерированных карточек
-map.insertBefore(createAdCard(ads[0]), mapPins.querySelector('.map__filters-container'));
+showCard(ads[0]);
