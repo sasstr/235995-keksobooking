@@ -105,7 +105,7 @@ var createPin = function (ad) {
   var pinChildImg = document.createElement('img');
 
   pinElement.classList.add('map__pin');
-  pinElement.style.left = (ad.location.x + PIN_WIDTH / 2) + 'px';
+  pinElement.style.left = (ad.location.x - PIN_WIDTH / 2) + 'px';
   pinElement.style.top = (ad.location.y - PIN_HEIGHT) + 'px';
   pinChildImg.src = ad.author.avatar;
   pinChildImg.width = 40;
