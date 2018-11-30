@@ -21,6 +21,8 @@ var TYPES_OF_DWELLING_ARRAY = [TYPES_OF_DWELLING.palace, TYPES_OF_DWELLING.flat,
 var TIMES_OF_REGISTRATION = ['12:00', '13:00', '14:00'];
 var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var OFFER_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+var ENABLED_STATE = false;
+var DISABLED_STATE = true;
 
 var map = document.querySelector('.map');
 
@@ -94,7 +96,7 @@ var createArrayOfAds = function (numderOfAds) {
   return ads;
 };
 
-map.classList.remove('map--faded');
+
 var ads = createArrayOfAds(NUMBER_OF_ADS);
 var adCard = document.querySelector('#card').content.querySelector('.map__card');
 var mapPins = document.querySelector('.map__pins');
@@ -125,8 +127,6 @@ var renderPins = function () {
   }
   return pinsFragment;
 };
-// Добавляем пины на карту
-mapPins.appendChild(renderPins());
 
 // Функция создает массив с HTML элементами features готовыми для вставки в разметку
 var createFeatureDomElements = function (adOfferFeatures) {
@@ -192,4 +192,94 @@ var showCard = function (itemOfAds) {
   map.insertBefore(createAdCard(itemOfAds), mapPins.querySelector('.map__filters-container'));
 };
 // Добавляем первую карточку из массива сгенерированных карточек
-showCard(ads[0]);
+/* showCard(ads[0]); */
+
+var formFieldset = document.querySelectorAll('fieldset');
+var adForm = document.querySelector('.ad-form');
+var mapPinMain = document.querySelector('.map__pin--main');
+var inputAddress = document.querySelector('#address');
+
+// Функция устанавливает состояние форм disabled или enabled
+var setStateForms = function (state) {
+  for (var i = 0; i < formFieldset.length; i++) {
+    formFieldset[i].disabled = state;
+  }
+};
+
+var getCoordinatesOfMainPin = function (evt) {
+  return (evt.clientX - mapPinMain.offsetWidth / 2) + ', ' + (evt.clientY - mapPinMain.offsetHeight);
+};
+
+var mainPinHandler = function (evt) {
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  setStateForms(ENABLED_STATE);
+  mapPins.appendChild(renderPins());
+  inputAddress.value = getCoordinatesOfMainPin(evt);
+};
+
+setStateForms(DISABLED_STATE);
+
+mapPinMain.addEventListener('mouseup', mainPinHandler, {once: true});
+
+/*    map.classList.remove('map--faded');  console.log(pins);
+В этом задании мы начнём реализацию сценария переключения режимов страницы между неактивным
+и активным, свяжем режим активации с отрисовкой новых меток на карте и сделаем так, чтобы
+при нажатии на каждую из меток на карте, показывалось объявление с подробной информацией.
+
+Первое действие, которое нужно выполнить, перед тем, как приступить к этому заданию,
+вернуть страницу в исходное состояние. В прошлом разделе мы активировали карту, убрав
+у неё класс .map--faded и вызвали методы отрисовки похожих объявлений и метод
+отрисовки карточки. Проблема в том, что это не соответствует
+ТЗ — эти методы должны вызываться только в рамках соответствующих сценариев,
+поэтому мы уберём их вызовы, а самими методами воспользуемся позже.
+Пока что оставим в коде методы, созданные в прошлом задании, но саму страницу вернём
+в исходное состояние.
+
+Еще нужно не забыть проверить пункт ТЗ, указывающий на то, что поля форм должны быть
+неактивны в исходном состоянии. В разметке проекта поля активны, поэтому их нужно
+отключить, т.е. добавить через DOM-операции или самим полям или fieldset которые
+их содержат, атрибут disabled.
+
+1. Активация страницы
+Страница Букинга может находиться в двух режимах: неактивном и активном.
+В неактивном режиме страница находится сразу после открытия.
+В этом режиме отключены формы и карта, единственное действие,
+которое можно выполнить со страницей — перетащить метку адреса.
+Первое перетаскивание метки переводит страницу в активный режим.
+
+Перетаскивание метки — это тема домашнего задания из следующего раздела,
+в этом разделе мы только сэмулируем перетаскивание.
+
+Любое перетаскивание состоит из трёх фаз: захвата элемента, его перемещения
+и отпускания элемента. На данном этапе нам достаточно описать реакцию
+на третью фазу: отпускание элемента. Для этого нужно добавить обработчик
+события mouseup на элемент .map__pin--main. +++++++++++++++
+
+Обработчик события mouseup должен вызывать функцию, которая будет отменять
+изменения DOM-элементов, описанные в пункте «Неактивное состояние» технического задания.
+
+Заполнение поля адреса
+Кроме активации формы, перемещение метки приводит к заполнению поля адреса.
+В значении поля записаны координаты, на которые метка указывает своим острым концом.
+Поэтому в обработчике события mouseup на элементе метки, кроме вызова метода,
+ переводящего страницу в активное состояние, должен находиться вызов метода,
+ который устанавливает значения поля ввода адреса.
+
+Ещё один момент заключается в том, что поле адреса должно быть заполнено всегда,
+в том числе сразу после открытия страницы. Насчёт определения координат метки
+в этом случае нет никаких инструкций, ведь в неактивном режиме страницы метка
+ круглая, поэтому мы можем взять за исходное значение поля адреса середину метки.
+ А при «перетаскивании» значение поля изменится на то, на которое будет указывать
+ острый конец метки.
+
+Для определения смещения координаты относительно левого верхнего угла метки
+можно использовать любой способ, в том числе, вычисление размеров метки.
+Кроме этого, можно хранить размеры метки как константу.
+
+После перевода страницы в активный режим, нужно отрисовать на карте похожие объявления +++
+
+Нажатие на метку похожего объявления на карте, приводит к показу карточки с подробной информацией
+об этом объявлении. Получается, что для меток должны быть созданы обработчики событий,
+которые вызывают показ карточки с соответствующими данными.
+*/
