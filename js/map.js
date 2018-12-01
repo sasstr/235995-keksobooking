@@ -23,6 +23,8 @@ var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'co
 var OFFER_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var ENABLED_STATE = false;
 var DISABLED_STATE = true;
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 
 var map = document.querySelector('.map');
 
@@ -96,7 +98,6 @@ var createArrayOfAds = function (numderOfAds) {
   return ads;
 };
 
-
 var ads = createArrayOfAds(NUMBER_OF_ADS);
 var adCard = document.querySelector('#card').content.querySelector('.map__card');
 var mapPins = document.querySelector('.map__pins');
@@ -105,7 +106,14 @@ var mapPins = document.querySelector('.map__pins');
 var createPin = function (ad) {
   var pinElement = document.createElement('button');
   var pinChildImg = document.createElement('img');
-
+  var pinElementClickHandler = function () {
+    showCard(ad);
+  };
+  var pinElementKeydownHandler = function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      showCard(ad);
+    }
+  };
   pinElement.classList.add('map__pin');
   pinElement.style.left = (ad.location.x - PIN_WIDTH / 2) + 'px';
   pinElement.style.top = (ad.location.y - PIN_HEIGHT) + 'px';
@@ -115,6 +123,8 @@ var createPin = function (ad) {
   pinChildImg.draggable = false;
   pinChildImg.alt = ad.offer.title;
   pinElement.appendChild(pinChildImg);
+  pinElement.addEventListener('click', pinElementClickHandler);
+  pinElement.addEventListener('keydown', pinElementKeydownHandler);
 
   return pinElement;
 };
@@ -174,6 +184,14 @@ var getCorrectWord = function (items, words) {
 // Функция создает объявление
 var createAdCard = function (ad) {
   var adDomElement = adCard.cloneNode(true);
+  var popupCloseClickHandler = function () {
+    map.removeChild(adCard);
+  };
+  var popupCloseKeydownHandler = function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      map.removeChild(adCard);
+    }
+  };
 
   adDomElement.querySelector('.popup__avatar').src = ad.author.avatar;
   adDomElement.querySelector('.popup__title').textContent = ad.offer.title;
@@ -183,6 +201,8 @@ var createAdCard = function (ad) {
   adDomElement.querySelector('.popup__text--time').textContent = ('Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout);
   adDomElement.replaceChild(createFeatureDomElements(ad.offer.features), adDomElement.querySelector('.popup__features'));
   adDomElement.querySelector('.popup__description').textContent = ad.offer.description;
+  adDomElement.querySelector('.popup__close').addEventListener('click', popupCloseClickHandler);
+  adDomElement.querySelector('.popup__close').addEventListener('keydown', popupCloseKeydownHandler);
   adDomElement.replaceChild(createPopupPhotos(ad), adDomElement.querySelector('.popup__photos'));
 
   return adDomElement;
@@ -191,8 +211,6 @@ var createAdCard = function (ad) {
 var showCard = function (itemOfAds) {
   map.insertBefore(createAdCard(itemOfAds), mapPins.querySelector('.map__filters-container'));
 };
-// Добавляем первую карточку из массива сгенерированных карточек
-/* showCard(ads[0]); */
 
 var formFieldset = document.querySelectorAll('fieldset');
 var adForm = document.querySelector('.ad-form');
@@ -209,20 +227,22 @@ var setStateForms = function (state) {
 var getCoordinatesOfMainPin = function (evt) {
   return (evt.clientX - mapPinMain.offsetWidth / 2) + ', ' + (evt.clientY - mapPinMain.offsetHeight);
 };
-
-var mainPinHandler = function (evt) {
+// Функция по клику на главный пин переводит окно в активное состояние
+var mainPinMouseupHandler = function (evt) {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
   setStateForms(ENABLED_STATE);
   mapPins.appendChild(renderPins());
   inputAddress.value = getCoordinatesOfMainPin(evt);
+  mapPinMain.removeEventListener('mouseup', mainPinMouseupHandler);
 };
 
 setStateForms(DISABLED_STATE);
 
-mapPinMain.addEventListener('mouseup', mainPinHandler, {once: true});
+mapPinMain.addEventListener('mouseup', mainPinMouseupHandler);
 
 /*    map.classList.remove('map--faded');  console.log(pins);
+document.removeEventListener('keydown', popupEscPressHandler);, {once: true}
 В этом задании мы начнём реализацию сценария переключения режимов страницы между неактивным
 и активным, свяжем режим активации с отрисовкой новых меток на карте и сделаем так, чтобы
 при нажатии на каждую из меток на карте, показывалось объявление с подробной информацией.
