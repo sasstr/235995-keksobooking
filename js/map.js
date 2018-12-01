@@ -24,7 +24,6 @@ var OFFER_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http:
 var ENABLED_STATE = false;
 var DISABLED_STATE = true;
 var ESC_KEYCODE = 27;
-var ENTER_KEYCODE = 13;
 
 var map = document.querySelector('.map');
 
@@ -216,7 +215,7 @@ var formFieldset = document.querySelectorAll('fieldset');
 var adForm = document.querySelector('.ad-form');
 var mapPinMain = document.querySelector('.map__pin--main');
 var inputAddress = document.querySelector('#address');
-console.dir(mapPinMain);
+
 // Функция устанавливает состояние форм disabled или enabled
 var setStateForms = function (state) {
   for (var i = 0; i < formFieldset.length; i++) {
@@ -225,7 +224,7 @@ var setStateForms = function (state) {
 };
 
 var getCoordinatesOfMainPin = function () {
-  return (mapPinMain.offsetTop - mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetLeft - mapPinMain.offsetHeight);
+  return (mapPinMain.offsetTop + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetLeft + mapPinMain.offsetHeight);
 };
 // Функция по клику на главный пин переводит окно в активное состояние
 var mainPinMouseupHandler = function (evt) {
