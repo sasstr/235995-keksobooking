@@ -21,6 +21,9 @@ var TYPES_OF_DWELLING_ARRAY = [TYPES_OF_DWELLING.palace, TYPES_OF_DWELLING.flat,
 var TIMES_OF_REGISTRATION = ['12:00', '13:00', '14:00'];
 var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var OFFER_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+var ENABLED_STATE = false;
+var DISABLED_STATE = true;
+var ESC_KEYCODE = 27;
 
 var map = document.querySelector('.map');
 
@@ -94,7 +97,6 @@ var createArrayOfAds = function (numderOfAds) {
   return ads;
 };
 
-map.classList.remove('map--faded');
 var ads = createArrayOfAds(NUMBER_OF_ADS);
 var adCard = document.querySelector('#card').content.querySelector('.map__card');
 var mapPins = document.querySelector('.map__pins');
@@ -103,6 +105,12 @@ var mapPins = document.querySelector('.map__pins');
 var createPin = function (ad) {
   var pinElement = document.createElement('button');
   var pinChildImg = document.createElement('img');
+  var pinElementClickHandler = function () {
+    if (map.querySelector('.map__card') !== null) {
+      map.querySelector('.map__card').remove();
+    }
+    showCard(ad);
+  };
 
   pinElement.classList.add('map__pin');
   pinElement.style.left = (ad.location.x - PIN_WIDTH / 2) + 'px';
@@ -113,6 +121,7 @@ var createPin = function (ad) {
   pinChildImg.draggable = false;
   pinChildImg.alt = ad.offer.title;
   pinElement.appendChild(pinChildImg);
+  pinElement.addEventListener('click', pinElementClickHandler);
 
   return pinElement;
 };
@@ -125,8 +134,6 @@ var renderPins = function () {
   }
   return pinsFragment;
 };
-// Добавляем пины на карту
-mapPins.appendChild(renderPins());
 
 // Функция создает массив с HTML элементами features готовыми для вставки в разметку
 var createFeatureDomElements = function (adOfferFeatures) {
@@ -174,6 +181,16 @@ var getCorrectWord = function (items, words) {
 // Функция создает объявление
 var createAdCard = function (ad) {
   var adDomElement = adCard.cloneNode(true);
+  var popupCloseClickHandler = function () {
+    map.querySelector('.map__card').remove();
+    adDomElement.querySelector('.popup__close').removeEventListener('click', popupCloseClickHandler);
+  };
+  var popupCloseKeydownEscHandler = function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      map.querySelector('.map__card').remove();
+      document.removeEventListener('keydown', popupCloseKeydownEscHandler);
+    }
+  };
 
   adDomElement.querySelector('.popup__avatar').src = ad.author.avatar;
   adDomElement.querySelector('.popup__title').textContent = ad.offer.title;
@@ -183,6 +200,8 @@ var createAdCard = function (ad) {
   adDomElement.querySelector('.popup__text--time').textContent = ('Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout);
   adDomElement.replaceChild(createFeatureDomElements(ad.offer.features), adDomElement.querySelector('.popup__features'));
   adDomElement.querySelector('.popup__description').textContent = ad.offer.description;
+  adDomElement.querySelector('.popup__close').addEventListener('click', popupCloseClickHandler);
+  document.addEventListener('keydown', popupCloseKeydownEscHandler);
   adDomElement.replaceChild(createPopupPhotos(ad), adDomElement.querySelector('.popup__photos'));
 
   return adDomElement;
@@ -191,5 +210,31 @@ var createAdCard = function (ad) {
 var showCard = function (itemOfAds) {
   map.insertBefore(createAdCard(itemOfAds), mapPins.querySelector('.map__filters-container'));
 };
-// Добавляем первую карточку из массива сгенерированных карточек
-showCard(ads[0]);
+
+var formFieldset = document.querySelectorAll('fieldset');
+var adForm = document.querySelector('.ad-form');
+var mapPinMain = document.querySelector('.map__pin--main');
+var inputAddress = document.querySelector('#address');
+
+// Функция устанавливает состояние форм disabled или enabled
+var setStateForms = function (state) {
+  for (var i = 0; i < formFieldset.length; i++) {
+    formFieldset[i].disabled = state;
+  }
+};
+
+var getCoordinatesOfMainPin = function () {
+  return (mapPinMain.offsetTop + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetLeft + mapPinMain.offsetHeight);
+};
+// Функция по клику на главный пин переводит окно в активное состояние
+var mainPinMouseupHandler = function (evt) {
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  setStateForms(ENABLED_STATE);
+  mapPins.appendChild(renderPins());
+  inputAddress.value = getCoordinatesOfMainPin(evt);
+  mapPinMain.removeEventListener('mouseup', mainPinMouseupHandler);
+};
+
+setStateForms(DISABLED_STATE);
+mapPinMain.addEventListener('mouseup', mainPinMouseupHandler);
