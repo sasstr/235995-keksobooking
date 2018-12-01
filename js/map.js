@@ -185,11 +185,11 @@ var getCorrectWord = function (items, words) {
 var createAdCard = function (ad) {
   var adDomElement = adCard.cloneNode(true);
   var popupCloseClickHandler = function () {
-    map.removeChild(adCard);
+    map.querySelector('.map__card').remove();
   };
   var popupCloseKeydownHandler = function (evt) {
     if (evt.keyCode === ESC_KEYCODE) {
-      map.removeChild(adCard);
+      map.querySelector('.map__card').remove();
     }
   };
 
