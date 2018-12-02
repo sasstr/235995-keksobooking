@@ -224,7 +224,7 @@ var setStateForms = function (state) {
 };
 
 var getCoordinatesOfMainPin = function () {
-  return (mapPinMain.offsetTop + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetLeft + mapPinMain.offsetHeight);
+  return Math.round(mapPinMain.offsetTop + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetLeft + mapPinMain.offsetHeight);
 };
 // Функция по клику на главный пин переводит окно в активное состояние
 var mainPinMouseupHandler = function (evt) {
@@ -236,5 +236,32 @@ var mainPinMouseupHandler = function (evt) {
   mapPinMain.removeEventListener('mouseup', mainPinMouseupHandler);
 };
 
-setStateForms(DISABLED_STATE);
-mapPinMain.addEventListener('mouseup', mainPinMouseupHandler);
+var disableForm = function () {
+  setStateForms(DISABLED_STATE);
+  mapPinMain.addEventListener('mouseup', mainPinMouseupHandler);
+};
+
+disableForm();
+
+var roomNumber = document.querySelector('#room_number');
+var capacity = document.querySelector('#capacity');
+
+var rooms = {
+  '1': ['для 1 гостя'],
+  '2': ['для 1 гостя', 'для 2 гостей'],
+  '3': ['для 1 гостя', 'для 2 гостей', 'для 3 гостей'],
+  '4': ['не для гостей'],
+  'default': ['для 1 гостя', 'для 2 гостей', 'для 3 гостей', 'не для гостей']
+};
+
+var selectRoomsChangeHandler = function () {
+  capacity.innerHTML = '';
+  var selectValue = roomNumber.options.selectedIndex + 1 || 'default';
+  var options;
+  for (var j = 0; j < rooms[selectValue].length; j++) {
+    options = new Option(rooms[selectValue][j], j, false, false);
+    capacity.add(options);
+  }
+};
+
+roomNumber.addEventListener('change', selectRoomsChangeHandler);
