@@ -246,36 +246,36 @@ disableForm();
 var roomNumber = document.querySelector('#room_number');
 var capacity = document.querySelector('#capacity');
 
-var rooms = {
+/* var rooms = {
   '100': ['не для гостей'],
   '1': ['для 1 гостя'],
   '2': ['для 1 гостя', 'для 2 гостей'],
   '3': ['для 1 гостя', 'для 2 гостей', 'для 3 гостей'],
   'default': ['для 1 гостя', 'для 2 гостей', 'для 3 гостей', 'не для гостей']
+}; */
+
+var rooms = {
+  '1': {'1': 'для 1 гостя'},
+  '2': {'1': 'для 1 гостя', '2': 'для 2 гостей'},
+  '3': {'1': 'для 1 гостя', '2': 'для 2 гостей', '3': 'для 3 гостей'},
+  '4': {'100': 'не для гостей'},
+  'default': {'1': 'для 1 гостя', '2': 'для 2 гостей', '3': 'для 3 гостей', '100': 'не для гостей'}
 };
 
-var selectRoomsChangeHandler = function () {
+var selectorFor = function () {
   capacity.innerHTML = '';
-  var selectValue = roomNumber.options.selectedIndex || 'default';
-  var options;
-
-  console.log('Значение selectValue: ' + selectValue);
-  console.log('Объект: ' + rooms[Object.keys(rooms)[selectValue]]);
-  console.log('Ключ объекта: ' + Object.keys(rooms)[selectValue]);
-  console.log('Массив ключей: ' + Object.keys(rooms));
-
-  for (var j = 0; j < rooms[Object.keys(rooms)[selectValue]].length; j++) {
-
-    console.log('Значение value: ' + Object.keys(rooms)[j]);
-    console.log('Длина массива Object.keys: ' + rooms[Object.keys(rooms)[selectValue]].length);
-    console.log('Текст text: ' + rooms[Object.keys(rooms)[selectValue]][j]);
-    console.log('Значение value Object.keys(rooms)[selectValue]: ' + Object.keys(rooms)[selectValue]);
-    options = new Option(rooms[Object.keys(rooms)[selectValue]][j], Object.keys(rooms)[j], false, false);
+  var roomCount = roomNumber.options.selectedIndex + 1 || 'default';
+  var room = rooms[roomCount];
+  var keys = Object.keys(room);
+  for (var k = 0; k < keys.length; k++) {
+    var value = keys[k];
+    var valueString = room[keys[k]];
+    var options = new Option(valueString, value, false, false);
     capacity.add(options);
   }
 };
 
-roomNumber.addEventListener('change', selectRoomsChangeHandler);
+roomNumber.addEventListener('change', selectorFor);
 
 var selectTimein = document.querySelector('#timein');
 var selectTimeout = document.querySelector('#timeout');
