@@ -211,15 +211,15 @@ var showCard = function (itemOfAds) {
   map.insertBefore(createAdCard(itemOfAds), mapPins.querySelector('.map__filters-container'));
 };
 
-var formFieldset = document.querySelectorAll('fieldset');
+var fieldsetList = document.querySelectorAll('fieldset');
 var adForm = document.querySelector('.ad-form');
 var mapPinMain = document.querySelector('.map__pin--main');
 var inputAddress = document.querySelector('#address');
 
 // Функция устанавливает состояние форм disabled или enabled
 var setStateForms = function (state) {
-  for (var i = 0; i < formFieldset.length; i++) {
-    formFieldset[i].disabled = state;
+  for (var i = 0; i < fieldsetList.length; i++) {
+    fieldsetList[i].disabled = state;
   }
 };
 
