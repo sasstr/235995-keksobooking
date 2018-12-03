@@ -21,8 +21,8 @@ var TYPES_OF_DWELLING_ARRAY = [TYPES_OF_DWELLING.palace, TYPES_OF_DWELLING.flat,
 var TIMES_OF_REGISTRATION = ['12:00', '13:00', '14:00'];
 var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var OFFER_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-var ENABLED_STATE = false;
-var DISABLED_STATE = true;
+var ENABLED_CONDITION = false;
+var DISABLED_CONDITION = true;
 var ESC_KEYCODE = 27;
 
 var map = document.querySelector('.map');
@@ -217,9 +217,9 @@ var mapPinMain = document.querySelector('.map__pin--main');
 var inputAddress = document.querySelector('#address');
 
 // Функция устанавливает состояние форм disabled или enabled
-var setStateForms = function (state) {
+var setConditionForms = function (condition) {
   for (var i = 0; i < fieldsetList.length; i++) {
-    fieldsetList[i].disabled = state;
+    fieldsetList[i].disabled = condition;
   }
 };
 
@@ -230,14 +230,14 @@ var getCoordinatesOfMainPin = function () {
 var mainPinMouseupHandler = function (evt) {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
-  setStateForms(ENABLED_STATE);
+  setConditionForms(ENABLED_CONDITION);
   mapPins.appendChild(renderPins());
   inputAddress.value = getCoordinatesOfMainPin(evt);
   mapPinMain.removeEventListener('mouseup', mainPinMouseupHandler);
 };
 
 var disableForm = function () {
-  setStateForms(DISABLED_STATE);
+  setConditionForms(DISABLED_CONDITION);
   mapPinMain.addEventListener('mouseup', mainPinMouseupHandler);
 };
 
