@@ -247,10 +247,10 @@ var roomNumber = document.querySelector('#room_number');
 var capacity = document.querySelector('#capacity');
 
 var rooms = {
+  '100': ['не для гостей'],
   '1': ['для 1 гостя'],
   '2': ['для 1 гостя', 'для 2 гостей'],
   '3': ['для 1 гостя', 'для 2 гостей', 'для 3 гостей'],
-  '100': ['не для гостей'],
   'default': ['для 1 гостя', 'для 2 гостей', 'для 3 гостей', 'не для гостей']
 };
 
@@ -258,17 +258,23 @@ var selectRoomsChangeHandler = function () {
   capacity.innerHTML = '';
   var selectValue = roomNumber.options.selectedIndex || 'default';
   var options;
+
+  console.log('Значение selectValue: ' + selectValue);
+  console.log('Объект: ' + rooms[Object.keys(rooms)[selectValue]]);
   console.log('Ключ объекта: ' + Object.keys(rooms)[selectValue]);
+  console.log('Массив ключей: ' + Object.keys(rooms));
+
   for (var j = 0; j < rooms[Object.keys(rooms)[selectValue]].length; j++) {
+
     console.log('Значение value: ' + Object.keys(rooms)[j]);
-    console.log('Длина массива Object.keys: ' + Object.keys(rooms)[selectValue].length);
-    console.log('Текст text: ' + rooms[selectValue][j]);
-    // console.log('Значение value: ' + Object.keys(rooms)[selectValue]);
+    console.log('Длина массива Object.keys: ' + rooms[Object.keys(rooms)[selectValue]].length);
+    console.log('Текст text: ' + rooms[Object.keys(rooms)[selectValue]][j]);
+    console.log('Значение value Object.keys(rooms)[selectValue]: ' + Object.keys(rooms)[selectValue]);
     options = new Option(rooms[Object.keys(rooms)[selectValue]][j], Object.keys(rooms)[j], false, false);
     capacity.add(options);
   }
 };
-// rooms.keys(rooms)[j]
+
 roomNumber.addEventListener('change', selectRoomsChangeHandler);
 
 var selectTimein = document.querySelector('#timein');
