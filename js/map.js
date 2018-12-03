@@ -250,18 +250,39 @@ var rooms = {
   '1': ['для 1 гостя'],
   '2': ['для 1 гостя', 'для 2 гостей'],
   '3': ['для 1 гостя', 'для 2 гостей', 'для 3 гостей'],
-  '4': ['не для гостей'],
+  '100': ['не для гостей'],
   'default': ['для 1 гостя', 'для 2 гостей', 'для 3 гостей', 'не для гостей']
 };
 
 var selectRoomsChangeHandler = function () {
   capacity.innerHTML = '';
-  var selectValue = roomNumber.options.selectedIndex + 1 || 'default';
+  var selectValue = roomNumber.options.selectedIndex || 'default';
   var options;
-  for (var j = 0; j < rooms[selectValue].length; j++) {
-    options = new Option(rooms[selectValue][j], j, false, false);
+  console.log('Ключ объекта: ' + Object.keys(rooms)[selectValue]);
+  for (var j = 0; j < rooms[Object.keys(rooms)[selectValue]].length; j++) {
+    console.log('Значение value: ' + Object.keys(rooms)[j]);
+    console.log('Длина массива Object.keys: ' + Object.keys(rooms)[selectValue].length);
+    console.log('Текст text: ' + rooms[selectValue][j]);
+    // console.log('Значение value: ' + Object.keys(rooms)[selectValue]);
+    options = new Option(rooms[Object.keys(rooms)[selectValue]][j], Object.keys(rooms)[j], false, false);
     capacity.add(options);
   }
 };
-
+// rooms.keys(rooms)[j]
 roomNumber.addEventListener('change', selectRoomsChangeHandler);
+
+var selectTimein = document.querySelector('#timein');
+var selectTimeout = document.querySelector('#timeout');
+
+var connectSelect = function () {
+  selectTimein.onchange = function () {
+    selectTimeout.selectedIndex = this.selectedIndex;
+  };
+
+  selectTimeout.onchange = function () {
+    selectTimein.selectedIndex = this.selectedIndex;
+  };
+};
+
+selectTimein.addEventListener('change', connectSelect);
+selectTimeout.addEventListener('change', connectSelect);
