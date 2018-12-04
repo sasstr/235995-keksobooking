@@ -246,25 +246,17 @@ disableForm();
 var roomNumber = document.querySelector('#room_number');
 var capacity = document.querySelector('#capacity');
 
-/* var rooms = {
-  '100': ['не для гостей'],
-  '1': ['для 1 гостя'],
-  '2': ['для 1 гостя', 'для 2 гостей'],
-  '3': ['для 1 гостя', 'для 2 гостей', 'для 3 гостей'],
-  'default': ['для 1 гостя', 'для 2 гостей', 'для 3 гостей', 'не для гостей']
-}; */
-
 var rooms = {
   '1': {'1': 'для 1 гостя'},
   '2': {'1': 'для 1 гостя', '2': 'для 2 гостей'},
   '3': {'1': 'для 1 гостя', '2': 'для 2 гостей', '3': 'для 3 гостей'},
-  '4': {'100': 'не для гостей'},
+  '100': {'100': 'не для гостей'},
   'default': {'1': 'для 1 гостя', '2': 'для 2 гостей', '3': 'для 3 гостей', '100': 'не для гостей'}
 };
 
 var selectRoomsChangeHandler = function () {
   capacity.innerHTML = '';
-  var roomCount = roomNumber.options.selectedIndex + 1 || 'default';
+  var roomCount = roomNumber.options[roomNumber.selectedIndex].value || 'default';
   var room = rooms[roomCount];
   var keys = Object.keys(room);
   for (var k = 0; k < keys.length; k++) {
