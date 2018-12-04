@@ -262,7 +262,7 @@ var rooms = {
   'default': {'1': 'для 1 гостя', '2': 'для 2 гостей', '3': 'для 3 гостей', '100': 'не для гостей'}
 };
 
-var selectorFor = function () {
+var selectRoomsChangeHandler = function () {
   capacity.innerHTML = '';
   var roomCount = roomNumber.options.selectedIndex + 1 || 'default';
   var room = rooms[roomCount];
@@ -275,7 +275,7 @@ var selectorFor = function () {
   }
 };
 
-roomNumber.addEventListener('change', selectorFor);
+roomNumber.addEventListener('change', selectRoomsChangeHandler);
 
 var selectTimein = document.querySelector('#timein');
 var selectTimeout = document.querySelector('#timeout');
