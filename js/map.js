@@ -277,10 +277,12 @@ var typeOfDwelling = {
 
 var typeOfHabitation = document.querySelector('#type');
 var inputMinMaxPrice = document.querySelector('#price');
+
 // Функция вставляет нужное значение минимальной стоимости жилья.
-var inputTypeChangeHandler = function () {
-  inputMinMaxPrice.min = typeOfDwelling[typeOfHabitation.options[typeOfHabitation.selectedIndex].value];
+var inputTypeChangeHandler = function (evt) {
+  inputMinMaxPrice.min = typeOfDwelling[evt.target.value];
 };
+
 typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
 
 var selectTimein = document.querySelector('#timein');
