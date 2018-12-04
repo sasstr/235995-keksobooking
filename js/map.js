@@ -250,13 +250,12 @@ var rooms = {
   '1': {'1': 'для 1 гостя'},
   '2': {'1': 'для 1 гостя', '2': 'для 2 гостей'},
   '3': {'1': 'для 1 гостя', '2': 'для 2 гостей', '3': 'для 3 гостей'},
-  '100': {'100': 'не для гостей'},
-  'default': {'1': 'для 1 гостя', '2': 'для 2 гостей', '3': 'для 3 гостей', '100': 'не для гостей'}
+  '100': {'0': 'не для гостей'},
 };
-
+// Функция собирает список select на основе значений option другого select
 var selectRoomsChangeHandler = function () {
   capacity.innerHTML = '';
-  var roomCount = roomNumber.options[roomNumber.selectedIndex].value || 'default';
+  var roomCount = roomNumber.options[roomNumber.selectedIndex].value;
   var room = rooms[roomCount];
   var keys = Object.keys(room);
   for (var k = 0; k < keys.length; k++) {
@@ -268,6 +267,26 @@ var selectRoomsChangeHandler = function () {
 };
 
 roomNumber.addEventListener('change', selectRoomsChangeHandler);
+
+var typeOfDwelling = {
+  'bungalo': 0,
+  'flat': 1000,
+  'house': 5000,
+  'palace': 10000
+};
+
+var typeOfHabitation = document.querySelector('#type');
+var inputMinMaxPrice = document.querySelector('#price');
+var dwellingKeys = Object.keys(typeOfDwelling);
+// Функция вставляет нужное значение минимальной стоимости жилья.
+var inputTypeChangeHandler = function () {
+  for (var i = 0; i < dwellingKeys.length; i++) {
+    if (dwellingKeys[i] === typeOfHabitation.options[typeOfHabitation.selectedIndex].value) {
+      inputMinMaxPrice.min = typeOfDwelling[dwellingKeys[i]];
+    }
+  }
+};
+typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
 
 var selectTimein = document.querySelector('#timein');
 var selectTimeout = document.querySelector('#timeout');
