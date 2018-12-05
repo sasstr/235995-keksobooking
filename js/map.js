@@ -277,16 +277,10 @@ var typeOfDwelling = {
 
 var typeOfHabitation = document.querySelector('#type');
 var inputMinMaxPrice = document.querySelector('#price');
-console.log(typeOfHabitation.value);
-
-var typeOfHabitationChangeHandler = typeOfHabitation.addEventListener('change', function () {
-  console.log(typeOfHabitation.value);
-  return typeOfHabitation.value;
-});
 
 // Функция вставляет нужное значение минимальной стоимости жилья.
 var inputTypeChangeHandler = function () {
-  inputMinMaxPrice.min = typeOfDwelling[typeOfHabitationChangeHandler];
+  inputMinMaxPrice.min = typeOfDwelling[typeOfHabitation.value];
 };
 
 typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
@@ -294,15 +288,15 @@ typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
 var selectTimein = document.querySelector('#timein');
 var selectTimeout = document.querySelector('#timeout');
 
-var connectSelect = function () {
-  selectTimein.onchange = function () {
-    selectTimeout.selectedIndex = this.selectedIndex;
-  };
 
-  selectTimeout.onchange = function () {
-    selectTimein.selectedIndex = this.selectedIndex;
-  };
+var selectTimeinChangeHandler = function () {
+  selectTimeout.selectedIndex = selectTimein.selectedIndex;
 };
 
-selectTimein.addEventListener('change', connectSelect);
-selectTimeout.addEventListener('change', connectSelect);
+selectTimein.addEventListener('change', selectTimeinChangeHandler);
+
+var selectTimeoutChangeHandler = function () {
+  selectTimein.selectedIndex = selectTimeout.selectedIndex;
+};
+
+selectTimeout.addEventListener('change', selectTimeoutChangeHandler);
