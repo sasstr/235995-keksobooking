@@ -21,9 +21,11 @@ var TYPES_OF_DWELLING_ARRAY = [TYPES_OF_DWELLING.palace, TYPES_OF_DWELLING.flat,
 var TIMES_OF_REGISTRATION = ['12:00', '13:00', '14:00'];
 var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var OFFER_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-var ENABLED_STATE = false;
-var DISABLED_STATE = true;
+var ENABLED_CONDITION = false;
+var DISABLED_CONDITION = true;
 var ESC_KEYCODE = 27;
+var ROOMS = {'1': {'1': 'для 1 гостя'}, '2': {'1': 'для 1 гостя', '2': 'для 2 гостей'}, '3': {'1': 'для 1 гостя', '2': 'для 2 гостей', '3': 'для 3 гостей'}, '100': {'0': 'не для гостей'}};
+var TYPES_OF_HABITATION = {'bungalo': 0, 'flat': 1000, 'house': 5000, 'palace': 10000};
 
 var map = document.querySelector('.map');
 
@@ -211,30 +213,92 @@ var showCard = function (itemOfAds) {
   map.insertBefore(createAdCard(itemOfAds), mapPins.querySelector('.map__filters-container'));
 };
 
-var formFieldset = document.querySelectorAll('fieldset');
+var fieldsetList = document.querySelectorAll('fieldset');
 var adForm = document.querySelector('.ad-form');
 var mapPinMain = document.querySelector('.map__pin--main');
 var inputAddress = document.querySelector('#address');
 
 // Функция устанавливает состояние форм disabled или enabled
-var setStateForms = function (state) {
-  for (var i = 0; i < formFieldset.length; i++) {
-    formFieldset[i].disabled = state;
+var setConditionForms = function (condition) {
+  for (var i = 0; i < fieldsetList.length; i++) {
+    fieldsetList[i].disabled = condition;
   }
 };
 
 var getCoordinatesOfMainPin = function () {
-  return (mapPinMain.offsetTop + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetLeft + mapPinMain.offsetHeight);
+  return Math.round(mapPinMain.offsetTop + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetLeft + mapPinMain.offsetHeight);
 };
 // Функция по клику на главный пин переводит окно в активное состояние
 var mainPinMouseupHandler = function (evt) {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
-  setStateForms(ENABLED_STATE);
+  setConditionForms(ENABLED_CONDITION);
+  enableForm();
   mapPins.appendChild(renderPins());
   inputAddress.value = getCoordinatesOfMainPin(evt);
   mapPinMain.removeEventListener('mouseup', mainPinMouseupHandler);
 };
+// Функция, которая переводит страницу в начальное состояние. Реагирует только маффин на перетаскивание мышкой
+var disableForm = function () {
+  setConditionForms(DISABLED_CONDITION);
+  mapPinMain.addEventListener('mouseup', mainPinMouseupHandler);
+};
 
-setStateForms(DISABLED_STATE);
-mapPinMain.addEventListener('mouseup', mainPinMouseupHandler);
+disableForm();
+
+var roomNumber = document.querySelector('#room_number');
+var capacity = document.querySelector('#capacity');
+// Функция создает список select с кол-ом гостей в соответсвии с кол-ом комнат
+var getRightNumberOfGuests = function () {
+  capacity.innerHTML = '';
+  var roomCount = roomNumber.options[roomNumber.selectedIndex].value;
+  var room = ROOMS[roomCount];
+  var keys = Object.keys(room);
+  for (var k = 0; k < keys.length; k++) {
+    var value = keys[k];
+    var valueString = room[keys[k]];
+    var option = new Option(valueString, value, false, false);
+    capacity.add(option);
+  }
+};
+
+// Функция собирает список select на основе значений option другого select
+var selectRoomsChangeHandler = function () {
+  getRightNumberOfGuests();
+};
+
+var typeOfHabitation = document.querySelector('#type');
+var inputMinMaxPrice = document.querySelector('#price');
+
+// Функция вставляет в разметку минмальную стоимость жилья
+var setRightMinPriceOfDwelling = function () {
+  inputMinMaxPrice.min = TYPES_OF_HABITATION[typeOfHabitation.value];
+};
+
+// Функция слушатель события выбора типа жилья, которая вставляет нужное значение минимальной стоимости жилья.
+var inputTypeChangeHandler = function () {
+  setRightMinPriceOfDwelling();
+};
+
+var selectTimein = document.querySelector('#timein');
+var selectTimeout = document.querySelector('#timeout');
+
+// Функция синхронизации времени въезда и отъезда гостя
+var selectTimeinChangeHandler = function () {
+  selectTimeout.selectedIndex = selectTimein.selectedIndex;
+};
+
+// Функция синхронизации времени въезда и отъезда гостя
+var selectTimeoutChangeHandler = function () {
+  selectTimein.selectedIndex = selectTimeout.selectedIndex;
+};
+
+// Функция установки начального состояния
+var enableForm = function () {
+  getRightNumberOfGuests();
+  setRightMinPriceOfDwelling();
+  roomNumber.addEventListener('change', selectRoomsChangeHandler);
+  typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
+  selectTimeout.addEventListener('change', selectTimeoutChangeHandler);
+  selectTimein.addEventListener('change', selectTimeinChangeHandler);
+};
