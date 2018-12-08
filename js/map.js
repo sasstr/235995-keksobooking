@@ -228,20 +228,26 @@ var setConditionForms = function (condition) {
 var getCoordinatesOfMainPin = function () {
   return Math.round(mapPinMain.offsetTop + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetLeft + mapPinMain.offsetHeight);
 };
+
+/* document.addEventListener('onload', function () {
+  inputAddress.value = getCoordinatesOfMainPin();
+}); */
 // Функция по клику на главный пин переводит окно в активное состояние
-var mainPinMouseupHandler = function (evt) {
+var mainPinMousedownHandler = function (evt) {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
   setConditionForms(ENABLED_CONDITION);
   enableForm();
   mapPins.appendChild(renderPins());
   inputAddress.value = getCoordinatesOfMainPin(evt);
-  mapPinMain.removeEventListener('mouseup', mainPinMouseupHandler);
+  mapPinMain.removeEventListener('mousedown', mainPinMousedownHandler);
+  mapPinMain.addEventListener('mousemove', mainPinDragHandler);
 };
 // Функция, которая переводит страницу в начальное состояние. Реагирует только маффин на перетаскивание мышкой
 var disableForm = function () {
   setConditionForms(DISABLED_CONDITION);
-  mapPinMain.addEventListener('mouseup', mainPinMouseupHandler);
+  mapPinMain.addEventListener('mousedown', mainPinMousedownHandler);
+  mapPinMain.removeEventListener('mousemove', mainPinDragHandler);
 };
 
 disableForm();
@@ -293,7 +299,7 @@ var selectTimeoutChangeHandler = function () {
   selectTimein.selectedIndex = selectTimeout.selectedIndex;
 };
 
-// Функция установки начального состояния
+// Функция установки начального состояния формы
 var enableForm = function () {
   getRightNumberOfGuests();
   setRightMinPriceOfDwelling();
@@ -302,3 +308,127 @@ var enableForm = function () {
   selectTimeout.addEventListener('change', selectTimeoutChangeHandler);
   selectTimein.addEventListener('change', selectTimeinChangeHandler);
 };
+
+var mainPinMouseDownActive = function (evtAct) {
+  if (map.classList === 'map--faded') {
+    map.classList.remove('map--faded');
+    adForm.classList.remove('ad-form--disabled');
+    setConditionForms(ENABLED_CONDITION);
+    enableForm();
+    // mapPins.appendChild(renderPins());
+    inputAddress.value = getCoordinatesOfMainPin(evtAct);
+    mapPinMain.removeEventListener('mousedown', mainPinMousedownHandler);
+    mapPinMain.addEventListener('mousemove', mainPinDragHandler);
+  }
+};
+
+var mainPinDragHandler = function (evt) {
+
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var MouseMoveHandler = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    var currentCoordinates = {
+      x: mapPinMain.offsetLeft - shift.x,
+      y: mapPinMain.offsetTop - shift.y
+    };
+
+    var validCoordinateX = Math.round(currentCoordinates.x + mapPinMain.offsetWidth / 2) > MIN_X_LOCATION && Math.round(currentCoordinates.x + mapPinMain.offsetWidth / 2) < MAX_X_LOCATION;
+    var validCoordinateY = (currentCoordinates.y + mapPinMain.offsetHeight) > MIN_Y_LOCATION && (currentCoordinates.y + mapPinMain.offsetHeight) < MAX_Y_LOCATION;
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+    if (validCoordinateY) {
+      mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
+      inputAddress.value = getCoordinatesOfMainPin(moveEvt);
+    }
+    if (validCoordinateX) {
+      mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
+    }
+  };
+
+  var MouseUpHandler = function (upEvt) {
+    upEvt.preventDefault();
+    document.removeEventListener('mousemove', MouseMoveHandler);
+    document.removeEventListener('mouseup', MouseUpHandler);
+  };
+
+  document.addEventListener('mousemove', MouseMoveHandler);
+  document.addEventListener('mouseup', MouseUpHandler);
+};
+mapPinMain.addEventListener('mousemove', mainPinDragHandler);
+console.dir(map);
+/*
+В этом задании мы решим задачу перемещения главного маркера (.map__pin--main) по карте.
+
+Опишите полный цикл Drag-and-drop для маркера,
+добавив обработчики событий
+mousedown,
+mousemove,
+mouseup
+на маркер.
+
+Перед тем, как добавить новые обработчики не забудьте удалить код установки обработчика click,
+который мы писали для перевода страницы Букинга в активный режим. Он нам больше не понадобится, т.к.
+мы реализуем полноценное перетаскивание маркера и переводить страницу в активный режим будем
+
+В соответствии с техническим заданием: первое перемещение метки переводит страницу в активное состояние.
+
+Обработчики mousemove и mouseup должны добавляться только при вызове обработчика mousedown.
+
+Обработчики mousemove и mouseup должны запускать логику изменения положения маркера:
+в нём должны вычисляться новые координаты маркера на основании смещения,
+применяться через стили к элементу и записываться в поле адреса
+(с поправкой на то, что в адрес записываются координаты острого конца).
+
+Учтите, что расчёт координат маркера и их запись в поле адреса должна дублироваться и
+в обработчике mouseup, потому что в некоторых случаях пользователь
+может нажать мышь на маркере, но никуда его не переместить.
+
+Ещё один момент касается ограничения перетаскивания: не забудьте сделать так,
+чтобы маркер невозможно было переместить за пределы карты (см. пункт 3.4).
+
+Вспомните, что в прошлом задании вы уже добавляли обработчик на событие mouseup,
+который переводил страницу в активный режим. Теперь, когда у вас есть синхронизация с координатами,
+вам нужно выбрать стратегию, вы можете использовать или несколько
+обработчиков или один обработчик со сложной логикой.
+
+Пункты ТЗ, выполненные в задании:
+Неактивное состояние. Единственное доступное действие в неактивном состоянии
+— перетаскивание метки .map__pin--main, являющейся контролом указания адреса объявления.
+Первое перемещение метки переводит страницу в активное состояние.
+
+3.3. Обратите внимание на то, что координаты по X и Y, соответствующие адресу,
+должны высчитываться не от левого верхнего угла блока с меткой,
+а от места, куда указывает метка своим острым концом.
+
+3.4. Чтобы метку невозможно было поставить выше горизонта или ниже панели фильтров,
+значение координаты Y должно быть ограничено интервалом от 130 до 630.
+Значение координаты X должно быть ограничено размерами блока, в котором перетаскивается метка.
+
+При органичении перемещения маркера по горизонтали можно
+как учитывать ширину маркера, так и не учитывать.
+Если при перемещении не учитывать ширину маркера, острый
+конец может указывать на крайнюю точку блока, при этом часть
+маркера окажется за пределами блока. Если размеры маркера учитывать,
+то при достижении края блока, граница маркера будет касаться края,
+при этом острый конец будет немного отстоять от края.
+
+Допустимы оба варианта.
+
+Например:
+
+Если метка .map__pin--main имеет координаты 300×200,
+то в поле адрес должно быть записано значение 300, 200.
+*/
