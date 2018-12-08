@@ -336,8 +336,8 @@ var mainPinDragHandler = function (evt) {
       y: mapPinMain.offsetTop - shift.y
     };
 
-    var validCoordinateX = Math.round(currentCoordinates.x + mapPinMain.offsetWidth / 2) > map.clientLeft && Math.round(currentCoordinates.x + mapPinMain.offsetWidth / 2) < map.offsetWidth;
-    var validCoordinateY = (currentCoordinates.y + mapPinMain.offsetHeight) > MIN_Y_LOCATION && (currentCoordinates.y + mapPinMain.offsetHeight) < MAX_Y_LOCATION;
+    var validCoordinateX = Math.round(currentCoordinates.x + mapPinMain.offsetWidth) > map.clientLeft && Math.round(currentCoordinates.x + mapPinMain.offsetWidth) < map.offsetWidth;
+    var validCoordinateY = (currentCoordinates.y + mapPinMain.offsetHeight / 2) > MIN_Y_LOCATION && (currentCoordinates.y + mapPinMain.offsetHeight / 2) < MAX_Y_LOCATION;
 
     startCoords = {
       x: moveEvt.clientX,
