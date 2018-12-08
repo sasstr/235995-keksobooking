@@ -229,13 +229,13 @@ var getCoordinatesOfMainPin = function () {
   return Math.round(mapPinMain.offsetTop + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetLeft + mapPinMain.offsetHeight);
 };
 // Функция устанавливает в поле Адрес координаты мафина
-var CoordinatesOfMainPinLoadHendler = function () {
+var windowLoadHendler = function () {
   inputAddress.value = getCoordinatesOfMainPin();
-  window.removeEventListener('load', CoordinatesOfMainPinLoadHendler);
+  window.removeEventListener('load', windowLoadHendler);
   mapPinMain.addEventListener('mousedown', mainPinDragHandler);
 };
 
-window.addEventListener('load', CoordinatesOfMainPinLoadHendler);
+window.addEventListener('load', windowLoadHendler);
 
 var adFormReset = document.querySelector('.ad-form__reset');
 
