@@ -196,6 +196,7 @@ var createAdCard = function (ad) {
 
   adDomElement.querySelector('.popup__avatar').src = ad.author.avatar;
   adDomElement.querySelector('.popup__title').textContent = ad.offer.title;
+  adDomElement.querySelector('.popup__text--address').textContent = ad.offer.address;
   adDomElement.querySelector('.popup__text--price').textContent = (ad.offer.price + RUBLE_CURRENCY + '/ночь');
   adDomElement.querySelector('.popup__type').textContent = ad.offer.type;
   adDomElement.querySelector('.popup__text--capacity').textContent = (ad.offer.rooms + ' ' + getCorrectWord(ad.offer.rooms, ROOM_WORDS) + ' для ' + ad.offer.guests + ' ' + getCorrectWord(ad.offer.guests, GUEST_WORDS));
@@ -226,7 +227,7 @@ var setConditionForms = function (condition) {
 };
 // Функция возращает координаты острого конца пина
 var getCoordinatesOfMainPin = function () {
-  return Math.round(mapPinMain.offsetTop + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetLeft + mapPinMain.offsetHeight);
+  return (mapPinMain.offsetLeft + mapPinMain.offsetHeight) + ', ' + Math.round(mapPinMain.offsetTop + mapPinMain.offsetWidth / 2);
 };
 // Функция устанавливает в поле Адрес координаты мафина
 var windowLoadHendler = function () {
