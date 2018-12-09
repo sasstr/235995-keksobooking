@@ -26,6 +26,10 @@ var DISABLED_CONDITION = true;
 var ESC_KEYCODE = 27;
 var ROOMS = {'1': {'1': 'для 1 гостя'}, '2': {'1': 'для 1 гостя', '2': 'для 2 гостей'}, '3': {'1': 'для 1 гостя', '2': 'для 2 гостей', '3': 'для 3 гостей'}, '100': {'0': 'не для гостей'}};
 var TYPES_OF_HABITATION = {'bungalo': 0, 'flat': 1000, 'house': 5000, 'palace': 10000};
+var START_COORDINATE_X = '570px';
+var START_COORDINATE_Y = '375px';
+var SHARP_END_HEIGHT = 15;
+
 
 var map = document.querySelector('.map');
 
@@ -227,7 +231,7 @@ var setConditionForms = function (condition) {
 };
 // Функция возращает координаты острого конца пина
 var getCoordinatesOfMainPin = function () {
-  return (mapPinMain.offsetLeft + mapPinMain.offsetHeight) + ', ' + Math.round(mapPinMain.offsetTop + mapPinMain.offsetWidth / 2);
+  return Math.round(mapPinMain.offsetLeft + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + SHARP_END_HEIGHT);
 };
 // Функция устанавливает в поле Адрес координаты мафина
 var windowLoadHendler = function () {
@@ -365,8 +369,8 @@ var mainPinDragHandler = function (evt) {
 // Функция при нажатии на кнопку reset ставит мафин в первоначальное место и в поле адрес добавляет координаты.
 var formResetHandler = function (resetEvt) {
   setTimeout(function () {
-    mapPinMain.style.left = '570px';
-    mapPinMain.style.top = '375px';
+    mapPinMain.style.left = START_COORDINATE_X;
+    mapPinMain.style.top = START_COORDINATE_Y;
     inputAddress.value = getCoordinatesOfMainPin(resetEvt);
   }, 0);
 };
