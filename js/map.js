@@ -291,6 +291,7 @@ var inputMinMaxPrice = document.querySelector('#price');
 // Функция вставляет в разметку минмальную стоимость жилья
 var setRightMinPriceOfDwelling = function () {
   inputMinMaxPrice.min = TYPES_OF_HABITATION[typeOfHabitation.value];
+  inputMinMaxPrice.placeholder = TYPES_OF_HABITATION[typeOfHabitation.value];
 };
 
 // Функция слушатель события выбора типа жилья, которая вставляет нужное значение минимальной стоимости жилья.
