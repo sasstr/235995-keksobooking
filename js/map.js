@@ -132,15 +132,6 @@ var createPin = function (ad) {
   return pinElement;
 };
 
-// Функция отрисует все пины
-var renderPins = function () {
-  var pinsFragment = document.createDocumentFragment();
-  for (var i = 0; i < NUMBER_OF_ADS; i++) {
-    pinsFragment.appendChild(createPin(ads[i]));
-  }
-  return pinsFragment;
-};
-
 // Функция создает массив с HTML элементами features готовыми для вставки в разметку
 var createFeatureDomElements = function (adOfferFeatures) {
   var popupFeatures = document.createElement('ul');
@@ -217,7 +208,7 @@ var createAdCard = function (ad) {
 var showCard = function (itemOfAds) {
   map.insertBefore(createAdCard(itemOfAds), mapPins.querySelector('.map__filters-container'));
 };
-
+// ----------- form.js
 var fieldsetList = document.querySelectorAll('fieldset');
 var adForm = document.querySelector('.ad-form');
 var mapPinMain = document.querySelector('.map__pin--main');
@@ -245,6 +236,7 @@ window.addEventListener('load', windowLoadHendler);
 
 var adFormReset = document.querySelector('.ad-form__reset');
 
+// Функция активирует форму по нажатию на клавишу enter
 var mainPinKeydownHandler = function (evtKeyCode) {
   if (evtKeyCode.code === 'Enter') {
     enableForm();
@@ -254,6 +246,15 @@ var mainPinKeydownHandler = function (evtKeyCode) {
 // Функция по клику на главный пин переводит окно в активное состояние
 var mainPinMousedownHandler = function (evt) {
   enableForm(evt);
+};
+
+// Функция отрисует все пины
+var renderPins = function () {
+  var pinsFragment = document.createDocumentFragment();
+  for (var i = 0; i < NUMBER_OF_ADS; i++) {
+    pinsFragment.appendChild(createPin(ads[i]));
+  }
+  return pinsFragment;
 };
 
 // Функция установки начального состояния формы
