@@ -30,7 +30,7 @@ var START_COORDINATE_X = '570px';
 var START_COORDINATE_Y = '375px';
 var SHARP_END_HEIGHT = 15;
 
-
+// tools.js -------------------------------------------------
 var map = document.querySelector('.map');
 
 //  Функция возращает случайное целое число между min и max - включительно
@@ -61,7 +61,7 @@ var jumbleElemetsOfArray = function (array) {
   }
   return cloneArray;
 };
-
+// data.js -------------------------------------------------------
 //  Функция создает один элемент массива с данными соседних жилищ
 var createAd = function (index) {
   index = index || 0;
@@ -171,7 +171,7 @@ var createPopupPhotos = function (ad) {
   }
   return popupPhotoDiv;
 };
-
+// tools.js ??????
 // Функция вставляет верное написание слова из массива
 var getCorrectWord = function (items, words) {
   if (items % 100 > 4 && items % 100 < 21) {
@@ -238,26 +238,46 @@ var windowLoadHendler = function () {
   inputAddress.value = getCoordinatesOfMainPin();
   window.removeEventListener('load', windowLoadHendler);
   mapPinMain.addEventListener('mousedown', mainPinDragHandler);
+  mapPinMain.addEventListener('keydown', mainPinKeydownHandler);
 };
 
 window.addEventListener('load', windowLoadHendler);
 
 var adFormReset = document.querySelector('.ad-form__reset');
 
+var mainPinKeydownHandler = function (evtKeyCode) {
+  if (evtKeyCode.code === 'Enter') {
+    enableForm();
+  }
+};
+
 // Функция по клику на главный пин переводит окно в активное состояние
 var mainPinMousedownHandler = function (evt) {
+  enableForm(evt);
+};
+
+// Функция установки начального состояния формы
+var enableForm = function (evt) {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
   setConditionForms(ENABLED_CONDITION);
-  enableForm();
-  mapPins.appendChild(renderPins());
+  getRightNumberOfGuests();
+  setRightMinPriceOfDwelling();
   inputAddress.value = getCoordinatesOfMainPin(evt);
+  mapPins.appendChild(renderPins());
+  roomNumber.addEventListener('change', selectRoomsChangeHandler);
+  typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
+  selectTimeout.addEventListener('change', selectTimeoutChangeHandler);
+  selectTimein.addEventListener('change', selectTimeinChangeHandler);
   adFormReset.addEventListener('click', formResetHandler);
+  mapPinMain.removeEventListener('keydown', mainPinKeydownHandler);
   mapPinMain.removeEventListener('mousedown', mainPinMousedownHandler);
 };
+
 // Функция, которая переводит страницу в начальное состояние. Реагирует только маффин на перетаскивание мышкой
 var disableForm = function () {
   setConditionForms(DISABLED_CONDITION);
+  mapPinMain.addEventListener('keydown', mainPinKeydownHandler);
   mapPinMain.addEventListener('mousedown', mainPinMousedownHandler);
   adFormReset.removeEventListener('click', formResetHandler);
 };
@@ -312,15 +332,6 @@ var selectTimeoutChangeHandler = function () {
   selectTimein.selectedIndex = selectTimeout.selectedIndex;
 };
 
-// Функция установки начального состояния формы
-var enableForm = function () {
-  getRightNumberOfGuests();
-  setRightMinPriceOfDwelling();
-  roomNumber.addEventListener('change', selectRoomsChangeHandler);
-  typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
-  selectTimeout.addEventListener('change', selectTimeoutChangeHandler);
-  selectTimein.addEventListener('change', selectTimeinChangeHandler);
-};
 // Функция Drag and Drop мафина
 var mainPinDragHandler = function (evt) {
 
