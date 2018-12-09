@@ -196,6 +196,7 @@ var createAdCard = function (ad) {
 
   adDomElement.querySelector('.popup__avatar').src = ad.author.avatar;
   adDomElement.querySelector('.popup__title').textContent = ad.offer.title;
+  adDomElement.querySelector('.popup__text--address').textContent = ad.offer.address;
   adDomElement.querySelector('.popup__text--price').textContent = (ad.offer.price + RUBLE_CURRENCY + '/ночь');
   adDomElement.querySelector('.popup__type').textContent = ad.offer.type;
   adDomElement.querySelector('.popup__text--capacity').textContent = (ad.offer.rooms + ' ' + getCorrectWord(ad.offer.rooms, ROOM_WORDS) + ' для ' + ad.offer.guests + ' ' + getCorrectWord(ad.offer.guests, GUEST_WORDS));
@@ -208,7 +209,7 @@ var createAdCard = function (ad) {
 
   return adDomElement;
 };
-
+// Функция отрисовывает карту по пину
 var showCard = function (itemOfAds) {
   map.insertBefore(createAdCard(itemOfAds), mapPins.querySelector('.map__filters-container'));
 };
@@ -224,24 +225,37 @@ var setConditionForms = function (condition) {
     fieldsetList[i].disabled = condition;
   }
 };
-
+// Функция возращает координаты острого конца пина
 var getCoordinatesOfMainPin = function () {
-  return Math.round(mapPinMain.offsetTop + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetLeft + mapPinMain.offsetHeight);
+  return (mapPinMain.offsetLeft + mapPinMain.offsetHeight) + ', ' + Math.round(mapPinMain.offsetTop + mapPinMain.offsetWidth / 2);
 };
+// Функция устанавливает в поле Адрес координаты мафина
+var windowLoadHendler = function () {
+  inputAddress.value = getCoordinatesOfMainPin();
+  window.removeEventListener('load', windowLoadHendler);
+  mapPinMain.addEventListener('mousedown', mainPinDragHandler);
+};
+
+window.addEventListener('load', windowLoadHendler);
+
+var adFormReset = document.querySelector('.ad-form__reset');
+
 // Функция по клику на главный пин переводит окно в активное состояние
-var mainPinMouseupHandler = function (evt) {
+var mainPinMousedownHandler = function (evt) {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
   setConditionForms(ENABLED_CONDITION);
   enableForm();
   mapPins.appendChild(renderPins());
   inputAddress.value = getCoordinatesOfMainPin(evt);
-  mapPinMain.removeEventListener('mouseup', mainPinMouseupHandler);
+  adFormReset.addEventListener('click', formResetHandler);
+  mapPinMain.removeEventListener('mousedown', mainPinMousedownHandler);
 };
 // Функция, которая переводит страницу в начальное состояние. Реагирует только маффин на перетаскивание мышкой
 var disableForm = function () {
   setConditionForms(DISABLED_CONDITION);
-  mapPinMain.addEventListener('mouseup', mainPinMouseupHandler);
+  mapPinMain.addEventListener('mousedown', mainPinMousedownHandler);
+  adFormReset.removeEventListener('click', formResetHandler);
 };
 
 disableForm();
@@ -293,7 +307,7 @@ var selectTimeoutChangeHandler = function () {
   selectTimein.selectedIndex = selectTimeout.selectedIndex;
 };
 
-// Функция установки начального состояния
+// Функция установки начального состояния формы
 var enableForm = function () {
   getRightNumberOfGuests();
   setRightMinPriceOfDwelling();
@@ -301,4 +315,58 @@ var enableForm = function () {
   typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
   selectTimeout.addEventListener('change', selectTimeoutChangeHandler);
   selectTimein.addEventListener('change', selectTimeinChangeHandler);
+};
+// Функция Drag and Drop мафина
+var mainPinDragHandler = function (evt) {
+
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+  // функция отвечает за перемешение мафина
+  var MouseMoveHandler = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    var currentCoordinates = {
+      x: mapPinMain.offsetLeft - shift.x,
+      y: mapPinMain.offsetTop - shift.y
+    };
+
+    var validCoordinateX = Math.round(currentCoordinates.x + mapPinMain.offsetWidth) > map.clientLeft && Math.round(currentCoordinates.x + mapPinMain.offsetWidth) < map.offsetWidth;
+    var validCoordinateY = (currentCoordinates.y + mapPinMain.offsetHeight / 2) > MIN_Y_LOCATION && (currentCoordinates.y + mapPinMain.offsetHeight / 2) < MAX_Y_LOCATION;
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+    if (validCoordinateY) {
+      mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
+      inputAddress.value = getCoordinatesOfMainPin(moveEvt);
+    }
+    if (validCoordinateX) {
+      mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
+    }
+  };
+  // Функция останавливает перемещение мафина при событии mouseup
+  var MouseUpHandler = function (upEvt) {
+    upEvt.preventDefault();
+    document.removeEventListener('mousemove', MouseMoveHandler);
+    document.removeEventListener('mouseup', MouseUpHandler);
+  };
+
+  document.addEventListener('mousemove', MouseMoveHandler);
+  document.addEventListener('mouseup', MouseUpHandler);
+};
+// Функция при нажатии на кнопку reset ставит мафин в первоначальное место и в поле адрес добавляет координаты.
+var formResetHandler = function (resetEvt) {
+  setTimeout(function () {
+    mapPinMain.style.left = '570px';
+    mapPinMain.style.top = '375px';
+    inputAddress.value = getCoordinatesOfMainPin(resetEvt);
+  }, 0);
 };
