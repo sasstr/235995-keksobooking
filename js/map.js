@@ -11,6 +11,7 @@
   window.map = {
     map: document.querySelector('.map'),
     mapPinMain: document.querySelector('.map__pin--main'),
+    // Функция Drag and Drop мафина
     mainPinDragHandler: function (evt) {
 
       var startCoords = {
@@ -69,58 +70,11 @@
   var windowLoadHendler = function () {
     inputAddress.value = window.form.getCoordinatesOfMainPin();
     window.removeEventListener('load', windowLoadHendler);
-    window.map.mapPinMain.addEventListener('mousedown', mainPinDragHandler);
+    window.map.mapPinMain.addEventListener('mousedown', window.map.mainPinDragHandler);
     window.map.mapPinMain.addEventListener('keydown', window.form.mainPinKeydownHandler);
   };
 
   window.addEventListener('load', windowLoadHendler);
-
-  // Функция Drag and Drop мафина
-  var mainPinDragHandler = function (evt) {
-
-    var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
-    };
-    // функция отвечает за перемешение мафина
-    var MouseMoveHandler = function (moveEvt) {
-      moveEvt.preventDefault();
-
-      var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
-      };
-
-      var currentCoordinates = {
-        x: window.map.mapPinMain.offsetLeft - shift.x,
-        y: window.map.mapPinMain.offsetTop - shift.y
-      };
-
-      var validCoordinateX = Math.round(currentCoordinates.x + window.map.mapPinMain.offsetWidth) > window.map.map.clientLeft && Math.round(currentCoordinates.x + window.map.mapPinMain.offsetWidth) < window.map.map.offsetWidth;
-      var validCoordinateY = (currentCoordinates.y + window.map.mapPinMain.offsetHeight / 2) > MIN_Y_LOCATION && (currentCoordinates.y + window.map.mapPinMain.offsetHeight / 2) < MAX_Y_LOCATION;
-
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
-      if (validCoordinateY) {
-        window.map.mapPinMain.style.top = (window.map.mapPinMain.offsetTop - shift.y) + 'px';
-        inputAddress.value = window.form.getCoordinatesOfMainPin(moveEvt);
-      }
-      if (validCoordinateX) {
-        window.map.mapPinMain.style.left = (window.map.mapPinMain.offsetLeft - shift.x) + 'px';
-      }
-    };
-    // Функция останавливает перемещение мафина при событии mouseup
-    var MouseUpHandler = function (upEvt) {
-      upEvt.preventDefault();
-      document.removeEventListener('mousemove', MouseMoveHandler);
-      document.removeEventListener('mouseup', MouseUpHandler);
-    };
-
-    document.addEventListener('mousemove', MouseMoveHandler);
-    document.addEventListener('mouseup', MouseUpHandler);
-  };
 
   // Функция создает пин
   var createPin = function (ad) {
@@ -130,7 +84,7 @@
       if (window.map.map.querySelector('.map__card') !== null) {
         window.map.map.querySelector('.map__card').remove();
       }
-      window.data.showCard(ad);
+      window.card.showCard(ad);
     };
 
     pinElement.classList.add('map__pin');

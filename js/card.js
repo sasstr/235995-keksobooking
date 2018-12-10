@@ -49,6 +49,9 @@
         }
       };
       return similiarAd;
+    },
+    showCard: function (itemOfAds) {
+      window.map.map.insertBefore(window.data.createAdCard(itemOfAds), window.data.mapPins.querySelector('.map__filters-container'));
     }
   };
 })();
