@@ -11,14 +11,11 @@
 
   var fieldsetList = document.querySelectorAll('fieldset');
   var adForm = document.querySelector('.ad-form');
-  var mapPinMain = document.querySelector('.map__pin--main');
   var inputAddress = document.querySelector('#address');
-  var map = document.querySelector('.map');
-  var mapPins = document.querySelector('.map__pins');
 
   window.form = {
     getCoordinatesOfMainPin: function () {
-      return Math.round(mapPinMain.offsetLeft + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + SHARP_END_HEIGHT);
+      return Math.round(window.map.mapPinMain.offsetLeft + window.map.mapPinMain.offsetWidth / 2) + ', ' + (window.map.mapPinMain.offsetTop + window.map.mapPinMain.offsetHeight + SHARP_END_HEIGHT);
     },
 
     mainPinKeydownHandler: function (evtKeyCode) {
@@ -36,14 +33,14 @@
   };
   // Функция возращает координаты острого конца пина
   window.form.getCoordinatesOfMainPin = function () {
-    return Math.round(mapPinMain.offsetLeft + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + SHARP_END_HEIGHT);
+    return Math.round(window.map.mapPinMain.offsetLeft + window.map.mapPinMain.offsetWidth / 2) + ', ' + (window.map.mapPinMain.offsetTop + window.map.mapPinMain.offsetHeight + SHARP_END_HEIGHT);
   };
   // Функция устанавливает в поле Адрес координаты мафина
   var windowLoadHendler = function () {
     inputAddress.value = window.form.getCoordinatesOfMainPin();
     window.removeEventListener('load', windowLoadHendler);
-    mapPinMain.addEventListener('mousedown', window.map.mainPinDragHandler);
-    mapPinMain.addEventListener('keydown', mainPinKeydownHandler);
+    window.map.mapPinMain.addEventListener('mousedown', window.map.mainPinDragHandler);
+    window.map.mapPinMain.addEventListener('keydown', mainPinKeydownHandler);
   };
 
   window.addEventListener('load', windowLoadHendler);
@@ -64,27 +61,27 @@
 
   // Функция установки начального состояния формы
   var enableForm = function (evt) {
-    map.classList.remove('map--faded');
+    window.map.map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
     setConditionForms(ENABLED_CONDITION);
     getRightNumberOfGuests();
     setRightMinPriceOfDwelling();
     inputAddress.value = window.form.getCoordinatesOfMainPin(evt);
-    mapPins.appendChild(window.map.renderPins());
+    window.data.mapPins.appendChild(window.map.renderPins());
     roomNumber.addEventListener('change', selectRoomsChangeHandler);
     typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
     selectTimeout.addEventListener('change', selectTimeoutChangeHandler);
     selectTimein.addEventListener('change', selectTimeinChangeHandler);
     adFormReset.addEventListener('click', formResetHandler);
-    mapPinMain.removeEventListener('keydown', mainPinKeydownHandler);
-    mapPinMain.removeEventListener('mousedown', mainPinMousedownHandler);
+    window.map.mapPinMain.removeEventListener('keydown', mainPinKeydownHandler);
+    window.map.mapPinMain.removeEventListener('mousedown', mainPinMousedownHandler);
   };
 
   // Функция, которая переводит страницу в начальное состояние. Реагирует только маффин на перетаскивание мышкой
   var disableForm = function () {
     setConditionForms(DISABLED_CONDITION);
-    mapPinMain.addEventListener('keydown', mainPinKeydownHandler);
-    mapPinMain.addEventListener('mousedown', mainPinMousedownHandler);
+    window.map.mapPinMain.addEventListener('keydown', mainPinKeydownHandler);
+    window.map.mapPinMain.addEventListener('mousedown', mainPinMousedownHandler);
     adFormReset.removeEventListener('click', formResetHandler);
   };
 
@@ -141,8 +138,8 @@
   // Функция при нажатии на кнопку reset ставит мафин в первоначальное место и в поле адрес добавляет координаты.
   var formResetHandler = function (resetEvt) {
     setTimeout(function () {
-      mapPinMain.style.left = START_COORDINATE_X;
-      mapPinMain.style.top = START_COORDINATE_Y;
+      window.map.mapPinMain.style.left = START_COORDINATE_X;
+      window.map.mapPinMain.style.top = START_COORDINATE_Y;
       inputAddress.value = window.form.getCoordinatesOfMainPin(resetEvt);
     }, 0);
   };

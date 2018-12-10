@@ -6,9 +6,10 @@
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
 
-  var map = document.querySelector('.map');
+  var inputAddress = document.querySelector('#address');
 
   window.map = {
+    map: document.querySelector('.map'),
     mapPinMain: document.querySelector('.map__pin--main'),
     mainPinDragHandler: function (evt) {
 
@@ -26,23 +27,23 @@
         };
 
         var currentCoordinates = {
-          x: mapPinMain.offsetLeft - shift.x,
-          y: mapPinMain.offsetTop - shift.y
+          x: window.map.mapPinMain.offsetLeft - shift.x,
+          y: window.map.mapPinMain.offsetTop - shift.y
         };
 
-        var validCoordinateX = Math.round(currentCoordinates.x + mapPinMain.offsetWidth) > map.clientLeft && Math.round(currentCoordinates.x + mapPinMain.offsetWidth) < map.offsetWidth;
-        var validCoordinateY = (currentCoordinates.y + mapPinMain.offsetHeight / 2) > MIN_Y_LOCATION && (currentCoordinates.y + mapPinMain.offsetHeight / 2) < MAX_Y_LOCATION;
+        var validCoordinateX = Math.round(currentCoordinates.x + window.map.mapPinMain.offsetWidth) > window.map.map.clientLeft && Math.round(currentCoordinates.x + window.map.mapPinMain.offsetWidth) < window.map.map.offsetWidth;
+        var validCoordinateY = (currentCoordinates.y + window.map.mapPinMain.offsetHeight / 2) > MIN_Y_LOCATION && (currentCoordinates.y + window.map.mapPinMain.offsetHeight / 2) < MAX_Y_LOCATION;
 
         startCoords = {
           x: moveEvt.clientX,
           y: moveEvt.clientY
         };
         if (validCoordinateY) {
-          mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
+          window.map.mapPinMain.style.top = (window.map.mapPinMain.offsetTop - shift.y) + 'px';
           inputAddress.value = window.form.getCoordinatesOfMainPin(moveEvt);
         }
         if (validCoordinateX) {
-          mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
+          window.map.mapPinMain.style.left = (window.map.mapPinMain.offsetLeft - shift.x) + 'px';
         }
       };
       // Функция останавливает перемещение мафина при событии mouseup
@@ -64,20 +65,12 @@
     }
   };
 
-  // data.js -------------------------------------------------------
-
-  // ----------- form.js
-  var mapPinMain = document.querySelector('.map__pin--main');
-  var inputAddress = document.querySelector('#address');
-
-  // Map.js
-
   // Функция устанавливает в поле Адрес координаты мафина
   var windowLoadHendler = function () {
     inputAddress.value = window.form.getCoordinatesOfMainPin();
     window.removeEventListener('load', windowLoadHendler);
-    mapPinMain.addEventListener('mousedown', mainPinDragHandler);
-    mapPinMain.addEventListener('keydown', window.form.mainPinKeydownHandler);
+    window.map.mapPinMain.addEventListener('mousedown', mainPinDragHandler);
+    window.map.mapPinMain.addEventListener('keydown', window.form.mainPinKeydownHandler);
   };
 
   window.addEventListener('load', windowLoadHendler);
@@ -99,23 +92,23 @@
       };
 
       var currentCoordinates = {
-        x: mapPinMain.offsetLeft - shift.x,
-        y: mapPinMain.offsetTop - shift.y
+        x: window.map.mapPinMain.offsetLeft - shift.x,
+        y: window.map.mapPinMain.offsetTop - shift.y
       };
 
-      var validCoordinateX = Math.round(currentCoordinates.x + mapPinMain.offsetWidth) > map.clientLeft && Math.round(currentCoordinates.x + mapPinMain.offsetWidth) < map.offsetWidth;
-      var validCoordinateY = (currentCoordinates.y + mapPinMain.offsetHeight / 2) > MIN_Y_LOCATION && (currentCoordinates.y + mapPinMain.offsetHeight / 2) < MAX_Y_LOCATION;
+      var validCoordinateX = Math.round(currentCoordinates.x + window.map.mapPinMain.offsetWidth) > window.map.map.clientLeft && Math.round(currentCoordinates.x + window.map.mapPinMain.offsetWidth) < window.map.map.offsetWidth;
+      var validCoordinateY = (currentCoordinates.y + window.map.mapPinMain.offsetHeight / 2) > MIN_Y_LOCATION && (currentCoordinates.y + window.map.mapPinMain.offsetHeight / 2) < MAX_Y_LOCATION;
 
       startCoords = {
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
       if (validCoordinateY) {
-        mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
+        window.map.mapPinMain.style.top = (window.map.mapPinMain.offsetTop - shift.y) + 'px';
         inputAddress.value = window.form.getCoordinatesOfMainPin(moveEvt);
       }
       if (validCoordinateX) {
-        mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
+        window.map.mapPinMain.style.left = (window.map.mapPinMain.offsetLeft - shift.x) + 'px';
       }
     };
     // Функция останавливает перемещение мафина при событии mouseup
@@ -134,8 +127,8 @@
     var pinElement = document.createElement('button');
     var pinChildImg = document.createElement('img');
     var pinElementClickHandler = function () {
-      if (map.querySelector('.map__card') !== null) {
-        map.querySelector('.map__card').remove();
+      if (window.map.map.querySelector('.map__card') !== null) {
+        window.map.map.querySelector('.map__card').remove();
       }
       window.data.showCard(ad);
     };

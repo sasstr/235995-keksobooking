@@ -23,7 +23,18 @@
   var ROOM_WORDS = ['комнат', 'комната', 'комнаты'];
   var GUEST_WORDS = ['гостей', 'гостя', 'гостей'];
 
-  var map = document.querySelector('.map');
+  var adCard = document.querySelector('#card').content.querySelector('.map__card');
+
+
+  // Функция создает массив объявлений
+  var createArrayOfAds = function (numderOfAds) {
+    var ArrayOfAds = [];
+    for (var i = 0; i < numderOfAds; i++) {
+      ArrayOfAds.push(createAd(i));
+    }
+    return ArrayOfAds;
+  };
+
   //  Функция создает один элемент массива с данными соседних жилищ
   var createAd = function (index) {
     index = index || 0;
@@ -56,21 +67,11 @@
     return similiarAd;
   };
 
-  var adCard = document.querySelector('#card').content.querySelector('.map__card');
-  var mapPins = document.querySelector('.map__pins');
-  // Функция создает массив объявлений
-  var createArrayOfAds = function (numderOfAds) {
-    var ads = [];
-    for (var i = 0; i < numderOfAds; i++) {
-      ads.push(createAd(i));
-    }
-    return ads;
-  };
-
   window.data = {
+    mapPins: document.querySelector('.map__pins'),
     ads: createArrayOfAds(NUMBER_OF_ADS),
     showCard: function (itemOfAds) {
-      map.insertBefore(createAdCard(itemOfAds), mapPins.querySelector('.map__filters-container'));
+      window.map.map.insertBefore(createAdCard(itemOfAds), window.data.mapPins.querySelector('.map__filters-container'));
     }
   };
 
@@ -108,12 +109,12 @@
   var createAdCard = function (ad) {
     var adDomElement = adCard.cloneNode(true);
     var popupCloseClickHandler = function () {
-      map.querySelector('.map__card').remove();
+      window.map.map.querySelector('.map__card').remove();
       adDomElement.querySelector('.popup__close').removeEventListener('click', popupCloseClickHandler);
     };
     var popupCloseKeydownEscHandler = function (evt) {
       if (evt.keyCode === ESC_KEYCODE) {
-        map.querySelector('.map__card').remove();
+        window.map.map.querySelector('.map__card').remove();
         document.removeEventListener('keydown', popupCloseKeydownEscHandler);
       }
     };
