@@ -4,6 +4,8 @@
   var NUMBER_OF_ADS = 8;
   var MAX_X_LOCATION = 1000;
   var MIN_X_LOCATION = 250;
+  var MAX_Y_LOCATION = 630;
+  var MIN_Y_LOCATION = 130;
   var OFFER_TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
   var TIMES_OF_REGISTRATION = ['12:00', '13:00', '14:00'];
   var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
@@ -16,8 +18,6 @@
   var MIN_ROOMS = 1;
   var MAX_GUESTS = 5;
   var MIN_GUESTS = 1;
-  var PIN_WIDTH = 50;
-  var PIN_HEIGHT = 70;
   var ESC_KEYCODE = 27;
   var RUBLE_CURRENCY = '\u20BD';
   var ROOM_WORDS = ['комнат', 'комната', 'комнаты'];
@@ -29,7 +29,7 @@
     index = index || 0;
     var location = {
       'x': window.tools.getRandomInteger(MIN_X_LOCATION, MAX_X_LOCATION),
-      'y': window.tools.getRandomInteger(window.data.MIN_Y_LOCATION, window.data.MAX_Y_LOCATION)
+      'y': window.tools.getRandomInteger(MIN_Y_LOCATION, MAX_Y_LOCATION)
     };
     var similiarAd = {
       'author': {
@@ -58,30 +58,20 @@
 
   var adCard = document.querySelector('#card').content.querySelector('.map__card');
   var mapPins = document.querySelector('.map__pins');
+  // Функция создает массив объявлений
+  var createArrayOfAds = function (numderOfAds) {
+    var ads = [];
+    for (var i = 0; i < numderOfAds; i++) {
+      ads.push(createAd(i));
+    }
+    return ads;
+  };
 
-  // Функция создает пин
-  var createPin = function (ad) {
-    var pinElement = document.createElement('button');
-    var pinChildImg = document.createElement('img');
-    var pinElementClickHandler = function () {
-      if (map.querySelector('.map__card') !== null) {
-        map.querySelector('.map__card').remove();
-      }
-      showCard(ad);
-    };
-
-    pinElement.classList.add('map__pin');
-    pinElement.style.left = (ad.location.x - PIN_WIDTH / 2) + 'px';
-    pinElement.style.top = (ad.location.y - PIN_HEIGHT) + 'px';
-    pinChildImg.src = ad.author.avatar;
-    pinChildImg.width = 40;
-    pinChildImg.height = 40;
-    pinChildImg.draggable = false;
-    pinChildImg.alt = ad.offer.title;
-    pinElement.appendChild(pinChildImg);
-    pinElement.addEventListener('click', pinElementClickHandler);
-
-    return pinElement;
+  window.data = {
+    ads: createArrayOfAds(NUMBER_OF_ADS),
+    showCard: function (itemOfAds) {
+      map.insertBefore(createAdCard(itemOfAds), mapPins.querySelector('.map__filters-container'));
+    }
   };
 
   // Функция создает массив с HTML элементами features готовыми для вставки в разметку
@@ -142,21 +132,6 @@
     adDomElement.replaceChild(createPopupPhotos(ad), adDomElement.querySelector('.popup__photos'));
 
     return adDomElement;
-  };
-
-  // Функция создает массив объявлений
-  var createArrayOfAds = function (numderOfAds) {
-    var ads = [];
-    for (var i = 0; i < numderOfAds; i++) {
-      ads.push(createAd(i));
-    }
-    return ads;
-  };
-
-
-  // Функция отрисовывает popup по пину
-  var showCard = function (itemOfAds) {
-    map.insertBefore(createAdCard(itemOfAds), mapPins.querySelector('.map__filters-container'));
   };
 })();
 

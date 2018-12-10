@@ -13,6 +13,20 @@
   var adForm = document.querySelector('.ad-form');
   var mapPinMain = document.querySelector('.map__pin--main');
   var inputAddress = document.querySelector('#address');
+  var map = document.querySelector('.map');
+  var mapPins = document.querySelector('.map__pins');
+
+  window.form = {
+    getCoordinatesOfMainPin: function () {
+      return Math.round(mapPinMain.offsetLeft + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + SHARP_END_HEIGHT);
+    },
+
+    mainPinKeydownHandler: function (evtKeyCode) {
+      if (evtKeyCode.code === 'Enter') {
+        enableForm();
+      }
+    }
+  };
 
   // Функция устанавливает состояние форм disabled или enabled
   var setConditionForms = function (condition) {
@@ -28,7 +42,7 @@
   var windowLoadHendler = function () {
     inputAddress.value = window.form.getCoordinatesOfMainPin();
     window.removeEventListener('load', windowLoadHendler);
-    mapPinMain.addEventListener('mousedown', mainPinDragHandler);
+    mapPinMain.addEventListener('mousedown', window.map.mainPinDragHandler);
     mapPinMain.addEventListener('keydown', mainPinKeydownHandler);
   };
 
@@ -50,13 +64,13 @@
 
   // Функция установки начального состояния формы
   var enableForm = function (evt) {
-    window.data.map.classList.remove('map--faded');
+    map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
     setConditionForms(ENABLED_CONDITION);
     getRightNumberOfGuests();
     setRightMinPriceOfDwelling();
     inputAddress.value = window.form.getCoordinatesOfMainPin(evt);
-    window.data.mapPins.appendChild(window.data.renderPins());
+    mapPins.appendChild(window.map.renderPins());
     roomNumber.addEventListener('change', selectRoomsChangeHandler);
     typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
     selectTimeout.addEventListener('change', selectTimeoutChangeHandler);
@@ -129,7 +143,7 @@
     setTimeout(function () {
       mapPinMain.style.left = START_COORDINATE_X;
       mapPinMain.style.top = START_COORDINATE_Y;
-      inputAddress.value = getCoordinatesOfMainPin(resetEvt);
+      inputAddress.value = window.form.getCoordinatesOfMainPin(resetEvt);
     }, 0);
   };
 })();
