@@ -1,11 +1,9 @@
 'use strict';
 
 (function () {
-  window.data.NUMBER_OF_ADS = 8;
+  var NUMBER_OF_ADS = 8;
   var MAX_X_LOCATION = 1000;
   var MIN_X_LOCATION = 250;
-  window.data.MAX_Y_LOCATION = 630;
-  window.data.MIN_Y_LOCATION = 130;
   var OFFER_TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
   var TIMES_OF_REGISTRATION = ['12:00', '13:00', '14:00'];
   var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
@@ -25,7 +23,7 @@
   var ROOM_WORDS = ['комнат', 'комната', 'комнаты'];
   var GUEST_WORDS = ['гостей', 'гостя', 'гостей'];
 
-  window.data.map = document.querySelector('.map');
+  var map = document.querySelector('.map');
   //  Функция создает один элемент массива с данными соседних жилищ
   var createAd = function (index) {
     index = index || 0;
@@ -58,26 +56,16 @@
     return similiarAd;
   };
 
-  // Функция создает массив объявлений
-  var createArrayOfAds = function (numderOfAds) {
-    var ads = [];
-    for (var i = 0; i < numderOfAds; i++) {
-      ads.push(createAd(i));
-    }
-    return ads;
-  };
-
-  var ads = createArrayOfAds(window.data.NUMBER_OF_ADS);
   var adCard = document.querySelector('#card').content.querySelector('.map__card');
-  window.data.mapPins = document.querySelector('.map__pins');
+  var mapPins = document.querySelector('.map__pins');
 
   // Функция создает пин
-  window.data.createPin = function (ad) {
+  var createPin = function (ad) {
     var pinElement = document.createElement('button');
     var pinChildImg = document.createElement('img');
     var pinElementClickHandler = function () {
-      if (window.data.map.querySelector('.map__card') !== null) {
-        window.data.map.querySelector('.map__card').remove();
+      if (map.querySelector('.map__card') !== null) {
+        map.querySelector('.map__card').remove();
       }
       showCard(ad);
     };
@@ -126,16 +114,16 @@
     }
     return popupPhotoDiv;
   };
-
+  // Функция создает popup для Пина
   var createAdCard = function (ad) {
     var adDomElement = adCard.cloneNode(true);
     var popupCloseClickHandler = function () {
-      window.data.map.querySelector('.map__card').remove();
+      map.querySelector('.map__card').remove();
       adDomElement.querySelector('.popup__close').removeEventListener('click', popupCloseClickHandler);
     };
     var popupCloseKeydownEscHandler = function (evt) {
       if (evt.keyCode === ESC_KEYCODE) {
-        window.data.map.querySelector('.map__card').remove();
+        map.querySelector('.map__card').remove();
         document.removeEventListener('keydown', popupCloseKeydownEscHandler);
       }
     };
@@ -156,18 +144,19 @@
     return adDomElement;
   };
 
-  // Функция отрисует все пины
-  window.data.renderPins = function () {
-    var pinsFragment = document.createDocumentFragment();
-    for (var i = 0; i < window.data.NUMBER_OF_ADS; i++) {
-      pinsFragment.appendChild(createPin(ads[i]));
+  // Функция создает массив объявлений
+  var createArrayOfAds = function (numderOfAds) {
+    var ads = [];
+    for (var i = 0; i < numderOfAds; i++) {
+      ads.push(createAd(i));
     }
-    return pinsFragment;
+    return ads;
   };
 
-  // Функция отрисовывает карту по пину
+
+  // Функция отрисовывает popup по пину
   var showCard = function (itemOfAds) {
-    window.data.map.insertBefore(createAdCard(itemOfAds), window.data.mapPins.querySelector('.map__filters-container'));
+    map.insertBefore(createAdCard(itemOfAds), mapPins.querySelector('.map__filters-container'));
   };
 })();
 

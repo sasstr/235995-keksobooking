@@ -124,58 +124,12 @@
     selectTimein.selectedIndex = selectTimeout.selectedIndex;
   };
 
-  // Функция Drag and Drop мафина
-  var mainPinDragHandler = function (evt) {
-
-    var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
-    };
-    // функция отвечает за перемешение мафина
-    var MouseMoveHandler = function (moveEvt) {
-      moveEvt.preventDefault();
-
-      var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
-      };
-
-      var currentCoordinates = {
-        x: mapPinMain.offsetLeft - shift.x,
-        y: mapPinMain.offsetTop - shift.y
-      };
-
-      var validCoordinateX = Math.round(currentCoordinates.x + mapPinMain.offsetWidth) > window.data.map.clientLeft && Math.round(currentCoordinates.x + mapPinMain.offsetWidth) < window.data.map.offsetWidth;
-      var validCoordinateY = (currentCoordinates.y + mapPinMain.offsetHeight / 2) > window.data.MIN_Y_LOCATION && (currentCoordinates.y + mapPinMain.offsetHeight / 2) < window.data.MAX_Y_LOCATION;
-
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
-      if (validCoordinateY) {
-        mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
-        inputAddress.value = window.form.getCoordinatesOfMainPin(moveEvt);
-      }
-      if (validCoordinateX) {
-        mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
-      }
-    };
-    // Функция останавливает перемещение мафина при событии mouseup
-    var MouseUpHandler = function (upEvt) {
-      upEvt.preventDefault();
-      document.removeEventListener('mousemove', MouseMoveHandler);
-      document.removeEventListener('mouseup', MouseUpHandler);
-    };
-
-    document.addEventListener('mousemove', MouseMoveHandler);
-    document.addEventListener('mouseup', MouseUpHandler);
-  };
   // Функция при нажатии на кнопку reset ставит мафин в первоначальное место и в поле адрес добавляет координаты.
   var formResetHandler = function (resetEvt) {
     setTimeout(function () {
       mapPinMain.style.left = START_COORDINATE_X;
       mapPinMain.style.top = START_COORDINATE_Y;
-      inputAddress.value = window.form.getCoordinatesOfMainPin(resetEvt);
+      inputAddress.value = getCoordinatesOfMainPin(resetEvt);
     }, 0);
   };
 })();
