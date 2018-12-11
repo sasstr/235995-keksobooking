@@ -15,7 +15,7 @@
 
   window.form = {
     getCoordinatesOfMainPin: function () {
-      return Math.round(window.map.mapPinMain.offsetLeft + window.map.mapPinMain.offsetWidth / 2) + ', ' + (window.map.mapPinMain.offsetTop + window.map.mapPinMain.offsetHeight + SHARP_END_HEIGHT);
+      return Math.round(window.map.mapPinMain.offsetLeft + window.map.mapPinMain.offsetWidth / 2) + ', ' + (window.map.mapPinMain.offsetTop + window.map.mapPinMain.offsetHeight);
     },
 
     mainPinKeydownHandler: function (evtKeyCode) {

@@ -1,5 +1,7 @@
 'use strict';
 (function () {
+  var DIFFERENCE_ON_TOP = 14;
+  var DIFFERENCE_ON_BOTTOM = 16;
   var NUMBER_OF_ADS = 8;
   var MAX_Y_LOCATION = 630;
   var MIN_Y_LOCATION = 130;
@@ -32,8 +34,8 @@
           y: window.map.mapPinMain.offsetTop - shift.y
         };
 
-        var validCoordinateX = Math.round(currentCoordinates.x + window.map.mapPinMain.offsetWidth) > window.map.map.clientLeft && Math.round(currentCoordinates.x + window.map.mapPinMain.offsetWidth) < window.map.map.offsetWidth;
-        var validCoordinateY = (currentCoordinates.y + window.map.mapPinMain.offsetHeight / 2) > MIN_Y_LOCATION && (currentCoordinates.y + window.map.mapPinMain.offsetHeight / 2) < MAX_Y_LOCATION;
+        var validCoordinateX = Math.round(currentCoordinates.x + window.map.mapPinMain.offsetWidth / 2) >= window.map.map.clientLeft && Math.round(currentCoordinates.x + window.map.mapPinMain.offsetWidth / 2) <= window.map.map.offsetWidth;
+        var validCoordinateY = (currentCoordinates.y + window.map.mapPinMain.offsetHeight + DIFFERENCE_ON_BOTTOM) > MIN_Y_LOCATION && (currentCoordinates.y + window.map.mapPinMain.offsetHeight + DIFFERENCE_ON_TOP) < MAX_Y_LOCATION;
 
         startCoords = {
           x: moveEvt.clientX,
