@@ -10,8 +10,7 @@
   var PIN_HEIGHT = 70;
 
   var inputAddress = document.querySelector('#address');
-  var map = document.querySelector('.map');
-  var mapPinMain = map.querySelector('.map__pin--main');
+  var mapPinMain = document.querySelector('.map__pin--main');
 
   // Функция  возращает координаты острого конца пина
   var getCoordinatesOfMainPin = function () {
@@ -52,7 +51,7 @@
         y: mapPinMain.offsetTop - shift.y
       };
 
-      var validCoordinateX = Math.round(currentCoordinates.x + mapPinMain.offsetWidth / 2) >= map.clientLeft && Math.round(currentCoordinates.x + mapPinMain.offsetWidth / 2) <= map.offsetWidth;
+      var validCoordinateX = window.card.getValidCoordinates(currentCoordinates, mapPinMain);
       var validCoordinateY = (currentCoordinates.y + mapPinMain.offsetHeight + DIFFERENCE_ON_BOTTOM) > MIN_Y_LOCATION && (currentCoordinates.y + mapPinMain.offsetHeight + DIFFERENCE_ON_TOP) < MAX_Y_LOCATION;
 
       startCoords = {
@@ -61,7 +60,7 @@
       };
       if (validCoordinateY) {
         mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
-        inputAddress.value = window.map.getCoordinatesOfMainPin(moveEvt);
+        inputAddress.value = getCoordinatesOfMainPin(moveEvt);
       }
       if (validCoordinateX) {
         mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';

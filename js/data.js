@@ -31,7 +31,7 @@
 
   //  Функция возращает случайный элемент массива
   var getRendomItemOfArray = function (array) {
-    return array[array[getRandomInteger(0, array.length)]];
+    return array[Math.floor(Math.random() * array.length)];
   };
 
   //  Функция перемешивает элементы массива
@@ -89,9 +89,6 @@
     return ArrayOfAds;
   };
 
-  // @fixme преобразовать без пространства имён
-  // было: window.data.ads
-  // станет window.data — вот здесь будет храниться твой массив
   window.data = createArrayOfAds(NUMBER_OF_ADS);
 
 })();

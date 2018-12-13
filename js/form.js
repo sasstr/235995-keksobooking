@@ -22,20 +22,17 @@
   // внутри map.js будет вызов похожий на:
   // window.form.setAddress(getCoordinatesOfMainPin(event));
 
-  var map = document.querySelector('.map');
-  // @fixme поиск в map
-  var mapPinMain = map.querySelector('.map__pin--main');
-  var mapPins = map.querySelector('.map__pins');
+  var mapFaded = document.querySelector('.map--faded');
+  var mapPinMain = mapFaded.querySelector('.map__pin--main');
+  var mapPinsElement = mapFaded.querySelector('.map__pins');
+  var mainPinKeydownHandler = function (evtKeyCode) {
+    if (evtKeyCode.code === ENTER_KEYCODE) {
+      enableForm();
+    }
+  };
 
   window.form = {
-    mainPinKeydownHandler: function (evtKeyCode) {
-
-      // @fixme keyCode 13 — по аналогии с ESC_KEYCODE
-      if (evtKeyCode.code === ENTER_KEYCODE) {
-        enableForm();
-      }
-    },
-
+    mainPinKeydownHandler: mainPinKeydownHandler,
     setAddress: setAddress
   };
 
@@ -55,26 +52,26 @@
 
   // Функция установки начального состояния формы
   var enableForm = function () {
-    map.classList.remove('map--faded');
+    mapFaded.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
     setConditionForms(ENABLED_CONDITION);
     getRightNumberOfGuests();
     setRightMinPriceOfDwelling();
     inputAddress.value = window.map.getCoordinatesOfMainPin();
-    mapPins.appendChild(window.map.renderPins());
+    mapPinsElement.appendChild(window.map.renderPins());
     roomNumber.addEventListener('change', selectRoomsChangeHandler);
     typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
     selectTimeout.addEventListener('change', selectTimeoutChangeHandler);
     selectTimein.addEventListener('change', selectTimeinChangeHandler);
     adFormReset.addEventListener('click', formResetHandler);
-    mapPinMain.removeEventListener('keydown', window.form.mainPinKeydownHandler);
+    mapPinMain.removeEventListener('keydown', mainPinKeydownHandler);
     mapPinMain.removeEventListener('mousedown', mainPinMousedownHandler);
   };
 
   // Функция, которая переводит страницу в начальное состояние. Реагирует только маффин на перетаскивание мышкой
   var disableForm = function () {
     setConditionForms(DISABLED_CONDITION);
-    mapPinMain.addEventListener('keydown', window.form.mainPinKeydownHandler);
+    mapPinMain.addEventListener('keydown', mainPinKeydownHandler);
     mapPinMain.addEventListener('mousedown', mainPinMousedownHandler);
     adFormReset.removeEventListener('click', formResetHandler);
   };
