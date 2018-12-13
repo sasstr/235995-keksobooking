@@ -19,12 +19,41 @@
   var MAX_GUESTS = 5;
   var MIN_GUESTS = 1;
 
+  //  Функция возращает случайное целое число между min и max - включительно
+  var getRandomInteger = function (min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+  };
+
+  //  Функция возращает случайной длины массив от исходного массива
+  var getRandomLengthArray = function (array) {
+    return array.slice(0, array[getRandomInteger(1, array.length)]);
+  };
+
+  //  Функция возращает случайный элемент массива
+  var getRendomItemOfArray = function (array) {
+    return array[array[getRandomInteger(0, array.length)]];
+  };
+
+  //  Функция перемешивает элементы массива
+  var jumbleElemetsOfArray = function (array) {
+    var cloneArray = array.slice();
+    var j;
+    var temp;
+    for (var i = 0; i < cloneArray.length; i++) {
+      j = Math.floor(Math.random() * (i + 1));
+      temp = cloneArray[j];
+      cloneArray[j] = cloneArray[i];
+      cloneArray[i] = temp;
+    }
+    return cloneArray;
+  };
+
   //  Функция создает один элемент массива с данными соседних жилищ
   var createAd = function (index) {
     index = index || 0;
     var location = {
-      'x': window.tools.getRandomInteger(MIN_X_LOCATION, MAX_X_LOCATION),
-      'y': window.tools.getRandomInteger(MIN_Y_LOCATION, MAX_Y_LOCATION)
+      'x': getRandomInteger(MIN_X_LOCATION, MAX_X_LOCATION),
+      'y': getRandomInteger(MIN_Y_LOCATION, MAX_Y_LOCATION)
     };
     var similiarAd = {
       'author': {
@@ -33,15 +62,15 @@
       'offer': {
         'title': OFFER_TITLES[index],
         'address': location.x + ', ' + location.y,
-        'price': window.tools.getRandomInteger(MIN_PRICE, MAX_PRICE),
-        'type': window.tools.getRendomItemOfArray(TYPES_OF_DWELLING_ARRAY),
-        'rooms': window.tools.getRandomInteger(MIN_ROOMS, MAX_ROOMS),
-        'guests': window.tools.getRandomInteger(MIN_GUESTS, MAX_GUESTS),
-        'checkin': window.tools.getRendomItemOfArray(TIMES_OF_REGISTRATION),
-        'checkout': window.tools.getRendomItemOfArray(TIMES_OF_REGISTRATION),
-        'features': window.tools.getRandomLengthArray(window.tools.jumbleElemetsOfArray(OFFER_FEATURES)),
+        'price': getRandomInteger(MIN_PRICE, MAX_PRICE),
+        'type': getRendomItemOfArray(TYPES_OF_DWELLING_ARRAY),
+        'rooms': getRandomInteger(MIN_ROOMS, MAX_ROOMS),
+        'guests': getRandomInteger(MIN_GUESTS, MAX_GUESTS),
+        'checkin': getRendomItemOfArray(TIMES_OF_REGISTRATION),
+        'checkout': getRendomItemOfArray(TIMES_OF_REGISTRATION),
+        'features': getRandomLengthArray(jumbleElemetsOfArray(OFFER_FEATURES)),
         'description': '',
-        'photos': window.tools.jumbleElemetsOfArray(OFFER_PHOTOS)
+        'photos': jumbleElemetsOfArray(OFFER_PHOTOS)
       },
       'location': {
         x: location.x,
@@ -60,38 +89,9 @@
     return ArrayOfAds;
   };
 
-  window.data = {
-    mapPins: document.querySelector('.map__pins'),
-    ads: createArrayOfAds(NUMBER_OF_ADS),
-    // Функция создает массив с HTML элементами features готовыми для вставки в разметку
-    createFeatureDomElements: function (adOfferFeatures) {
-      var popupFeatures = document.createElement('ul');
-      popupFeatures.classList.add('popup__features');
+  // @fixme преобразовать без пространства имён
+  // было: window.data.ads
+  // станет window.data — вот здесь будет храниться твой массив
+  window.data = createArrayOfAds(NUMBER_OF_ADS);
 
-      for (var i = 0; i < adOfferFeatures.length; i++) {
-        var popupFeature = document.createElement('li');
-        var classFeature = 'popup__feature--' + adOfferFeatures[i];
-        popupFeature.classList.add('popup__feature');
-        popupFeatures.appendChild(popupFeature).classList.add(classFeature);
-      }
-      return popupFeatures;
-    },
-    // Функция создает массив с HTML элементами photos готовыми для вставки в разметку
-    createPopupPhotos: function (ad) {
-      var popupPhotoDiv = document.createElement('div');
-      popupPhotoDiv.classList.add('popup__photos');
-
-      for (var i = 0; i < ad.offer.photos.length; i++) {
-        var popupPhoto = document.createElement('img');
-        popupPhoto.classList.add('popup__photo');
-        popupPhoto.width = 45;
-        popupPhoto.height = 40;
-        popupPhoto.alt = 'Фотография жилья';
-        popupPhoto.src = ad.offer.photos[i];
-        popupPhotoDiv.appendChild(popupPhoto);
-      }
-      return popupPhotoDiv;
-    }
-  };
 })();
-
