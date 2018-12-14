@@ -73,7 +73,8 @@
 
   window.map = {
     getCoordinatesOfMainPin: getCoordinatesOfMainPin,
-    renderPins: renderPins
+    renderPins: renderPins,
+    createPin: createPin
   };
 
   // Функция Drag and Drop мафина
@@ -137,7 +138,7 @@
   // Функция создает пин
   var createPin = function (ad) {
     var pinElement = document.createElement('button');
-    var pinChildImg = document.createElement('img');
+    var pinChildImage = document.createElement('img');
     var pinElementClickHandler = function () {
       window.card.removeCard(ad);
       window.card.showCard(ad);
@@ -146,12 +147,12 @@
     pinElement.classList.add('map__pin');
     pinElement.style.left = (ad.location.x - PIN_WIDTH / 2) + 'px';
     pinElement.style.top = (ad.location.y - PIN_HEIGHT) + 'px';
-    pinChildImg.src = ad.author.avatar;
-    pinChildImg.width = 40;
-    pinChildImg.height = 40;
-    pinChildImg.draggable = false;
-    pinChildImg.alt = ad.offer.title;
-    pinElement.appendChild(pinChildImg);
+    pinChildImage.src = ad.author.avatar;
+    pinChildImage.width = 40;
+    pinChildImage.height = 40;
+    pinChildImage.draggable = false;
+    pinChildImage.alt = ad.offer.title;
+    pinElement.appendChild(pinChildImage);
     pinElement.addEventListener('click', pinElementClickHandler);
 
     return pinElement;

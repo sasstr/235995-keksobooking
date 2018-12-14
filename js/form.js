@@ -5,11 +5,12 @@
   var ROOMS = {'1': {'1': 'для 1 гостя'}, '2': {'1': 'для 1 гостя', '2': 'для 2 гостей'}, '3': {'1': 'для 1 гостя', '2': 'для 2 гостей', '3': 'для 3 гостей'}, '100': {'0': 'не для гостей'}};
   var ENABLED_CONDITION = false;
   var DISABLED_CONDITION = true;
+  var URL_DOWNLOAD_DATA = 'https://js.dump.academy/keksobooking/data';
 
   var fieldsetList = document.querySelectorAll('fieldset');
   var adForm = document.querySelector('.ad-form');
   var inputAddress = document.querySelector('#address');
-  var mapPinsElement = document.querySelector('.map__pins');
+  // var mapPinsElement = document.querySelector('.map__pins');
 
   // Функция, которая переводит страницу в начальное состояние. Реагирует только маффин на перетаскивание мышкой
   var disableForm = function (cb) {
@@ -21,21 +22,30 @@
     inputAddress.value = address;
   };
 
+  //
+  var loadHandler = function (ads) {
+    var pinsFragment = document.createDocumentFragment();
+    for (var i = 0; i < ads.length; i++) {
+      pinsFragment.appendChild(window.map.createPin(ads[i]));
+    }
+    return pinsFragment;
+  };
+
   // Функция установки начального состояния формы
   var enableForm = function (cb) {
     cb();
+    window.backend.receiveDataFromServer(loadHandler, window.backend.createErrorMessage, URL_DOWNLOAD_DATA);
     adForm.classList.remove('ad-form--disabled');
     setConditionForms(ENABLED_CONDITION);
     getRightNumberOfGuests();
     setRightMinPriceOfDwelling();
     setAddress(window.map.getCoordinatesOfMainPin());
-    mapPinsElement.appendChild(window.map.renderPins());
+
+    // mapPinsElement.appendChild(window.map.renderPins());
     roomNumber.addEventListener('change', selectRoomsChangeHandler);
     typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
     selectTimeout.addEventListener('change', selectTimeoutChangeHandler);
     selectTimein.addEventListener('change', selectTimeinChangeHandler);
-
-
   };
 
   // Функция устанавливает состояние форм disabled или enabled
