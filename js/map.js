@@ -1,8 +1,9 @@
 'use strict';
 
 (function () {
-  var DIFFERENCE_ON_TOP = -1;
-  var DIFFERENCE_ON_BOTTOM = 1;
+  var SHARP_END_MAIN_PIN = 14;
+  var DIFFERENCE_ON_TOP = 13;
+  var DIFFERENCE_ON_BOTTOM = 15;
   var NUMBER_OF_ADS = 8;
   var MAX_Y_LOCATION = 630;
   var MIN_Y_LOCATION = 130;
@@ -15,31 +16,30 @@
   var mapPinMain = document.querySelector('.map__pin--main');
   var map = document.querySelector('.map');
   var adFormReset = document.querySelector('.ad-form__reset');
-
+  // Функция колбэк снимает слушатели событий и убирает класс map--faded
   var mapPinMainRemoveEventListeners = function () {
     map.classList.remove('map--faded');
-    mapPinMain.removeEventListener('keydown', mainPinKeydownHandler);
     mapPinMain.removeEventListener('mousedown', mainPinMousedownHandler);
+    mapPinMain.removeEventListener('keydown', mainPinKeydownHandler);
     adFormReset.addEventListener('click', formResetHandler);
-
   };
-
+  // Функция колбэк добавляет слушатели событий
   var mapPinMainAddListeners = function () {
-    mapPinMain.addEventListener('keydown', mainPinKeydownHandler);
     mapPinMain.addEventListener('mousedown', mainPinMousedownHandler);
+    mapPinMain.addEventListener('keydown', mainPinKeydownHandler);
     adFormReset.removeEventListener('click', formResetHandler);
   };
 
-  window.form.disableForm(mapPinMainAddListeners); // @fixme movet to map.js and give cb
+  window.form.disableForm(mapPinMainAddListeners);
 
-  // fixme move to map.js Функция определения допустимых координат мафина
+  // Функция определения допустимых координат мафина
   var getValidCoordinates = function (currentCoords, mapPinMainHtmlElement) {
     return Math.round(currentCoords.x + mapPinMainHtmlElement.offsetWidth / 2) >= map.clientLeft && Math.round(currentCoords.x + mapPinMainHtmlElement.offsetWidth / 2) <= map.offsetWidth;
   };
 
   // Функция  возращает координаты острого конца пина
   var getCoordinatesOfMainPin = function () {
-    return Math.round(mapPinMain.offsetLeft + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetTop + mapPinMain.offsetHeight);
+    return Math.round(mapPinMain.offsetLeft + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + SHARP_END_MAIN_PIN);
   };
   // Функция возращает DomElement с Пинами
   var renderPins = function () {
@@ -73,9 +73,7 @@
 
   window.map = {
     getCoordinatesOfMainPin: getCoordinatesOfMainPin,
-    renderPins: renderPins,
-    mapPinMainAddListeners: mapPinMainAddListeners,
-    mapPinMainRemoveEventListeners: mapPinMainRemoveEventListeners
+    renderPins: renderPins
   };
 
   // Функция Drag and Drop мафина
@@ -130,7 +128,8 @@
     window.form.setAddress(getCoordinatesOfMainPin());
     window.removeEventListener('load', windowLoadHendler);
     mapPinMain.addEventListener('mousedown', mainPinDragHandler);
-    mapPinMain.addEventListener('keydown', window.form.mainPinKeydownHandler);
+    mapPinMain.addEventListener('keydown', mainPinKeydownHandler);
+    mapPinMain.addEventListener('mousedown', mainPinMousedownHandler);
   };
 
   window.addEventListener('load', windowLoadHendler);

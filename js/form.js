@@ -23,7 +23,6 @@
 
   // Функция установки начального состояния формы
   var enableForm = function (cb) {
-    // map.classList.remove('map'); @fixme and add IN cb :)
     cb();
     adForm.classList.remove('ad-form--disabled');
     setConditionForms(ENABLED_CONDITION);
