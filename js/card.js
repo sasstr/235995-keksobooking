@@ -5,12 +5,8 @@
   var RUBLE_CURRENCY = '\u20BD';
   var ROOM_WORDS = ['комнат', 'комната', 'комнаты'];
   var GUEST_WORDS = ['гостей', 'гостя', 'гостей'];
-  var adCard = document.querySelector('#card').content.querySelector('.map__card');
-  var map = document.querySelector('.map');
+  var cardTemplate = document.querySelector('#card');
 
-  var getValidCoordinates = function (currentCoords, mapPinMainHtmlElement) {
-    return Math.round(currentCoords.x + mapPinMainHtmlElement.offsetWidth / 2) >= map.clientLeft && Math.round(currentCoords.x + mapPinMainHtmlElement.offsetWidth / 2) <= map.offsetWidth;
-  };
   // Функция вставляет верное написание слова из массива
   var getCorrectWord = function (items, words) {
     if (items % 100 > 4 && items % 100 < 21) {
@@ -24,7 +20,6 @@
   };
 
   // Функция создает массив с HTML элементами features готовыми для вставки в разметку
-  // @fixme перенести в карточку
   var createFeatureDomElements = function (adOfferFeatures) {
     var popupFeatures = document.createElement('ul');
     popupFeatures.classList.add('popup__features');
@@ -55,50 +50,51 @@
     return popupPhotoDiv;
   };
 
+  var popupCloseKeydownEscHandler = function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      removeCard();
+    }
+  };
+
   // Функция создает popup для Пина
   var createAdCard = function (ad) {
-    var adDomElement = adCard.cloneNode(true);
+    removeCard();
+    var cardElement = cardTemplate.content.querySelector('.map__card').cloneNode(true);
     var popupCloseClickHandler = function () {
-      map.querySelector('.map__card').remove();
-      adDomElement.querySelector('.popup__close').removeEventListener('click', popupCloseClickHandler);
-    };
-    var popupCloseKeydownEscHandler = function (evt) {
-      if (evt.keyCode === ESC_KEYCODE) {
-        map.querySelector('.map__card').remove();
-        document.removeEventListener('keydown', popupCloseKeydownEscHandler);
-      }
+      removeCard();
     };
 
-    adDomElement.querySelector('.popup__avatar').src = ad.author.avatar;
-    adDomElement.querySelector('.popup__title').textContent = ad.offer.title;
-    adDomElement.querySelector('.popup__text--address').textContent = ad.offer.address;
-    adDomElement.querySelector('.popup__text--price').textContent = (ad.offer.price + RUBLE_CURRENCY + '/ночь');
-    adDomElement.querySelector('.popup__type').textContent = ad.offer.type;
-    adDomElement.querySelector('.popup__text--capacity').textContent = (ad.offer.rooms + ' ' + getCorrectWord(ad.offer.rooms, ROOM_WORDS) + ' для ' + ad.offer.guests + ' ' + getCorrectWord(ad.offer.guests, GUEST_WORDS));
-    adDomElement.querySelector('.popup__text--time').textContent = ('Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout);
-    adDomElement.replaceChild(createFeatureDomElements(ad.offer.features), adDomElement.querySelector('.popup__features'));
-    adDomElement.querySelector('.popup__description').textContent = ad.offer.description;
-    adDomElement.querySelector('.popup__close').addEventListener('click', popupCloseClickHandler);
+    cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
+    cardElement.querySelector('.popup__title').textContent = ad.offer.title;
+    cardElement.querySelector('.popup__text--address').textContent = ad.offer.address;
+    cardElement.querySelector('.popup__text--price').textContent = (ad.offer.price + RUBLE_CURRENCY + '/ночь');
+    cardElement.querySelector('.popup__type').textContent = ad.offer.type;
+    cardElement.querySelector('.popup__text--capacity').textContent = (ad.offer.rooms + ' ' + getCorrectWord(ad.offer.rooms, ROOM_WORDS) + ' для ' + ad.offer.guests + ' ' + getCorrectWord(ad.offer.guests, GUEST_WORDS));
+    cardElement.querySelector('.popup__text--time').textContent = ('Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout);
+    cardElement.replaceChild(createFeatureDomElements(ad.offer.features), cardElement.querySelector('.popup__features'));
+    cardElement.querySelector('.popup__description').textContent = ad.offer.description;
+    cardElement.querySelector('.popup__close').addEventListener('click', popupCloseClickHandler);
     document.addEventListener('keydown', popupCloseKeydownEscHandler);
-    adDomElement.replaceChild(createPopupPhotos(ad), adDomElement.querySelector('.popup__photos'));
+    cardElement.replaceChild(createPopupPhotos(ad), cardElement.querySelector('.popup__photos'));
 
-    return adDomElement;
+    return cardElement;
   };
 
   var showCard = function (ad) {
-    map.appendChild(createAdCard(ad));
+    document.querySelector('.map').appendChild(createAdCard(ad));
   };
 
-  // removeCard @fixme in 6 part
+  // Функция удаляет карточку пина
   var removeCard = function () {
-    if (document.querySelector('.map__card') !== null) {
-      document.querySelector('.map__card').remove();
+    var cardElement = document.querySelector('.map__card');
+    if (cardElement) {
+      cardElement.remove();
+      document.removeEventListener('keydown', popupCloseKeydownEscHandler);
     }
   };
 
   window.card = {
     showCard: showCard,
     removeCard: removeCard,
-    getValidCoordinates: getValidCoordinates
   };
 })();

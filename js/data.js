@@ -26,7 +26,7 @@
 
   //  Функция возращает случайной длины массив от исходного массива
   var getRandomLengthArray = function (array) {
-    return array.slice(0, array[getRandomInteger(1, array.length)]);
+    return array.slice(0, getRandomInteger(1, array.length));
   };
 
   //  Функция возращает случайный элемент массива
