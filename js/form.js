@@ -10,7 +10,7 @@
   var fieldsetList = document.querySelectorAll('fieldset');
   var adForm = document.querySelector('.ad-form');
   var inputAddress = document.querySelector('#address');
-  // var mapPinsElement = document.querySelector('.map__pins');
+  var mapPinsElement = document.querySelector('.map__pins');
 
   // Функция, которая переводит страницу в начальное состояние. Реагирует только маффин на перетаскивание мышкой
   var disableForm = function (cb) {
@@ -28,7 +28,7 @@
     for (var i = 0; i < ads.length; i++) {
       pinsFragment.appendChild(window.map.createPin(ads[i]));
     }
-    return pinsFragment;
+    return mapPinsElement.appendChild(pinsFragment);
   };
 
   // Функция установки начального состояния формы

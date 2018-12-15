@@ -4,7 +4,7 @@
   var SHARP_END_MAIN_PIN = 14;
   var DIFFERENCE_ON_TOP = 13;
   var DIFFERENCE_ON_BOTTOM = 15;
-  var NUMBER_OF_ADS = 8;
+  // var NUMBER_OF_ADS = 8;
   var MAX_Y_LOCATION = 630;
   var MIN_Y_LOCATION = 130;
   var PIN_WIDTH = 50;
@@ -42,13 +42,13 @@
     return Math.round(mapPinMain.offsetLeft + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + SHARP_END_MAIN_PIN);
   };
   // Функция возращает DomElement с Пинами
-  var renderPins = function () {
+  /* var renderPins = function () {
     var pinsFragment = document.createDocumentFragment();
     for (var i = 0; i < NUMBER_OF_ADS; i++) {
       pinsFragment.appendChild(createPin(window.data[i]));
     }
     return pinsFragment;
-  };
+  }; */
 
   // Функция при нажатии на кнопку reset ставит мафин в первоначальное место и в поле адрес добавляет координаты.
   var formResetHandler = function (resetEvt) {
@@ -71,9 +71,32 @@
     window.form.enableForm(mapPinMainRemoveEventListeners);
   };
 
+  // Функция создает пин
+  var createPin = function (ad) {
+    var pinElement = document.createElement('button');
+    var pinChildImage = document.createElement('img');
+    var pinElementClickHandler = function () {
+      window.card.removeCard(ad);
+      window.card.showCard(ad);
+    };
+
+    pinElement.classList.add('map__pin');
+    pinElement.style.left = (ad.location.x - PIN_WIDTH / 2) + 'px';
+    pinElement.style.top = (ad.location.y - PIN_HEIGHT) + 'px';
+    pinChildImage.src = ad.author.avatar;
+    pinChildImage.width = 40;
+    pinChildImage.height = 40;
+    pinChildImage.draggable = false;
+    pinChildImage.alt = ad.offer.title;
+    pinElement.appendChild(pinChildImage);
+    pinElement.addEventListener('click', pinElementClickHandler);
+
+    return pinElement;
+  };
+
   window.map = {
     getCoordinatesOfMainPin: getCoordinatesOfMainPin,
-    renderPins: renderPins,
+    /* renderPins: renderPins, */
     createPin: createPin
   };
 
@@ -134,27 +157,4 @@
   };
 
   window.addEventListener('load', windowLoadHendler);
-
-  // Функция создает пин
-  var createPin = function (ad) {
-    var pinElement = document.createElement('button');
-    var pinChildImage = document.createElement('img');
-    var pinElementClickHandler = function () {
-      window.card.removeCard(ad);
-      window.card.showCard(ad);
-    };
-
-    pinElement.classList.add('map__pin');
-    pinElement.style.left = (ad.location.x - PIN_WIDTH / 2) + 'px';
-    pinElement.style.top = (ad.location.y - PIN_HEIGHT) + 'px';
-    pinChildImage.src = ad.author.avatar;
-    pinChildImage.width = 40;
-    pinChildImage.height = 40;
-    pinChildImage.draggable = false;
-    pinChildImage.alt = ad.offer.title;
-    pinElement.appendChild(pinChildImage);
-    pinElement.addEventListener('click', pinElementClickHandler);
-
-    return pinElement;
-  };
 })();
