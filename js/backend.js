@@ -15,19 +15,16 @@
     'GATEWAY_TIMEOUT': 504
   };
 
-
   // Функция получения информайции с сервера
   var createXmlHttpRequest = function (loadHandler, errorHandler) {
 
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
     xhr.timeout = TIMEOUT;
-
-    xhr.addEventListener('load', function () {
+    var xhrLoadHandler = function () {
       if (xhr.status === ServerStatusCode.SUCCESS) {
         loadHandler(xhr.response);
       } else {
-        /* errorHandler('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText); */
         xhr.addEventListener('error', function () {
           var errorText;
           switch (xhr.status) {
@@ -59,31 +56,20 @@
           errorHandler(errorText);
         });
       }
-    });
-
+    };
+    xhr.addEventListener('load', xhrLoadHandler);
     xhr.addEventListener('timeout', function () {
       errorHandler('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
     return xhr;
   };
-    /* xhr.addEventListener('load', function () {
-      var errorText;
-
-
-      if (errorText) {
-        errorHandler(errorText);
-        return xhr;
-      }
-      return xhr;
-    });*/
-
 
   // Функция создает дом элмент с сообщением о ошибки
   var createErrorMessage = function (errorText) {
     var template = document.querySelector('#error');
     var errorTemplate = template.content.querySelector('.error').cloneNode(true);
     errorTemplate.querySelector('.error__message').textContent = errorText;
-
+    document.querySelector('.');
   };
   // Функция получения информайции на сервер
   var receiveDataFromServer = function (loadHandler, errorHandler, urlDownloadData) {
