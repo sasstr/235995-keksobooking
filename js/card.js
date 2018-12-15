@@ -50,10 +50,14 @@
     return popupPhotoDiv;
   };
 
-  var popupCloseKeydownEscHandler = function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      removeCard();
+  var invokeCallbackByKeydownEsc = function (cb, evtKey) {
+    if (evtKey.keyCode === ESC_KEYCODE) {
+      cb();
     }
+  };
+
+  var popupCloseKeydownEscHandler = function (evt) {
+    invokeCallbackByKeydownEsc(removeCard, evt);
   };
 
   // Функция создает popup для Пина
@@ -96,5 +100,6 @@
   window.card = {
     showCard: showCard,
     removeCard: removeCard,
+    invokeCallbackByKeydownEsc: invokeCallbackByKeydownEsc
   };
 })();

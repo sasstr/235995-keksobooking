@@ -1,8 +1,7 @@
 'use strict';
 
 (function () {
-  var TIMEOUT = 10000;
-  // var URL_SEND_DATA = 'https://js.dump.academy/keksobooking/';
+  var TIMEOUT = 1000; // @fixme вернуть 10000
 
   // Пречисление кодов статусас сервера
   var ServerStatusCode = {
@@ -21,6 +20,7 @@
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
     xhr.timeout = TIMEOUT;
+
     var xhrLoadHandler = function () {
       if (xhr.status === ServerStatusCode.SUCCESS) {
         loadHandler(xhr.response);
@@ -37,19 +37,15 @@
             case ServerStatusCode.NOT_FOUND:
               errorText = 'Ничего не найдено';
               break;
-
             case ServerStatusCode.REQUEST_TIMEOUT:
               errorText = 'Сервер хотел бы закрыть это неиспользуемое соединение';
               break;
-
             case ServerStatusCode.INTERNAL_SERVER_ERROR:
               errorText = 'Внутренняя ошибка сервера';
               break;
-
             case ServerStatusCode.GATEWAY_TIMEOUT:
               errorText = 'Сервер действует как шлюз и не может получить ответ вовремя.';
               break;
-
             default:
               errorText = 'Cтатус ответа: : ' + xhr.status + ' ' + xhr.statusText;
           }
@@ -63,14 +59,45 @@
     });
     return xhr;
   };
+  var mainHtmlElement = document.querySelector('main');
 
   // Функция создает дом элмент с сообщением о ошибки
   var createErrorMessage = function (errorText) {
     var template = document.querySelector('#error');
     var errorTemplate = template.content.querySelector('.error').cloneNode(true);
+    var errorButton = errorTemplate.querySelector('.error__button');
+
+    var removeErrorTemplate = function () {
+      window.form.resetForm();
+      errorButton.removeEventListener('click', errorButtonClickHandler);
+      mainHtmlElement.removeChild(errorTemplate);
+
+    };
+    var errorButtonClickHandler = function () {
+      window.form.disableForm(removeErrorTemplate);
+    };
+
+    var closeErrorPopup = function () {
+      mainHtmlElement.removeChild(errorTemplate);
+      document.removeEventListener('keydown', errorButtonKeyEscDownHandler);
+      errorButton.removeEventListener('click', errorButtonClickHandler);
+    };
+    var errorButtonKeyEscDownHandler = function (evt) {
+      window.card.invokeCallbackByKeydownEsc(closeErrorPopup, evt);
+    };
+
     errorTemplate.querySelector('.error__message').textContent = errorText;
-    document.querySelector('.');
+    mainHtmlElement.appendChild(errorTemplate);
+    errorButton.addEventListener('click', errorButtonClickHandler);
+    document.addEventListener('keydown', errorButtonKeyEscDownHandler);
   };
+
+  var submitLoadHandler = function () {
+    var successMessageTamplate = document.querySelector('#success');
+    var successMessage = successMessageTamplate.content.querySelector('.success').cloneNode(true);
+    mainHtmlElement.appendChild(successMessage);
+  };
+
   // Функция получения информайции на сервер
   var receiveDataFromServer = function (loadHandler, errorHandler, urlDownloadData) {
     var xhr = createXmlHttpRequest(loadHandler, errorHandler, urlDownloadData);
@@ -87,7 +114,8 @@
   window.backend = {
     receiveDataFromServer: receiveDataFromServer,
     sendDataToServer: sendDataToServer,
-    createErrorMessage: createErrorMessage
+    createErrorMessage: createErrorMessage,
+    submitLoadHandler: submitLoadHandler
   };
 })();
 /*
@@ -141,4 +169,5 @@
   карточка не отображается, она показывается только после нажатия на одну из меток.
   При этом активной метке добавляется класс .map__pin--active. Нажатие на метку
   .map__pin--main не приводит к показу карточки.
+
 */

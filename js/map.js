@@ -4,7 +4,6 @@
   var SHARP_END_MAIN_PIN = 14;
   var DIFFERENCE_ON_TOP = 13;
   var DIFFERENCE_ON_BOTTOM = 15;
-  // var NUMBER_OF_ADS = 8;
   var MAX_Y_LOCATION = 630;
   var MIN_Y_LOCATION = 130;
   var PIN_WIDTH = 50;
@@ -41,14 +40,6 @@
   var getCoordinatesOfMainPin = function () {
     return Math.round(mapPinMain.offsetLeft + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + SHARP_END_MAIN_PIN);
   };
-  // Функция возращает DomElement с Пинами
-  /* var renderPins = function () {
-    var pinsFragment = document.createDocumentFragment();
-    for (var i = 0; i < NUMBER_OF_ADS; i++) {
-      pinsFragment.appendChild(createPin(window.data[i]));
-    }
-    return pinsFragment;
-  }; */
 
   // Функция при нажатии на кнопку reset ставит мафин в первоначальное место и в поле адрес добавляет координаты.
   var formResetHandler = function (resetEvt) {
@@ -96,7 +87,6 @@
 
   window.map = {
     getCoordinatesOfMainPin: getCoordinatesOfMainPin,
-    /* renderPins: renderPins, */
     createPin: createPin
   };
 

@@ -6,11 +6,21 @@
   var ENABLED_CONDITION = false;
   var DISABLED_CONDITION = true;
   var URL_DOWNLOAD_DATA = 'https://js.dump.academy/keksobooking/data';
+  var URL_SEND_DATA = 'https://js.dump.academy/keksobooking/00';
 
   var fieldsetList = document.querySelectorAll('fieldset');
   var adForm = document.querySelector('.ad-form');
   var inputAddress = document.querySelector('#address');
   var mapPinsElement = document.querySelector('.map__pins');
+
+  var resetForm = function () {
+    adForm.reset();
+  };
+
+  adForm.addEventListener('submit', function (evt) {
+    window.backend.sendDataToServer(new FormData(adForm), window.backend.submitLoadHandler, window.backend.createErrorMessage, URL_SEND_DATA);
+    evt.preventDefault();
+  });
 
   // Функция, которая переводит страницу в начальное состояние. Реагирует только маффин на перетаскивание мышкой
   var disableForm = function (cb) {
@@ -58,7 +68,8 @@
   window.form = {
     setAddress: setAddress,
     enableForm: enableForm,
-    disableForm: disableForm
+    disableForm: disableForm,
+    resetForm: resetForm
   };
 
   var roomNumber = document.querySelector('#room_number');
