@@ -45,8 +45,8 @@
     inputAddress.value = address;
   };
 
-  //
-  var loadHandler = function (ads) {
+  // Функция создает HTML фрагмент элементов пинов
+  var PinsNodeLoadHandler = function (ads) {
     var pinsFragment = document.createDocumentFragment();
     for (var i = 0; i < ads.length; i++) {
       pinsFragment.appendChild(window.map.createPin(ads[i]));
@@ -57,7 +57,7 @@
   // Функция установки начального состояния формы
   var enableForm = function (cb) {
     cb();
-    window.backend.receiveDataFromServer(loadHandler, window.backend.createErrorMessage, URL_DOWNLOAD_DATA);
+    window.backend.receiveDataFromServer(PinsNodeLoadHandler, window.backend.createErrorMessage, URL_DOWNLOAD_DATA);
     adForm.classList.remove('ad-form--disabled');
     setConditionForms(ENABLED_CONDITION);
     getRightNumberOfGuests();
@@ -86,6 +86,7 @@
 
   var roomNumber = document.querySelector('#room_number');
   var capacity = document.querySelector('#capacity');
+
   // Функция создает список select с кол-ом гостей в соответсвии с кол-ом комнат
   var getRightNumberOfGuests = function () {
     capacity.innerHTML = '';

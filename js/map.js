@@ -43,7 +43,7 @@
     return Math.round(mapPinMain.offsetLeft + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + SHARP_END_MAIN_PIN);
   };
 
-  // Функция при нажатии на кнопку reset ставит мафин в первоначальное место и в поле адрес добавляет координаты.
+  // Функция при нажатии на кнопку reset переводит страницу в начальное состояние.
   var formResetHandler = function (resetEvt) {
     window.form.removePinsFromScreen();
     window.form.resetForm();
@@ -63,7 +63,7 @@
     }
   };
 
-  // Функция по клику на главный пин переводит окно в активное состояние
+  // Функция по клику на мафин переводит окно в активное состояние
   var mainPinMousedownHandler = function () {
     window.form.enableForm(mapPinMainRemoveEventListeners);
   };

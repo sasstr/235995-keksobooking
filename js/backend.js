@@ -108,9 +108,6 @@
     window.utils.invokeCallbackByKeydownEsc(mainHtmlElementRemove, evtKey);
   };
   document.addEventListener('click', successMessageEscKeydownHandler);
-  /* var createSuccessMessage = function () {
-
-  }; */
 
   //  Функция слушатель события submit в случае удачного соединения выводит сообщение SUCCESS
   var submitLoadHandler = function () {
