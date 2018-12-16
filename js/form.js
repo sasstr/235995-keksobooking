@@ -12,6 +12,16 @@
   var adForm = document.querySelector('.ad-form');
   var inputAddress = document.querySelector('#address');
   var mapPinsElement = document.querySelector('.map__pins');
+  var mapPinsList = document.querySelectorAll('.map__pin');
+
+  // Функция удаляет все пины
+  var removePinsFromScreen = function () {
+    for (var i = 0; i < mapPinsList.length; i++) {
+      if (mapPinsList[i].className === 'map__pin' && mapPinsList[i].className !== 'map__pin--main') {
+        mapPinsElement.removeChild(mapPinsList[i]);
+      }
+    }
+  };
 
   var resetForm = function () {
     adForm.reset();
@@ -25,6 +35,7 @@
   // Функция, которая переводит страницу в начальное состояние. Реагирует только маффин на перетаскивание мышкой
   var disableForm = function (cb) {
     setConditionForms(DISABLED_CONDITION);
+    adForm.classList.add('ad-form--disabled');
     cb();
   };
 
@@ -50,8 +61,6 @@
     getRightNumberOfGuests();
     setRightMinPriceOfDwelling();
     setAddress(window.map.getCoordinatesOfMainPin());
-
-    // mapPinsElement.appendChild(window.map.renderPins());
     roomNumber.addEventListener('change', selectRoomsChangeHandler);
     typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
     selectTimeout.addEventListener('change', selectTimeoutChangeHandler);
@@ -69,7 +78,8 @@
     setAddress: setAddress,
     enableForm: enableForm,
     disableForm: disableForm,
-    resetForm: resetForm
+    resetForm: resetForm,
+    removePinsFromScreen: removePinsFromScreen
   };
 
   var roomNumber = document.querySelector('#room_number');
@@ -102,7 +112,8 @@
     inputMinMaxPrice.placeholder = TYPES_OF_HABITATION[typeOfHabitation.value];
   };
 
-  // Функция слушатель события выбора типа жилья, которая вставляет нужное значение минимальной стоимости жилья.
+  // Функция слушатель события выбора типа жилья, которая
+  // вставляет нужное значение минимальной стоимости жилья.
   var inputTypeChangeHandler = function () {
     setRightMinPriceOfDwelling();
   };

@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var ESC_KEYCODE = 27;
+
   var RUBLE_CURRENCY = '\u20BD';
   var ROOM_WORDS = ['комнат', 'комната', 'комнаты'];
   var GUEST_WORDS = ['гостей', 'гостя', 'гостей'];
@@ -50,14 +50,8 @@
     return popupPhotoDiv;
   };
 
-  var invokeCallbackByKeydownEsc = function (cb, evtKey) {
-    if (evtKey.keyCode === ESC_KEYCODE) {
-      cb();
-    }
-  };
-
   var popupCloseKeydownEscHandler = function (evt) {
-    invokeCallbackByKeydownEsc(removeCard, evt);
+    window.utils.invokeCallbackByKeydownEsc(removeCard, evt);
   };
 
   // Функция создает popup для Пина
@@ -100,6 +94,5 @@
   window.card = {
     showCard: showCard,
     removeCard: removeCard,
-    invokeCallbackByKeydownEsc: invokeCallbackByKeydownEsc
   };
 })();

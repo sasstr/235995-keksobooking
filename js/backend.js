@@ -20,7 +20,7 @@
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
     xhr.timeout = TIMEOUT;
-
+    // Функция слушатель что вернет сервер ошибку или успешную загрузку
     var xhrLoadHandler = function () {
       if (xhr.status === ServerStatusCode.SUCCESS) {
         loadHandler(xhr.response);
@@ -67,23 +67,26 @@
     var errorTemplate = template.content.querySelector('.error').cloneNode(true);
     var errorButton = errorTemplate.querySelector('.error__button');
 
-    var removeErrorTemplate = function () {
+    // Функция слушатель события клик переводит форму в неактивное состояние
+    var errorButtonClickHandler = function () {
+      window.form.removePinsFromScreen();
+      window.card.removeCard();
       window.form.resetForm();
+      window.form.disableForm(window.map.mapPinMainAddListeners);
+      window.form.setAddress();
+      window.map.formResetHandler();
       errorButton.removeEventListener('click', errorButtonClickHandler);
       mainHtmlElement.removeChild(errorTemplate);
-
     };
-    var errorButtonClickHandler = function () {
-      window.form.disableForm(removeErrorTemplate);
-    };
-
+      // Функция закрывает popup
     var closeErrorPopup = function () {
       mainHtmlElement.removeChild(errorTemplate);
       document.removeEventListener('keydown', errorButtonKeyEscDownHandler);
       errorButton.removeEventListener('click', errorButtonClickHandler);
     };
+    // Функция закрывает сообщение о ошибке по клавише ESC
     var errorButtonKeyEscDownHandler = function (evt) {
-      window.card.invokeCallbackByKeydownEsc(closeErrorPopup, evt);
+      window.utils.invokeCallbackByKeydownEsc(closeErrorPopup, evt);
     };
 
     errorTemplate.querySelector('.error__message').textContent = errorText;
@@ -91,14 +94,14 @@
     errorButton.addEventListener('click', errorButtonClickHandler);
     document.addEventListener('keydown', errorButtonKeyEscDownHandler);
   };
-
+  //  Функция слушатель события submit в случае удачного соединения выводит сообщение SUCCESS
   var submitLoadHandler = function () {
     var successMessageTamplate = document.querySelector('#success');
     var successMessage = successMessageTamplate.content.querySelector('.success').cloneNode(true);
     mainHtmlElement.appendChild(successMessage);
   };
 
-  // Функция получения информайции на сервер
+  // Функция получения информайции с сервера
   var receiveDataFromServer = function (loadHandler, errorHandler, urlDownloadData) {
     var xhr = createXmlHttpRequest(loadHandler, errorHandler, urlDownloadData);
     xhr.open('GET', urlDownloadData);

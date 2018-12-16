@@ -15,6 +15,7 @@
   var mapPinMain = document.querySelector('.map__pin--main');
   var map = document.querySelector('.map');
   var adFormReset = document.querySelector('.ad-form__reset');
+
   // Функция колбэк снимает слушатели событий и убирает класс map--faded
   var mapPinMainRemoveEventListeners = function () {
     map.classList.remove('map--faded');
@@ -24,6 +25,7 @@
   };
   // Функция колбэк добавляет слушатели событий
   var mapPinMainAddListeners = function () {
+    map.classList.add('map--faded');
     mapPinMain.addEventListener('mousedown', mainPinMousedownHandler);
     mapPinMain.addEventListener('keydown', mainPinKeydownHandler);
     adFormReset.removeEventListener('click', formResetHandler);
@@ -87,7 +89,9 @@
 
   window.map = {
     getCoordinatesOfMainPin: getCoordinatesOfMainPin,
-    createPin: createPin
+    createPin: createPin,
+    mapPinMainAddListeners: mapPinMainAddListeners,
+    formResetHandler: formResetHandler
   };
 
   // Функция Drag and Drop мафина
