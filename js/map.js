@@ -45,6 +45,10 @@
 
   // Функция при нажатии на кнопку reset ставит мафин в первоначальное место и в поле адрес добавляет координаты.
   var formResetHandler = function (resetEvt) {
+    window.form.removePinsFromScreen();
+    window.form.resetForm();
+    window.form.disableForm(window.map.mapPinMainAddListeners);
+    window.card.removeCard();
     setTimeout(function () {
       mapPinMain.style.left = START_COORDINATE_X;
       mapPinMain.style.top = START_COORDINATE_Y;

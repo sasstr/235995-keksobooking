@@ -69,11 +69,6 @@
 
     // Функция слушатель события клик переводит форму в неактивное состояние
     var errorButtonClickHandler = function () {
-      window.form.removePinsFromScreen();
-      window.card.removeCard();
-      window.form.resetForm();
-      window.form.disableForm(window.map.mapPinMainAddListeners);
-      window.form.setAddress();
       window.map.formResetHandler();
       errorButton.removeEventListener('click', errorButtonClickHandler);
       mainHtmlElement.removeChild(errorTemplate);
@@ -86,6 +81,7 @@
     };
     // Функция закрывает сообщение о ошибке по клавише ESC
     var errorButtonKeyEscDownHandler = function (evt) {
+      window.map.formResetHandler();
       window.utils.invokeCallbackByKeydownEsc(closeErrorPopup, evt);
     };
 
@@ -94,10 +90,27 @@
     errorButton.addEventListener('click', errorButtonClickHandler);
     document.addEventListener('keydown', errorButtonKeyEscDownHandler);
   };
+  var successMessageTamplate = document.querySelector('#success');
+  var successMessage = successMessageTamplate.content.querySelector('.success').cloneNode(true);
+  // Функция удаляет дом элемент с сообщением о успешной загрузке
+  var mainHtmlElementRemove = function () {
+    var successMessageDivElement = document.querySelector('.success');
+    mainHtmlElement.removeChild(successMessageDivElement);
+  };
+  // Функция слушатель клика по сообщению о успешной загрзке
+  var successMessageClickHandler = function () {
+    mainHtmlElementRemove();
+  };
+  // Функция слушатель нажатия на  Esc по сообщению о успешной загрзке
+  var successMessageEscKeydownHandler = function (evtKey) {
+    window.utils.invokeCallbackByKeydownEsc(mainHtmlElementRemove, evtKey);
+  };
+
   //  Функция слушатель события submit в случае удачного соединения выводит сообщение SUCCESS
   var submitLoadHandler = function () {
-    var successMessageTamplate = document.querySelector('#success');
-    var successMessage = successMessageTamplate.content.querySelector('.success').cloneNode(true);
+    window.map.formResetHandler();
+    document.addEventListener('click', successMessageClickHandler);
+    document.addEventListener('click', successMessageEscKeydownHandler);
     mainHtmlElement.appendChild(successMessage);
   };
 

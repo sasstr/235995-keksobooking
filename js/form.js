@@ -6,19 +6,21 @@
   var ENABLED_CONDITION = false;
   var DISABLED_CONDITION = true;
   var URL_DOWNLOAD_DATA = 'https://js.dump.academy/keksobooking/data';
-  var URL_SEND_DATA = 'https://js.dump.academy/keksobooking/00';
+  var URL_SEND_DATA = 'https://js.dump.academy/keksobooking/';
+
 
   var fieldsetList = document.querySelectorAll('fieldset');
   var adForm = document.querySelector('.ad-form');
   var inputAddress = document.querySelector('#address');
   var mapPinsElement = document.querySelector('.map__pins');
-  var mapPinsList = document.querySelectorAll('.map__pin');
+
 
   // Функция удаляет все пины
   var removePinsFromScreen = function () {
-    for (var i = 0; i < mapPinsList.length; i++) {
-      if (mapPinsList[i].className === 'map__pin' && mapPinsList[i].className !== 'map__pin--main') {
-        mapPinsElement.removeChild(mapPinsList[i]);
+    var mapPinsListElements = document.querySelectorAll('.map__pin');
+    for (var i = 0; i < mapPinsListElements.length; i++) {
+      if (mapPinsListElements[i].className === 'map__pin' && mapPinsListElements[i].className !== 'map__pin--main') {
+        mapPinsElement.removeChild(mapPinsListElements[i]);
       }
     }
   };
