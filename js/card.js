@@ -1,10 +1,11 @@
 'use strict';
 
 (function () {
-  var ESC_KEYCODE = 27;
+
   var RUBLE_CURRENCY = '\u20BD';
   var ROOM_WORDS = ['комнат', 'комната', 'комнаты'];
   var GUEST_WORDS = ['гостей', 'гостя', 'гостей'];
+
   var cardTemplate = document.querySelector('#card');
 
   // Функция вставляет верное написание слова из массива
@@ -51,9 +52,7 @@
   };
 
   var popupCloseKeydownEscHandler = function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      removeCard();
-    }
+    window.utils.actionKeydownEsc(removeCard, evt);
   };
 
   // Функция создает popup для Пина
@@ -72,6 +71,7 @@
     cardElement.querySelector('.popup__text--capacity').textContent = (ad.offer.rooms + ' ' + getCorrectWord(ad.offer.rooms, ROOM_WORDS) + ' для ' + ad.offer.guests + ' ' + getCorrectWord(ad.offer.guests, GUEST_WORDS));
     cardElement.querySelector('.popup__text--time').textContent = ('Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout);
     cardElement.replaceChild(createFeatureDomElements(ad.offer.features), cardElement.querySelector('.popup__features'));
+    cardElement.querySelector('.popup__features').classList.add('hidden');
     cardElement.querySelector('.popup__description').textContent = ad.offer.description;
     cardElement.querySelector('.popup__close').addEventListener('click', popupCloseClickHandler);
     document.addEventListener('keydown', popupCloseKeydownEscHandler);

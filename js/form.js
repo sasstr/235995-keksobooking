@@ -5,15 +5,66 @@
   var ROOMS = {'1': {'1': 'для 1 гостя'}, '2': {'1': 'для 1 гостя', '2': 'для 2 гостей'}, '3': {'1': 'для 1 гостя', '2': 'для 2 гостей', '3': 'для 3 гостей'}, '100': {'0': 'не для гостей'}};
   var ENABLED_CONDITION = false;
   var DISABLED_CONDITION = true;
+  var URL_DOWNLOAD_DATA = 'https://js.dump.academy/keksobooking/data';
+  var URL_SEND_DATA = 'https://js.dump.academy/keksobooking/';
+
 
   var fieldsetList = document.querySelectorAll('fieldset');
   var adForm = document.querySelector('.ad-form');
   var inputAddress = document.querySelector('#address');
   var mapPinsElement = document.querySelector('.map__pins');
 
+
+  // Функция удаляет все пины
+  var removePinsFromScreen = function () {
+    var mapPinsListElements = document.querySelectorAll('.map__pin');
+    for (var i = 0; i < mapPinsListElements.length; i++) {
+      if (mapPinsListElements[i].className === 'map__pin' && mapPinsListElements[i].className !== 'map__pin--main') {
+        mapPinsElement.removeChild(mapPinsListElements[i]);
+      }
+    }
+  };
+
+  var resetForm = function () {
+    adForm.reset();
+  };
+
+  var successMessageTamplate = document.querySelector('#success');
+  var successMessage = successMessageTamplate.content.querySelector('.success').cloneNode(true);
+
+  // Функция удаляет дом элемент с сообщением о успешной загрузке
+  var mainHtmlElementRemove = function () {
+    var successMessageDivElement = document.querySelector('.success');
+    document.querySelector('main').removeChild(successMessageDivElement);
+  };
+
+  // Функция слушатель нажатия на  Esc по сообщению о успешной загрзке
+  var successMessageEscKeydownHandler = function (evtKey) {
+    document.addEventListener('keydown', mainHtmlElementRemove);
+    window.utils.actionKeydownEsc(mainHtmlElementRemove, evtKey);
+  };
+  document.addEventListener('click', successMessageEscKeydownHandler);
+  // Функция слушатель клика по сообщению о успешной загрзке
+  var successMessageClickHandler = function () {
+    mainHtmlElementRemove();
+  };
+
+  //  Функция слушатель события submit в случае удачного соединения выводит сообщение SUCCESS
+  var submitLoad = function () {
+    window.map.formResetHandler();
+    document.addEventListener('click', successMessageClickHandler);
+    document.addEventListener('click', successMessageEscKeydownHandler);
+    document.querySelector('main').appendChild(successMessage);
+  };
+
+  adForm.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(adForm), submitLoad, window.error.show, URL_SEND_DATA);
+    evt.preventDefault();
+  });
   // Функция, которая переводит страницу в начальное состояние. Реагирует только маффин на перетаскивание мышкой
   var disableForm = function (cb) {
     setConditionForms(DISABLED_CONDITION);
+    adForm.classList.add('ad-form--disabled');
     cb();
   };
 
@@ -21,21 +72,28 @@
     inputAddress.value = address;
   };
 
+  // Функция создает HTML фрагмент элементов пинов
+  var PinsNodeLoadHandler = function (ads) {
+    var pinsFragment = document.createDocumentFragment();
+    for (var i = 0; i < ads.length; i++) {
+      pinsFragment.appendChild(window.map.createPin(ads[i]));
+    }
+    return mapPinsElement.appendChild(pinsFragment);
+  };
+
   // Функция установки начального состояния формы
   var enableForm = function (cb) {
     cb();
+    window.backend.load(PinsNodeLoadHandler, window.backend.createErrorMessage, URL_DOWNLOAD_DATA);
     adForm.classList.remove('ad-form--disabled');
     setConditionForms(ENABLED_CONDITION);
     getRightNumberOfGuests();
     setRightMinPriceOfDwelling();
     setAddress(window.map.getCoordinatesOfMainPin());
-    mapPinsElement.appendChild(window.map.renderPins());
     roomNumber.addEventListener('change', selectRoomsChangeHandler);
     typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
     selectTimeout.addEventListener('change', selectTimeoutChangeHandler);
     selectTimein.addEventListener('change', selectTimeinChangeHandler);
-
-
   };
 
   // Функция устанавливает состояние форм disabled или enabled
@@ -48,11 +106,14 @@
   window.form = {
     setAddress: setAddress,
     enableForm: enableForm,
-    disableForm: disableForm
+    disableForm: disableForm,
+    resetForm: resetForm,
+    removePinsFromScreen: removePinsFromScreen
   };
 
   var roomNumber = document.querySelector('#room_number');
   var capacity = document.querySelector('#capacity');
+
   // Функция создает список select с кол-ом гостей в соответсвии с кол-ом комнат
   var getRightNumberOfGuests = function () {
     capacity.innerHTML = '';
@@ -81,7 +142,8 @@
     inputMinMaxPrice.placeholder = TYPES_OF_HABITATION[typeOfHabitation.value];
   };
 
-  // Функция слушатель события выбора типа жилья, которая вставляет нужное значение минимальной стоимости жилья.
+  // Функция слушатель события выбора типа жилья, которая
+  // вставляет нужное значение минимальной стоимости жилья.
   var inputTypeChangeHandler = function () {
     setRightMinPriceOfDwelling();
   };

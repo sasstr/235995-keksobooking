@@ -4,7 +4,6 @@
   var SHARP_END_MAIN_PIN = 14;
   var DIFFERENCE_ON_TOP = 13;
   var DIFFERENCE_ON_BOTTOM = 15;
-  var NUMBER_OF_ADS = 8;
   var MAX_Y_LOCATION = 630;
   var MIN_Y_LOCATION = 130;
   var PIN_WIDTH = 50;
@@ -16,6 +15,7 @@
   var mapPinMain = document.querySelector('.map__pin--main');
   var map = document.querySelector('.map');
   var adFormReset = document.querySelector('.ad-form__reset');
+
   // Функция колбэк снимает слушатели событий и убирает класс map--faded
   var mapPinMainRemoveEventListeners = function () {
     map.classList.remove('map--faded');
@@ -25,6 +25,7 @@
   };
   // Функция колбэк добавляет слушатели событий
   var mapPinMainAddListeners = function () {
+    map.classList.add('map--faded');
     mapPinMain.addEventListener('mousedown', mainPinMousedownHandler);
     mapPinMain.addEventListener('keydown', mainPinKeydownHandler);
     adFormReset.removeEventListener('click', formResetHandler);
@@ -41,17 +42,13 @@
   var getCoordinatesOfMainPin = function () {
     return Math.round(mapPinMain.offsetLeft + mapPinMain.offsetWidth / 2) + ', ' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + SHARP_END_MAIN_PIN);
   };
-  // Функция возращает DomElement с Пинами
-  var renderPins = function () {
-    var pinsFragment = document.createDocumentFragment();
-    for (var i = 0; i < NUMBER_OF_ADS; i++) {
-      pinsFragment.appendChild(createPin(window.data[i]));
-    }
-    return pinsFragment;
-  };
 
-  // Функция при нажатии на кнопку reset ставит мафин в первоначальное место и в поле адрес добавляет координаты.
+  // Функция при нажатии на кнопку reset переводит страницу в начальное состояние.
   var formResetHandler = function (resetEvt) {
+    window.form.removePinsFromScreen();
+    window.form.resetForm();
+    window.form.disableForm(window.map.mapPinMainAddListeners);
+    window.card.removeCard();
     setTimeout(function () {
       mapPinMain.style.left = START_COORDINATE_X;
       mapPinMain.style.top = START_COORDINATE_Y;
@@ -66,14 +63,39 @@
     }
   };
 
-  // Функция по клику на главный пин переводит окно в активное состояние
+  // Функция по клику на мафин переводит окно в активное состояние
   var mainPinMousedownHandler = function () {
     window.form.enableForm(mapPinMainRemoveEventListeners);
   };
 
+  // Функция создает пин
+  var createPin = function (ad) {
+    var pinElement = document.createElement('button');
+    var pinChildImage = document.createElement('img');
+    var pinElementClickHandler = function () {
+      window.card.removeCard(ad);
+      window.card.showCard(ad);
+    };
+
+    pinElement.classList.add('map__pin');
+    pinElement.style.left = (ad.location.x - PIN_WIDTH / 2) + 'px';
+    pinElement.style.top = (ad.location.y - PIN_HEIGHT) + 'px';
+    pinChildImage.src = ad.author.avatar;
+    pinChildImage.width = 40;
+    pinChildImage.height = 40;
+    pinChildImage.draggable = false;
+    pinChildImage.alt = ad.offer.title;
+    pinElement.appendChild(pinChildImage);
+    pinElement.addEventListener('click', pinElementClickHandler);
+
+    return pinElement;
+  };
+
   window.map = {
     getCoordinatesOfMainPin: getCoordinatesOfMainPin,
-    renderPins: renderPins
+    createPin: createPin,
+    mapPinMainAddListeners: mapPinMainAddListeners,
+    formResetHandler: formResetHandler
   };
 
   // Функция Drag and Drop мафина
@@ -133,27 +155,4 @@
   };
 
   window.addEventListener('load', windowLoadHendler);
-
-  // Функция создает пин
-  var createPin = function (ad) {
-    var pinElement = document.createElement('button');
-    var pinChildImg = document.createElement('img');
-    var pinElementClickHandler = function () {
-      window.card.removeCard(ad);
-      window.card.showCard(ad);
-    };
-
-    pinElement.classList.add('map__pin');
-    pinElement.style.left = (ad.location.x - PIN_WIDTH / 2) + 'px';
-    pinElement.style.top = (ad.location.y - PIN_HEIGHT) + 'px';
-    pinChildImg.src = ad.author.avatar;
-    pinChildImg.width = 40;
-    pinChildImg.height = 40;
-    pinChildImg.draggable = false;
-    pinChildImg.alt = ad.offer.title;
-    pinElement.appendChild(pinChildImg);
-    pinElement.addEventListener('click', pinElementClickHandler);
-
-    return pinElement;
-  };
 })();
