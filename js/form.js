@@ -7,7 +7,7 @@
   var DISABLED_CONDITION = true;
   var URL_DOWNLOAD_DATA = 'https://js.dump.academy/keksobooking/data';
   var URL_SEND_DATA = 'https://js.dump.academy/keksobooking/';
-
+  var LAST_FIVE_PINS = -5;
 
   var fieldsetList = document.querySelectorAll('fieldset');
   var adForm = document.querySelector('.ad-form');
@@ -17,12 +17,10 @@
 
   // Функция удаляет все пины
   var removePinsFromScreen = function () {
-    var mapPinsListElements = document.querySelectorAll('.map__pin');
-    for (var i = 0; i < mapPinsListElements.length; i++) {
-      if (mapPinsListElements[i].className === 'map__pin' && mapPinsListElements[i].className !== 'map__pin--main') {
-        mapPinsElement.removeChild(mapPinsListElements[i]);
-      }
-    }
+    var mapPinsListElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    mapPinsListElements.forEach(function (pin) {
+      pin.remove();
+    });
   };
 
   var resetForm = function () {
@@ -72,12 +70,13 @@
     inputAddress.value = address;
   };
 
-  // Функция создает HTML фрагмент элементов пинов
+  // Функция создает HTML фрагмент элементов пинов и добавляет в DOM этот фрагмент.
   var PinsNodeLoadHandler = function (ads) {
+    var adsClone = ads.slice(LAST_FIVE_PINS);
     var pinsFragment = document.createDocumentFragment();
-    for (var i = 0; i < ads.length; i++) {
-      pinsFragment.appendChild(window.map.createPin(ads[i]));
-    }
+    adsClone.forEach(function (ad) {
+      pinsFragment.appendChild(window.map.createPin(ad));
+    });
     return mapPinsElement.appendChild(pinsFragment);
   };
 
