@@ -52,7 +52,7 @@
   };
 
   var popupCloseKeydownEscHandler = function (evt) {
-    window.utils.invokeCallbackByKeydownEsc(removeCard, evt);
+    window.utils.actionKeydownEsc(removeCard, evt);
   };
 
   // Функция создает popup для Пина

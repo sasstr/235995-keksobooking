@@ -29,11 +29,38 @@
     adForm.reset();
   };
 
+  var successMessageTamplate = document.querySelector('#success');
+  var successMessage = successMessageTamplate.content.querySelector('.success').cloneNode(true);
+
+  // Функция удаляет дом элемент с сообщением о успешной загрузке
+  var mainHtmlElementRemove = function () {
+    var successMessageDivElement = document.querySelector('.success');
+    document.querySelector('main').removeChild(successMessageDivElement);
+  };
+
+  // Функция слушатель нажатия на  Esc по сообщению о успешной загрзке
+  var successMessageEscKeydownHandler = function (evtKey) {
+    document.addEventListener('keydown', mainHtmlElementRemove);
+    window.utils.actionKeydownEsc(mainHtmlElementRemove, evtKey);
+  };
+  document.addEventListener('click', successMessageEscKeydownHandler);
+  // Функция слушатель клика по сообщению о успешной загрзке
+  var successMessageClickHandler = function () {
+    mainHtmlElementRemove();
+  };
+
+  //  Функция слушатель события submit в случае удачного соединения выводит сообщение SUCCESS
+  var submitLoad = function () {
+    window.map.formResetHandler();
+    document.addEventListener('click', successMessageClickHandler);
+    document.addEventListener('click', successMessageEscKeydownHandler);
+    document.querySelector('main').appendChild(successMessage);
+  };
+
   adForm.addEventListener('submit', function (evt) {
-    window.backend.sendDataToServer(new FormData(adForm), window.backend.submitLoadHandler, window.backend.createErrorMessage, URL_SEND_DATA);
+    window.backend.save(new FormData(adForm), submitLoad, window.error.show, URL_SEND_DATA);
     evt.preventDefault();
   });
-
   // Функция, которая переводит страницу в начальное состояние. Реагирует только маффин на перетаскивание мышкой
   var disableForm = function (cb) {
     setConditionForms(DISABLED_CONDITION);
@@ -57,7 +84,7 @@
   // Функция установки начального состояния формы
   var enableForm = function (cb) {
     cb();
-    window.backend.receiveDataFromServer(PinsNodeLoadHandler, window.backend.createErrorMessage, URL_DOWNLOAD_DATA);
+    window.backend.load(PinsNodeLoadHandler, window.backend.createErrorMessage, URL_DOWNLOAD_DATA);
     adForm.classList.remove('ad-form--disabled');
     setConditionForms(ENABLED_CONDITION);
     getRightNumberOfGuests();

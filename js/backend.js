@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var TIMEOUT = 1000; // @fixme вернуть 10000
+  var TIMEOUT = 10000;
 
   // Пречисление кодов статусас сервера
   var ServerStatusCode = {
@@ -59,63 +59,6 @@
     });
     return xhr;
   };
-  var mainHtmlElement = document.querySelector('main');
-
-  // Функция создает дом элмент с сообщением о ошибки
-  var createErrorMessage = function (errorText) {
-    var template = document.querySelector('#error');
-    var errorTemplate = template.content.querySelector('.error').cloneNode(true);
-    var errorButton = errorTemplate.querySelector('.error__button');
-
-    // Функция слушатель события клик переводит форму в неактивное состояние
-    var errorButtonClickHandler = function () {
-      window.map.formResetHandler();
-      errorButton.removeEventListener('click', errorButtonClickHandler);
-      mainHtmlElement.removeChild(errorTemplate);
-    };
-      // Функция закрывает popup
-    var closeErrorPopup = function () {
-      mainHtmlElement.removeChild(errorTemplate);
-      document.removeEventListener('keydown', errorButtonKeyEscDownHandler);
-      errorButton.removeEventListener('click', errorButtonClickHandler);
-    };
-    // Функция закрывает сообщение о ошибке по клавише ESC
-    var errorButtonKeyEscDownHandler = function (evt) {
-      window.map.formResetHandler();
-      window.utils.invokeCallbackByKeydownEsc(closeErrorPopup, evt);
-    };
-
-    errorTemplate.querySelector('.error__message').textContent = errorText;
-    mainHtmlElement.appendChild(errorTemplate);
-    errorButton.addEventListener('click', errorButtonClickHandler);
-    document.addEventListener('keydown', errorButtonKeyEscDownHandler);
-  };
-  var successMessageTamplate = document.querySelector('#success');
-  var successMessage = successMessageTamplate.content.querySelector('.success').cloneNode(true);
-
-  // Функция удаляет дом элемент с сообщением о успешной загрузке
-  var mainHtmlElementRemove = function () {
-    var successMessageDivElement = document.querySelector('.success');
-    mainHtmlElement.removeChild(successMessageDivElement);
-  };
-  // Функция слушатель клика по сообщению о успешной загрзке
-  var successMessageClickHandler = function () {
-    mainHtmlElementRemove();
-  };
-  // Функция слушатель нажатия на  Esc по сообщению о успешной загрзке
-  var successMessageEscKeydownHandler = function (evtKey) {
-    document.addEventListener('keydown', mainHtmlElementRemove);
-    window.utils.invokeCallbackByKeydownEsc(mainHtmlElementRemove, evtKey);
-  };
-  document.addEventListener('click', successMessageEscKeydownHandler);
-
-  //  Функция слушатель события submit в случае удачного соединения выводит сообщение SUCCESS
-  var submitLoadHandler = function () {
-    window.map.formResetHandler();
-    document.addEventListener('click', successMessageClickHandler);
-    document.addEventListener('click', successMessageEscKeydownHandler);
-    mainHtmlElement.appendChild(successMessage);
-  };
 
   // Функция получения информайции с сервера
   var receiveDataFromServer = function (loadHandler, errorHandler, urlDownloadData) {
@@ -131,9 +74,7 @@
   };
 
   window.backend = {
-    receiveDataFromServer: receiveDataFromServer,
-    sendDataToServer: sendDataToServer,
-    createErrorMessage: createErrorMessage,
-    submitLoadHandler: submitLoadHandler
+    load: receiveDataFromServer,
+    save: sendDataToServer
   };
 })();
