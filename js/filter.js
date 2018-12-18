@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var PINS_NUMBER = 5;
+  var PINS_NUMBER = -5;
 
   var housingType = document.querySelector('#housing-type');
   var housingRooms = document.querySelector('#housing-rooms');
@@ -25,19 +25,19 @@
   };
   // Функция проверяет какая option выбрана в select housingType.
   var getSelectedTypeOfDwelling = function (ad) {
-    /* if (housingType.value === 'any') {
+    if (housingType.value === 'any') {
       return true;
     }
-    return housingType.value === ad.offer.type; */
-    checkIsOptionSelected(ad.offer.type, housingType);
+    return housingType.value === ad.offer.type;
+    /* checkIsOptionSelected(ad.offer.type, housingType); */
   };
   // Функция проверяет какая option выбрана в select housingRooms.
   var getSelectedRoomNumber = function (ad) {
-    /* if (housingRooms.value === 'any') {
+    if (housingRooms.value === 'any') {
       return true;
     }
-    return parseInt(housingRooms.value, 10) === ad.offer.rooms; */
-    checkIsOptionSelected(ad.offer.rooms, housingRooms);
+    return parseInt(housingRooms.value, 10) === ad.offer.rooms;
+    /* checkIsOptionSelected(ad.offer.rooms, housingRooms);*/
   };
   // Функция проверяет какая option выбрана в select housingGuests.
   var getSelectedGuestsNumber = function (ad) {
@@ -68,18 +68,19 @@
   var getFiltredPins = function () {
     window.card.removeCard();
     window.form.removePinsFromScreen();
-    var filteredPins = window.adsLoaded.filter(function (ad) {
-      return getSelectedTypeOfDwelling(ad) && getSelectedPriceLevel(ad) && getSelectedRoomNumber(ad) && getSelectedGuestsNumber(ad) && getSelectedFeatures(ad);
-    }).slice(PINS_NUMBER);
-
-    document.querySelector('.map__pins').append(window.form.showPins(filteredPins));
-
+    if (window.adsLoaded) {
+      var adsLoadedClone = window.adsLoaded.slice();
+      var filteredPins = adsLoadedClone.filter(function (ad) {
+        return getSelectedTypeOfDwelling(ad) && getSelectedPriceLevel(ad) && getSelectedRoomNumber(ad) && getSelectedGuestsNumber(ad) && getSelectedFeatures(ad);
+      }).slice(PINS_NUMBER);
+      console.log(filteredPins);
+      document.querySelector('.map__pins').append(window.form.showPins(filteredPins));
+    }
   };
 
-  var filterChangeHandler = window.debounce.debounceController(getFiltredPins);
+  // var filterChangeHandler = window.debounce.debounceController(getFiltredPins);
 
   window.filter = {
-    filterChangeHandler: filterChangeHandler
+    filterChangeHandler: getFiltredPins
   };
-
 })();
