@@ -13,7 +13,7 @@
   var adForm = document.querySelector('.ad-form');
   var inputAddress = document.querySelector('#address');
   var mapPinsElement = document.querySelector('.map__pins');
-
+  var mapFilters = document.querySelector('.map__filters');
 
   // Функция удаляет все пины
   var removePinsFromScreen = function () {
@@ -62,6 +62,7 @@
   // Функция, которая переводит страницу в начальное состояние. Реагирует только маффин на перетаскивание мышкой
   var disableForm = function (cb) {
     setConditionForms(DISABLED_CONDITION);
+    mapFilters.removeEventListener('change', window.filter.filterChangeHandler);
     adForm.classList.add('ad-form--disabled');
     cb();
   };
@@ -70,14 +71,20 @@
     inputAddress.value = address;
   };
 
-  // Функция создает HTML фрагмент элементов пинов и добавляет в DOM этот фрагмент.
-  var PinsNodeLoadHandler = function (ads) {
-    var adsClone = ads.slice(LAST_FIVE_PINS);
+  // Функция отрисовки Пинов.
+  var showPins = function (ads) {
     var pinsFragment = document.createDocumentFragment();
-    adsClone.forEach(function (ad) {
+    ads.forEach(function (ad) {
       pinsFragment.appendChild(window.map.createPin(ad));
     });
     return mapPinsElement.appendChild(pinsFragment);
+  };
+
+  // Функция создает HTML фрагмент элементов пинов и добавляет в DOM этот фрагмент.
+  var PinsNodeLoadHandler = function (ads) {
+    window.adsLoaded = ads;
+    var adsClone = ads.slice(LAST_FIVE_PINS);
+    showPins(adsClone);
   };
 
   // Функция установки начального состояния формы
@@ -89,6 +96,7 @@
     getRightNumberOfGuests();
     setRightMinPriceOfDwelling();
     setAddress(window.map.getCoordinatesOfMainPin());
+    mapFilters.addEventListener('change', window.filter.filterChangeHandler);
     roomNumber.addEventListener('change', selectRoomsChangeHandler);
     typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
     selectTimeout.addEventListener('change', selectTimeoutChangeHandler);
@@ -107,7 +115,8 @@
     enableForm: enableForm,
     disableForm: disableForm,
     resetForm: resetForm,
-    removePinsFromScreen: removePinsFromScreen
+    removePinsFromScreen: removePinsFromScreen,
+    showPins: showPins
   };
 
   var roomNumber = document.querySelector('#room_number');
