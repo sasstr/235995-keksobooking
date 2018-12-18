@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var PINS_NUMBER = -5;
-
   var housingType = document.querySelector('#housing-type');
   var housingRooms = document.querySelector('#housing-rooms');
   var housingGuests = document.querySelector('#housing-guests');
@@ -76,8 +74,8 @@
       var adsLoadedClone = window.adsLoaded.slice();
       var filteredPins = adsLoadedClone.filter(function (ad) {
         return getSelectedTypeOfDwelling(ad) && getSelectedPriceLevel(ad) && getSelectedRoomNumber(ad) && getSelectedGuestsNumber(ad) && getSelectedFeatures(ad);
-      }).slice(PINS_NUMBER);
-      console.log(filteredPins);
+      });
+      filteredPins = window.form.cutLastFivePins(filteredPins);
       document.querySelector('.map__pins').append(window.form.showPins(filteredPins));
     }
   };

@@ -71,6 +71,11 @@
     inputAddress.value = address;
   };
 
+  // Функция отрезает от массива последние пять элементов.
+  var cutLastFivePins = function (pinsArray) {
+    return pinsArray.slice(LAST_FIVE_PINS);
+  };
+
   // Функция отрисовки Пинов.
   var showPins = function (ads) {
     var pinsFragment = document.createDocumentFragment();
@@ -83,7 +88,7 @@
   // Функция создает HTML фрагмент элементов пинов и добавляет в DOM этот фрагмент.
   var PinsNodeLoadHandler = function (ads) {
     window.adsLoaded = ads;
-    var adsClone = ads.slice(LAST_FIVE_PINS);
+    var adsClone = cutLastFivePins(ads);
     showPins(adsClone);
   };
 
@@ -116,7 +121,8 @@
     disableForm: disableForm,
     resetForm: resetForm,
     removePinsFromScreen: removePinsFromScreen,
-    showPins: showPins
+    showPins: showPins,
+    cutLastFivePins: cutLastFivePins
   };
 
   var roomNumber = document.querySelector('#room_number');
