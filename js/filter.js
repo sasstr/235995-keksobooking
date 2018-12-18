@@ -14,7 +14,7 @@
     EXPENSIVE: 50000
   };
   // Функция проверяет какая option выбрана в select.
-  var checkIsOptionSelected = function (adItem, selectItem) {
+  /* var checkIsOptionSelected = function (adItem, selectItem) {
     if (selectItem.value === 'any') {
       return true;
     } else if ((parseInt(selectItem.value, 10).isInteger)) {
@@ -22,7 +22,7 @@
     } else {
       return selectItem.value === adItem;
     }
-  };
+  }; */
   // Функция проверяет какая option выбрана в select housingType.
   var getSelectedTypeOfDwelling = function (ad) {
     if (housingType.value === 'any') {
@@ -41,7 +41,11 @@
   };
   // Функция проверяет какая option выбрана в select housingGuests.
   var getSelectedGuestsNumber = function (ad) {
-    checkIsOptionSelected(ad.offer.guests, housingGuests);
+    if (housingGuests.value === 'any') {
+      return true;
+    }
+    return parseInt(housingGuests.value, 10) === ad.offer.guests;
+    /* checkIsOptionSelected(ad.offer.guests, housingGuests); */
   };
   // Функция проверяет какие checkbox-ы чекнуты в housingPrice.
   var getSelectedFeatures = function (ad) {
