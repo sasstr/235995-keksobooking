@@ -63,7 +63,6 @@
     var popupCloseClickHandler = function () {
       removeCard();
     };
-
     cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
     cardElement.querySelector('.popup__title').textContent = ad.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = ad.offer.address;
@@ -76,7 +75,11 @@
     cardElement.querySelector('.popup__close').addEventListener('click', popupCloseClickHandler);
     document.addEventListener('keydown', popupCloseKeydownEscHandler);
     cardElement.replaceChild(createPopupPhotos(ad), cardElement.querySelector('.popup__photos'));
-
+    cardElement.childNodes.forEach(function (item, i) {
+      if ((item.textContent === '' && item.childNodes.length === 0 && item.src === undefined) || item.src === '') {
+        cardElement.childNodes[i].classList.add('hidden');
+      }
+    });
     return cardElement;
   };
 
@@ -98,4 +101,5 @@
     showCard: showCard,
     removeCard: removeCard,
   };
+
 })();

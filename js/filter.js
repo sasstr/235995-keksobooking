@@ -11,39 +11,18 @@
     CHEAP: 10000,
     EXPENSIVE: 50000
   };
-  // Функция проверяет какая option выбрана в select.
-  /* var checkIsOptionSelected = function (adItem, selectItem) {
-    if (selectItem.value === 'any') {
-      return true;
-    } else if ((parseInt(selectItem.value, 10).isInteger)) {
-      return parseInt(selectItem.value, 10) === adItem;
-    } else {
-      return selectItem.value === adItem;
-    }
-  }; */
   // Функция проверяет какая option выбрана в select housingType.
   var getSelectedTypeOfDwelling = function (ad) {
-    if (housingType.value === 'any') {
-      return true;
-    }
-    return housingType.value === ad.offer.type;
-    /* checkIsOptionSelected(ad.offer.type, housingType); */
+    return (housingType.value === 'any') || housingType.value === ad.offer.type;
   };
   // Функция проверяет какая option выбрана в select housingRooms.
   var getSelectedRoomNumber = function (ad) {
-    if (housingRooms.value === 'any') {
-      return true;
-    }
-    return parseInt(housingRooms.value, 10) === ad.offer.rooms;
-    /* checkIsOptionSelected(ad.offer.rooms, housingRooms);*/
+    return (housingRooms.value === 'any') || parseInt(housingRooms.value, 10) === ad.offer.rooms;
+
   };
   // Функция проверяет какая option выбрана в select housingGuests.
   var getSelectedGuestsNumber = function (ad) {
-    if (housingGuests.value === 'any') {
-      return true;
-    }
-    return parseInt(housingGuests.value, 10) === ad.offer.guests;
-    /* checkIsOptionSelected(ad.offer.guests, housingGuests); */
+    return (housingGuests.value === 'any') || parseInt(housingGuests.value, 10) === ad.offer.guests;
   };
   // Функция проверяет какие checkbox-ы чекнуты в housingPrice.
   var getSelectedFeatures = function (ad) {
@@ -70,8 +49,8 @@
   var getFiltredPins = function () {
     window.card.removeCard();
     window.form.removePinsFromScreen();
-    if (window.adsLoaded) {
-      var adsLoadedClone = window.adsLoaded.slice();
+    var adsLoadedClone = window.adsLoaded.slice();
+    if (adsLoadedClone) {
       var filteredPins = adsLoadedClone.filter(function (ad) {
         return getSelectedTypeOfDwelling(ad) && getSelectedPriceLevel(ad) && getSelectedRoomNumber(ad) && getSelectedGuestsNumber(ad) && getSelectedFeatures(ad);
       });
@@ -80,9 +59,11 @@
     }
   };
 
-  // var filterChangeHandler = window.debounce.debounceController(getFiltredPins);
+  var actDebounce = function () {
+    window.debounce(getFiltredPins);
+  };
 
   window.filter = {
-    filterChangeHandler: getFiltredPins
+    filterChangeHandler: actDebounce
   };
 })();
