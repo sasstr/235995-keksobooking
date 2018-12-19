@@ -68,6 +68,13 @@
     window.form.enableForm(mapPinMainRemoveEventListeners);
   };
 
+  // Функция удаляет класс map__pin--active если он есть на  одном из дом элементов
+  var deleteClassMapPinActive = function () {
+    if (map.querySelector('.map__pin--active')) {
+      map.querySelector('.map__pin--active').classList.remove('map__pin--active');
+    }
+  };
+
   // Функция создает пин
   var createPin = function (ad) {
     var pinElement = document.createElement('button');
@@ -75,6 +82,8 @@
     var pinElementClickHandler = function () {
       window.card.removeCard(ad);
       window.card.showCard(ad);
+      deleteClassMapPinActive();
+      pinElement.classList.add('map__pin--active');
     };
 
     pinElement.classList.add('map__pin');
@@ -95,7 +104,8 @@
     getCoordinatesOfMainPin: getCoordinatesOfMainPin,
     createPin: createPin,
     mapPinMainAddListeners: mapPinMainAddListeners,
-    formResetHandler: formResetHandler
+    formResetHandler: formResetHandler,
+    deleteClassMapPinActive: deleteClassMapPinActive
   };
 
   // Функция Drag and Drop мафина

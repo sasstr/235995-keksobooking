@@ -5,6 +5,7 @@
   var RUBLE_CURRENCY = '\u20BD';
   var ROOM_WORDS = ['комнат', 'комната', 'комнаты'];
   var GUEST_WORDS = ['гостей', 'гостя', 'гостей'];
+  var TYPES_OF_DWELLING = {'palace': 'Дворец', 'flat': 'Квартира', 'house': 'Дом', 'bungalo': 'Бунгало'};
 
   var cardTemplate = document.querySelector('#card');
 
@@ -62,21 +63,23 @@
     var popupCloseClickHandler = function () {
       removeCard();
     };
-
     cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
     cardElement.querySelector('.popup__title').textContent = ad.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = ad.offer.address;
     cardElement.querySelector('.popup__text--price').textContent = (ad.offer.price + RUBLE_CURRENCY + '/ночь');
-    cardElement.querySelector('.popup__type').textContent = ad.offer.type;
+    cardElement.querySelector('.popup__type').textContent = TYPES_OF_DWELLING[ad.offer.type];
     cardElement.querySelector('.popup__text--capacity').textContent = (ad.offer.rooms + ' ' + getCorrectWord(ad.offer.rooms, ROOM_WORDS) + ' для ' + ad.offer.guests + ' ' + getCorrectWord(ad.offer.guests, GUEST_WORDS));
     cardElement.querySelector('.popup__text--time').textContent = ('Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout);
     cardElement.replaceChild(createFeatureDomElements(ad.offer.features), cardElement.querySelector('.popup__features'));
-    cardElement.querySelector('.popup__features').classList.add('hidden');
     cardElement.querySelector('.popup__description').textContent = ad.offer.description;
     cardElement.querySelector('.popup__close').addEventListener('click', popupCloseClickHandler);
     document.addEventListener('keydown', popupCloseKeydownEscHandler);
     cardElement.replaceChild(createPopupPhotos(ad), cardElement.querySelector('.popup__photos'));
-
+    cardElement.childNodes.forEach(function (item, i) {
+      if ((item.textContent === '' && item.childNodes.length === 0 && item.src === undefined) || item.src === '') {
+        cardElement.childNodes[i].classList.add('hidden');
+      }
+    });
     return cardElement;
   };
 
@@ -88,6 +91,7 @@
   var removeCard = function () {
     var cardElement = document.querySelector('.map__card');
     if (cardElement) {
+      window.map.deleteClassMapPinActive();
       cardElement.remove();
       document.removeEventListener('keydown', popupCloseKeydownEscHandler);
     }
@@ -97,4 +101,5 @@
     showCard: showCard,
     removeCard: removeCard,
   };
+
 })();

@@ -7,22 +7,20 @@
   var DISABLED_CONDITION = true;
   var URL_DOWNLOAD_DATA = 'https://js.dump.academy/keksobooking/data';
   var URL_SEND_DATA = 'https://js.dump.academy/keksobooking/';
-
+  var LAST_FIVE_PINS = -5;
 
   var fieldsetList = document.querySelectorAll('fieldset');
   var adForm = document.querySelector('.ad-form');
   var inputAddress = document.querySelector('#address');
   var mapPinsElement = document.querySelector('.map__pins');
-
+  var mapFilters = document.querySelector('.map__filters');
 
   // Функция удаляет все пины
   var removePinsFromScreen = function () {
-    var mapPinsListElements = document.querySelectorAll('.map__pin');
-    for (var i = 0; i < mapPinsListElements.length; i++) {
-      if (mapPinsListElements[i].className === 'map__pin' && mapPinsListElements[i].className !== 'map__pin--main') {
-        mapPinsElement.removeChild(mapPinsListElements[i]);
-      }
-    }
+    var mapPinsListElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    mapPinsListElements.forEach(function (pin) {
+      pin.remove();
+    });
   };
 
   var resetForm = function () {
@@ -35,7 +33,9 @@
   // Функция удаляет дом элемент с сообщением о успешной загрузке
   var mainHtmlElementRemove = function () {
     var successMessageDivElement = document.querySelector('.success');
-    document.querySelector('main').removeChild(successMessageDivElement);
+    if (successMessageDivElement) {
+      document.querySelector('main').removeChild(successMessageDivElement);
+    }
   };
 
   // Функция слушатель нажатия на  Esc по сообщению о успешной загрзке
@@ -63,7 +63,9 @@
   });
   // Функция, которая переводит страницу в начальное состояние. Реагирует только маффин на перетаскивание мышкой
   var disableForm = function (cb) {
-    setConditionForms(DISABLED_CONDITION);
+    setConditionForms(DISABLED_CONDITION, fieldsetList);
+    setConditionForms(DISABLED_CONDITION, mapFilters.childNodes);
+    mapFilters.removeEventListener('change', window.filter.filterChangeHandler);
     adForm.classList.add('ad-form--disabled');
     cb();
   };
@@ -72,24 +74,39 @@
     inputAddress.value = address;
   };
 
-  // Функция создает HTML фрагмент элементов пинов
-  var PinsNodeLoadHandler = function (ads) {
+  // Функция отрезает от массива последние пять элементов.
+  var cutLastFivePins = function (pinsArray) {
+    return pinsArray.slice(LAST_FIVE_PINS);
+  };
+
+  // Функция отрисовки Пинов.
+  var showPins = function (ads) {
     var pinsFragment = document.createDocumentFragment();
-    for (var i = 0; i < ads.length; i++) {
-      pinsFragment.appendChild(window.map.createPin(ads[i]));
-    }
+    ads.forEach(function (ad) {
+      pinsFragment.appendChild(window.map.createPin(ad));
+    });
     return mapPinsElement.appendChild(pinsFragment);
+  };
+
+  // Функция создает HTML фрагмент элементов пинов и добавляет в DOM этот фрагмент.
+  var PinsNodeLoadHandler = function (ads) {
+    window.adsLoaded = ads;
+    var adsClone = cutLastFivePins(ads);
+    showPins(adsClone);
+    setConditionForms(ENABLED_CONDITION, mapFilters.childNodes);
   };
 
   // Функция установки начального состояния формы
   var enableForm = function (cb) {
     cb();
-    window.backend.load(PinsNodeLoadHandler, window.backend.createErrorMessage, URL_DOWNLOAD_DATA);
+    window.backend.load(PinsNodeLoadHandler, window.error.show, URL_DOWNLOAD_DATA);
     adForm.classList.remove('ad-form--disabled');
-    setConditionForms(ENABLED_CONDITION);
+    setConditionForms(ENABLED_CONDITION, fieldsetList);
+
     getRightNumberOfGuests();
     setRightMinPriceOfDwelling();
     setAddress(window.map.getCoordinatesOfMainPin());
+    mapFilters.addEventListener('change', window.filter.filterChangeHandler);
     roomNumber.addEventListener('change', selectRoomsChangeHandler);
     typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
     selectTimeout.addEventListener('change', selectTimeoutChangeHandler);
@@ -97,9 +114,9 @@
   };
 
   // Функция устанавливает состояние форм disabled или enabled
-  var setConditionForms = function (condition) {
-    for (var i = 0; i < fieldsetList.length; i++) {
-      fieldsetList[i].disabled = condition;
+  var setConditionForms = function (condition, htmlElementList) {
+    for (var i = 0; i < htmlElementList.length; i++) {
+      htmlElementList[i].disabled = condition;
     }
   };
 
@@ -108,7 +125,9 @@
     enableForm: enableForm,
     disableForm: disableForm,
     resetForm: resetForm,
-    removePinsFromScreen: removePinsFromScreen
+    removePinsFromScreen: removePinsFromScreen,
+    showPins: showPins,
+    cutLastFivePins: cutLastFivePins
   };
 
   var roomNumber = document.querySelector('#room_number');
