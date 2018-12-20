@@ -24,7 +24,7 @@
     // Функция закрывает сообщение о ошибке по клавише ESC
     var errorButtonKeyEscDownHandler = function (evt) {
       window.map.formResetHandler();
-      window.utils(closeErrorPopup, evt);
+      window.utils.checkEscKeyCode(closeErrorPopup, evt);
     };
 
     errorTemplate.querySelector('.error__message').textContent = errorText;

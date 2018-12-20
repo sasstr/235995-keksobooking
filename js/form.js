@@ -46,7 +46,7 @@
   // Функция слушатель нажатия на  Esc по сообщению о успешной загрзке
   var successMessageEscKeydownHandler = function (evtKey) {
     document.addEventListener('keydown', mainHtmlElementRemove);
-    window.utils(mainHtmlElementRemove, evtKey);
+    window.utils.checkEscKeyCode(mainHtmlElementRemove, evtKey);
   };
   document.addEventListener('click', successMessageEscKeydownHandler);
   // Функция слушатель клика по сообщению о успешной загрзке
