@@ -61,20 +61,20 @@
   };
 
   // Функция получения информайции с сервера
-  var receiveDataFromServer = function (loadHandler, errorHandler, urlDownloadData) {
+  var receiveData = function (loadHandler, errorHandler, urlDownloadData) {
     var xhr = createXmlHttpRequest(loadHandler, errorHandler, urlDownloadData);
     xhr.open('GET', urlDownloadData);
     xhr.send();
   };
   // Функция отправки информайции на сервер
-  var sendDataToServer = function (data, loadHandler, errorHandler, urlSendData) {
+  var sendData = function (data, loadHandler, errorHandler, urlSendData) {
     var xhr = createXmlHttpRequest(loadHandler, errorHandler, urlSendData);
     xhr.open('POST', urlSendData);
     xhr.send(data);
   };
 
   window.backend = {
-    load: receiveDataFromServer,
-    save: sendDataToServer
+    load: receiveData,
+    save: sendData
   };
 })();

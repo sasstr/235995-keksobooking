@@ -12,20 +12,20 @@
     EXPENSIVE: 50000
   };
   // Функция проверяет какая option выбрана в select housingType.
-  var getSelectedTypeOfDwelling = function (ad) {
+  var getType = function (ad) {
     return (housingType.value === 'any') || housingType.value === ad.offer.type;
   };
   // Функция проверяет какая option выбрана в select housingRooms.
-  var getSelectedRoomNumber = function (ad) {
+  var getRooms = function (ad) {
     return (housingRooms.value === 'any') || parseInt(housingRooms.value, 10) === ad.offer.rooms;
 
   };
   // Функция проверяет какая option выбрана в select housingGuests.
-  var getSelectedGuestsNumber = function (ad) {
+  var getGuests = function (ad) {
     return (housingGuests.value === 'any') || parseInt(housingGuests.value, 10) === ad.offer.guests;
   };
   // Функция проверяет какие checkbox-ы чекнуты в housingPrice.
-  var getSelectedFeatures = function (ad) {
+  var getFeatures = function (ad) {
     var checkedFetures = housingFeatures.querySelectorAll('input[type=checkbox]:checked');
     var fetureContent = true;
     Array.from(checkedFetures).every(function (checkbox) {
@@ -35,7 +35,7 @@
     return fetureContent;
   };
   // Функция проверяет какой интервал цен выбран в housingFeatures.
-  var getSelectedPriceLevel = function (ad) {
+  var getPriceLevel = function (ad) {
     if (housingPrice.value === 'low') {
       return PriceLevel.CHEAP > ad.offer.price;
     } else if (housingPrice.value === 'middle') {
@@ -52,9 +52,9 @@
     var adsLoadedClone = window.adsLoaded.slice();
     if (adsLoadedClone) {
       var filteredPins = adsLoadedClone.filter(function (ad) {
-        return getSelectedTypeOfDwelling(ad) && getSelectedPriceLevel(ad) && getSelectedRoomNumber(ad) && getSelectedGuestsNumber(ad) && getSelectedFeatures(ad);
+        return getType(ad) && getPriceLevel(ad) && getRooms(ad) && getGuests(ad) && getFeatures(ad);
       });
-      filteredPins = window.form.cutLastFivePins(filteredPins);
+      filteredPins = window.form.cutPins(filteredPins);
       document.querySelector('.map__pins').append(window.form.showPins(filteredPins));
     }
   };

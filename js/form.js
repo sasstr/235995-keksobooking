@@ -14,6 +14,15 @@
   var inputAddress = document.querySelector('#address');
   var mapPinsElement = document.querySelector('.map__pins');
   var mapFilters = document.querySelector('.map__filters');
+  var successMessageTamplate = document.querySelector('#success');
+  var successMessage = successMessageTamplate.content.querySelector('.success').cloneNode(true);
+  var typeOfHabitation = document.querySelector('#type');
+  var inputMinMaxPrice = document.querySelector('#price');
+  var roomNumber = document.querySelector('#room_number');
+  var capacity = document.querySelector('#capacity');
+  var selectTimein = document.querySelector('#timein');
+  var selectTimeout = document.querySelector('#timeout');
+
 
   // Функция удаляет все пины
   var removePinsFromScreen = function () {
@@ -27,9 +36,6 @@
     adForm.reset();
   };
 
-  var successMessageTamplate = document.querySelector('#success');
-  var successMessage = successMessageTamplate.content.querySelector('.success').cloneNode(true);
-
   // Функция удаляет дом элемент с сообщением о успешной загрузке
   var mainHtmlElementRemove = function () {
     var successMessageDivElement = document.querySelector('.success');
@@ -41,7 +47,7 @@
   // Функция слушатель нажатия на  Esc по сообщению о успешной загрзке
   var successMessageEscKeydownHandler = function (evtKey) {
     document.addEventListener('keydown', mainHtmlElementRemove);
-    window.utils.actionKeydownEsc(mainHtmlElementRemove, evtKey);
+    window.utils(mainHtmlElementRemove, evtKey);
   };
   document.addEventListener('click', successMessageEscKeydownHandler);
   // Функция слушатель клика по сообщению о успешной загрзке
@@ -75,7 +81,7 @@
   };
 
   // Функция отрезает от массива последние пять элементов.
-  var cutLastFivePins = function (pinsArray) {
+  var cutPins = function (pinsArray) {
     return pinsArray.slice(LAST_FIVE_PINS);
   };
 
@@ -91,7 +97,7 @@
   // Функция создает HTML фрагмент элементов пинов и добавляет в DOM этот фрагмент.
   var PinsNodeLoadHandler = function (ads) {
     window.adsLoaded = ads;
-    var adsClone = cutLastFivePins(ads);
+    var adsClone = cutPins(ads);
     showPins(adsClone);
     setConditionForms(ENABLED_CONDITION, mapFilters.childNodes);
   };
@@ -102,7 +108,6 @@
     window.backend.load(PinsNodeLoadHandler, window.error.show, URL_DOWNLOAD_DATA);
     adForm.classList.remove('ad-form--disabled');
     setConditionForms(ENABLED_CONDITION, fieldsetList);
-
     getRightNumberOfGuests();
     setRightMinPriceOfDwelling();
     setAddress(window.map.getCoordinatesOfMainPin());
@@ -127,11 +132,8 @@
     resetForm: resetForm,
     removePinsFromScreen: removePinsFromScreen,
     showPins: showPins,
-    cutLastFivePins: cutLastFivePins
+    cutPins: cutPins
   };
-
-  var roomNumber = document.querySelector('#room_number');
-  var capacity = document.querySelector('#capacity');
 
   // Функция создает список select с кол-ом гостей в соответсвии с кол-ом комнат
   var getRightNumberOfGuests = function () {
@@ -152,9 +154,6 @@
     getRightNumberOfGuests();
   };
 
-  var typeOfHabitation = document.querySelector('#type');
-  var inputMinMaxPrice = document.querySelector('#price');
-
   // Функция вставляет в разметку минмальную стоимость жилья
   var setRightMinPriceOfDwelling = function () {
     inputMinMaxPrice.min = TYPES_OF_HABITATION[typeOfHabitation.value];
@@ -166,9 +165,6 @@
   var inputTypeChangeHandler = function () {
     setRightMinPriceOfDwelling();
   };
-
-  var selectTimein = document.querySelector('#timein');
-  var selectTimeout = document.querySelector('#timeout');
 
   // Функция синхронизации времени въезда и отъезда гостя
   var selectTimeinChangeHandler = function () {
