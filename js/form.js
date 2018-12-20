@@ -25,7 +25,7 @@
 
   // Функция удаляет все пины
   var removePinsFromScreen = function () {
-    var mapPinsListElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    var mapPinsListElements = mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)');
     mapPinsListElements.forEach(function (pin) {
       pin.remove();
     });
