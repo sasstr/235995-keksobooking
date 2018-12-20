@@ -56,13 +56,15 @@
     window.utils.checkEscKeyCode(removeCard, evt);
   };
 
+  var popupCloseClickHandler = function () {
+    removeCard();
+  };
+
   // Функция создает popup для Пина
   var createAdCard = function (ad) {
     removeCard();
     var cardElement = cardTemplate.content.querySelector('.map__card').cloneNode(true);
-    var popupCloseClickHandler = function () {
-      removeCard();
-    };
+
     cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
     cardElement.querySelector('.popup__title').textContent = ad.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = ad.offer.address;
@@ -92,8 +94,9 @@
     var cardElement = document.querySelector('.map__card');
     if (cardElement) {
       window.map.deleteClassMapPinActive();
-      cardElement.remove();
+      cardElement.querySelector('.popup__close').removeEventListener('click', popupCloseClickHandler);
       document.removeEventListener('keydown', popupCloseKeydownEscHandler);
+      cardElement.remove();
     }
   };
 

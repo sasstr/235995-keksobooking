@@ -71,6 +71,10 @@
     setConditionForms(DISABLED_CONDITION, fieldsetList);
     setConditionForms(DISABLED_CONDITION, mapFilters.childNodes);
     mapFilters.removeEventListener('change', window.filter.filterChangeHandler);
+    roomNumber.removeEventListener('change', selectRoomsChangeHandler);
+    typeOfHabitation.removeEventListener('change', inputTypeChangeHandler);
+    selectTimeout.removeEventListener('change', selectTimeoutChangeHandler);
+    selectTimein.removeEventListener('change', selectTimeinChangeHandler);
     adForm.classList.add('ad-form--disabled');
     cb();
   };
