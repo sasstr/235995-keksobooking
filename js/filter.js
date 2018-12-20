@@ -50,6 +50,7 @@
     window.card.removeCard();
     window.form.removePinsFromScreen();
     var adsLoadedClone = window.adsLoaded.slice();
+
     if (adsLoadedClone) {
       var filteredPins = adsLoadedClone.filter(function (ad) {
         return getType(ad) && getPriceLevel(ad) && getRooms(ad) && getGuests(ad) && getFeatures(ad);

@@ -12,8 +12,8 @@
   var START_COORDINATE_Y = '375px';
   var ENTER_KEYCODE = 'Enter';
 
-  var mapPinMain = document.querySelector('.map__pin--main');
   var map = document.querySelector('.map');
+  var mapPinMain = map.querySelector('.map__pin--main');
   var adFormReset = document.querySelector('.ad-form__reset');
 
   // Функция колбэк снимает слушатели событий и убирает класс map--faded
