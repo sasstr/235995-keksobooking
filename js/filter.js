@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var OPTION_ANY = 'any';
+
   var housingType = document.querySelector('#housing-type');
   var housingRooms = document.querySelector('#housing-rooms');
   var housingGuests = document.querySelector('#housing-guests');
@@ -13,16 +15,16 @@
   };
   // Функция проверяет какая option выбрана в select housingType.
   var compareType = function (ad) {
-    return (housingType.value === 'any') || housingType.value === ad.offer.type;
+    return (housingType.value === OPTION_ANY) || housingType.value === ad.offer.type;
   };
   // Функция проверяет какая option выбрана в select housingRooms.
   var compareRooms = function (ad) {
-    return (housingRooms.value === 'any') || parseInt(housingRooms.value, 10) === ad.offer.rooms;
+    return (housingRooms.value === OPTION_ANY) || parseInt(housingRooms.value, 10) === ad.offer.rooms;
 
   };
   // Функция проверяет какая option выбрана в select housingGuests.
   var compareGuests = function (ad) {
-    return (housingGuests.value === 'any') || parseInt(housingGuests.value, 10) === ad.offer.guests;
+    return (housingGuests.value === OPTION_ANY) || parseInt(housingGuests.value, 10) === ad.offer.guests;
   };
   // Функция проверяет какие checkbox-ы чекнуты в housingPrice.
   var compareFeatures = function (ad) {

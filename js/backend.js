@@ -2,6 +2,7 @@
 
 (function () {
   var TIMEOUT = 10000;
+  var TEXT_RESPONSE_STATUS = 'Статус ответа: ';
 
   // Пречисление кодов статусас сервера
   var ServerStatusCode = {
@@ -27,22 +28,22 @@
           loadHandler(xhr.response);
           break;
         case ServerStatusCode.BAD_REQUEST:
-          errorHandler('Статус ответа: ' + xhr.status + ' В запросе ошибка.');
+          errorHandler(TEXT_RESPONSE_STATUS + xhr.status + ' В запросе ошибка.');
           break;
         case ServerStatusCode.UNAUTHORIZED:
-          errorHandler('Статус ответа: ' + xhr.status + ' Доступ запрещён. У вас недостаточно прав.');
+          errorHandler(TEXT_RESPONSE_STATUS + xhr.status + ' Доступ запрещён. У вас недостаточно прав.');
           break;
         case ServerStatusCode.NOT_FOUND:
-          errorHandler('Статус ответа: ' + xhr.status + ' Данные по запросу не найдены.');
+          errorHandler(TEXT_RESPONSE_STATUS + xhr.status + ' Данные по запросу не найдены.');
           break;
         case ServerStatusCode.SERVER_ERROR:
-          errorHandler('Статус ответа: ' + xhr.status + ' Внутренняя ошибка сервера');
+          errorHandler(TEXT_RESPONSE_STATUS + xhr.status + ' Внутренняя ошибка сервера');
           break;
         case ServerStatusCode.GATEWAY_TIMEOUT:
-          errorHandler('Статус ответа: ' + xhr.status + ' Сервис временно недоступен');
+          errorHandler(TEXT_RESPONSE_STATUS + xhr.status + ' Сервис временно недоступен');
           break;
         default:
-          errorHandler('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+          errorHandler(TEXT_RESPONSE_STATUS + xhr.status + ' ' + xhr.statusText);
       }
     });
 
