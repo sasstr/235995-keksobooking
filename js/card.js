@@ -22,7 +22,7 @@
   };
 
   // Функция создает массив с HTML элементами features готовыми для вставки в разметку
-  var createFeatureDomElements = function (adOfferFeatures) {
+  var createFeatureList = function (adOfferFeatures) {
     var popupFeatures = document.createElement('ul');
     popupFeatures.classList.add('popup__features');
 
@@ -63,26 +63,26 @@
   // Функция создает popup для Пина
   var createAdCard = function (ad) {
     removeCard();
-    var cardElement = cardTemplate.content.querySelector('.map__card').cloneNode(true);
+    var card = cardTemplate.content.querySelector('.map__card').cloneNode(true);
 
-    cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
-    cardElement.querySelector('.popup__title').textContent = ad.offer.title;
-    cardElement.querySelector('.popup__text--address').textContent = ad.offer.address;
-    cardElement.querySelector('.popup__text--price').textContent = (ad.offer.price + RUBLE_CURRENCY + '/ночь');
-    cardElement.querySelector('.popup__type').textContent = TYPES_OF_DWELLING[ad.offer.type];
-    cardElement.querySelector('.popup__text--capacity').textContent = (ad.offer.rooms + ' ' + getCorrectWord(ad.offer.rooms, ROOM_WORDS) + ' для ' + ad.offer.guests + ' ' + getCorrectWord(ad.offer.guests, GUEST_WORDS));
-    cardElement.querySelector('.popup__text--time').textContent = ('Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout);
-    cardElement.replaceChild(createFeatureDomElements(ad.offer.features), cardElement.querySelector('.popup__features'));
-    cardElement.querySelector('.popup__description').textContent = ad.offer.description;
-    cardElement.querySelector('.popup__close').addEventListener('click', popupCloseClickHandler);
+    card.querySelector('.popup__avatar').src = ad.author.avatar;
+    card.querySelector('.popup__title').textContent = ad.offer.title;
+    card.querySelector('.popup__text--address').textContent = ad.offer.address;
+    card.querySelector('.popup__text--price').textContent = (ad.offer.price + RUBLE_CURRENCY + '/ночь');
+    card.querySelector('.popup__type').textContent = TYPES_OF_DWELLING[ad.offer.type];
+    card.querySelector('.popup__text--capacity').textContent = (ad.offer.rooms + ' ' + getCorrectWord(ad.offer.rooms, ROOM_WORDS) + ' для ' + ad.offer.guests + ' ' + getCorrectWord(ad.offer.guests, GUEST_WORDS));
+    card.querySelector('.popup__text--time').textContent = ('Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout);
+    card.replaceChild(createFeatureList(ad.offer.features), card.querySelector('.popup__features'));
+    card.querySelector('.popup__description').textContent = ad.offer.description;
+    card.querySelector('.popup__close').addEventListener('click', popupCloseClickHandler);
     document.addEventListener('keydown', popupCloseKeydownEscHandler);
-    cardElement.replaceChild(createPopupPhotos(ad), cardElement.querySelector('.popup__photos'));
-    cardElement.childNodes.forEach(function (item, i) {
+    card.replaceChild(createPopupPhotos(ad), card.querySelector('.popup__photos'));
+    card.childNodes.forEach(function (item, i) {
       if ((item.textContent === '' && item.childNodes.length === 0 && item.src === undefined) || item.src === '') {
-        cardElement.childNodes[i].classList.add('hidden');
+        card.childNodes[i].classList.add('hidden');
       }
     });
-    return cardElement;
+    return card;
   };
 
   var showCard = function (ad) {

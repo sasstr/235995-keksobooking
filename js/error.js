@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var mainHtmlElement = document.querySelector('main');
+  var main = document.querySelector('main');
 
   // Функция создает дом элмент с сообщением о ошибки
   var createErrorMessage = function (errorText) {
@@ -13,11 +13,11 @@
     var errorButtonClickHandler = function () {
       window.map.formResetHandler();
       errorButton.removeEventListener('click', errorButtonClickHandler);
-      mainHtmlElement.removeChild(errorTemplate);
+      main.removeChild(errorTemplate);
     };
       // Функция закрывает popup
     var closeErrorPopup = function () {
-      mainHtmlElement.removeChild(errorTemplate);
+      main.removeChild(errorTemplate);
       document.removeEventListener('keydown', errorButtonKeyEscDownHandler);
       errorButton.removeEventListener('click', errorButtonClickHandler);
     };
@@ -28,7 +28,7 @@
     };
 
     errorTemplate.querySelector('.error__message').textContent = errorText;
-    mainHtmlElement.appendChild(errorTemplate);
+    main.appendChild(errorTemplate);
     errorButton.addEventListener('click', errorButtonClickHandler);
     document.addEventListener('keydown', errorButtonKeyEscDownHandler);
   };

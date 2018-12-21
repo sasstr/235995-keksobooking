@@ -9,7 +9,7 @@
   var URL_SEND_DATA = 'https://js.dump.academy/keksobooking/';
   var LAST_FIVE_PINS = -5;
 
-  var mapPinsElement = document.querySelector('.map__pins');
+  var mapPinsItem = document.querySelector('.map__pins');
   var mapFilters = document.querySelector('.map__filters');
   var adForm = document.querySelector('.ad-form');
   var fieldsetList = adForm.querySelectorAll('fieldset');
@@ -25,7 +25,7 @@
 
   // Функция удаляет все пины
   var removePinsFromScreen = function () {
-    var mapPinsListElements = mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)');
+    var mapPinsListElements = mapPinsItem.querySelectorAll('.map__pin:not(.map__pin--main)');
     mapPinsListElements.forEach(function (pin) {
       pin.remove();
     });
@@ -94,7 +94,7 @@
     ads.forEach(function (ad) {
       pinsFragment.appendChild(window.map.createPin(ad));
     });
-    return mapPinsElement.appendChild(pinsFragment);
+    return mapPinsItem.appendChild(pinsFragment);
   };
 
   // Функция создает HTML фрагмент элементов пинов и добавляет в DOM этот фрагмент.
