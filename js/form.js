@@ -9,15 +9,23 @@
   var URL_SEND_DATA = 'https://js.dump.academy/keksobooking/';
   var LAST_FIVE_PINS = -5;
 
-  var fieldsetList = document.querySelectorAll('fieldset');
-  var adForm = document.querySelector('.ad-form');
-  var inputAddress = document.querySelector('#address');
-  var mapPinsElement = document.querySelector('.map__pins');
+  var mapPinsItem = document.querySelector('.map__pins');
   var mapFilters = document.querySelector('.map__filters');
+  var adForm = document.querySelector('.ad-form');
+  var fieldsetList = adForm.querySelectorAll('fieldset');
+  var inputAddress = adForm.querySelector('#address');
+  var typeOfHabitation = adForm.querySelector('#type');
+  var inputMinMaxPrice = adForm.querySelector('#price');
+  var roomNumber = adForm.querySelector('#room_number');
+  var capacity = adForm.querySelector('#capacity');
+  var selectTimein = adForm.querySelector('#timein');
+  var selectTimeout = adForm.querySelector('#timeout');
+  var successMessageTamplate = document.querySelector('#success');
+  var successMessage = successMessageTamplate.content.querySelector('.success').cloneNode(true);
 
   // Функция удаляет все пины
   var removePinsFromScreen = function () {
-    var mapPinsListElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    var mapPinsListElements = mapPinsItem.querySelectorAll('.map__pin:not(.map__pin--main)');
     mapPinsListElements.forEach(function (pin) {
       pin.remove();
     });
@@ -27,24 +35,22 @@
     adForm.reset();
   };
 
-  var successMessageTamplate = document.querySelector('#success');
-  var successMessage = successMessageTamplate.content.querySelector('.success').cloneNode(true);
-
   // Функция удаляет дом элемент с сообщением о успешной загрузке
   var mainHtmlElementRemove = function () {
     var successMessageDivElement = document.querySelector('.success');
     if (successMessageDivElement) {
+      document.removeEventListener('click', successMessageClickHandler);
+      document.removeEventListener('keydown', successMessageEscKeydownHandler);
       document.querySelector('main').removeChild(successMessageDivElement);
     }
   };
 
   // Функция слушатель нажатия на  Esc по сообщению о успешной загрзке
   var successMessageEscKeydownHandler = function (evtKey) {
-    document.addEventListener('keydown', mainHtmlElementRemove);
-    window.utils.actionKeydownEsc(mainHtmlElementRemove, evtKey);
+    window.utils.checkEscKeyCode(evtKey, mainHtmlElementRemove);
   };
-  document.addEventListener('click', successMessageEscKeydownHandler);
-  // Функция слушатель клика по сообщению о успешной загрзке
+
+  // Функция слушатель клика по сообщению о успешной загрузке
   var successMessageClickHandler = function () {
     mainHtmlElementRemove();
   };
@@ -53,7 +59,7 @@
   var submitLoad = function () {
     window.map.formResetHandler();
     document.addEventListener('click', successMessageClickHandler);
-    document.addEventListener('click', successMessageEscKeydownHandler);
+    document.addEventListener('keydown', successMessageEscKeydownHandler);
     document.querySelector('main').appendChild(successMessage);
   };
 
@@ -66,6 +72,10 @@
     setConditionForms(DISABLED_CONDITION, fieldsetList);
     setConditionForms(DISABLED_CONDITION, mapFilters.childNodes);
     mapFilters.removeEventListener('change', window.filter.filterChangeHandler);
+    roomNumber.removeEventListener('change', selectRoomsChangeHandler);
+    typeOfHabitation.removeEventListener('change', inputTypeChangeHandler);
+    selectTimeout.removeEventListener('change', selectTimeoutChangeHandler);
+    selectTimein.removeEventListener('change', selectTimeinChangeHandler);
     adForm.classList.add('ad-form--disabled');
     cb();
   };
@@ -75,7 +85,7 @@
   };
 
   // Функция отрезает от массива последние пять элементов.
-  var cutLastFivePins = function (pinsArray) {
+  var cutPins = function (pinsArray) {
     return pinsArray.slice(LAST_FIVE_PINS);
   };
 
@@ -85,13 +95,13 @@
     ads.forEach(function (ad) {
       pinsFragment.appendChild(window.map.createPin(ad));
     });
-    return mapPinsElement.appendChild(pinsFragment);
+    return mapPinsItem.appendChild(pinsFragment);
   };
 
   // Функция создает HTML фрагмент элементов пинов и добавляет в DOM этот фрагмент.
-  var PinsNodeLoadHandler = function (ads) {
+  var pinsNodeLoadHandler = function (ads) {
     window.adsLoaded = ads;
-    var adsClone = cutLastFivePins(ads);
+    var adsClone = cutPins(ads);
     showPins(adsClone);
     setConditionForms(ENABLED_CONDITION, mapFilters.childNodes);
   };
@@ -99,12 +109,11 @@
   // Функция установки начального состояния формы
   var enableForm = function (cb) {
     cb();
-    window.backend.load(PinsNodeLoadHandler, window.error.show, URL_DOWNLOAD_DATA);
+    window.backend.load(pinsNodeLoadHandler, window.error.show, URL_DOWNLOAD_DATA);
     adForm.classList.remove('ad-form--disabled');
     setConditionForms(ENABLED_CONDITION, fieldsetList);
-
     getRightNumberOfGuests();
-    setRightMinPriceOfDwelling();
+    setDwellingMinPrice();
     setAddress(window.map.getCoordinatesOfMainPin());
     mapFilters.addEventListener('change', window.filter.filterChangeHandler);
     roomNumber.addEventListener('change', selectRoomsChangeHandler);
@@ -127,11 +136,8 @@
     resetForm: resetForm,
     removePinsFromScreen: removePinsFromScreen,
     showPins: showPins,
-    cutLastFivePins: cutLastFivePins
+    cutPins: cutPins
   };
-
-  var roomNumber = document.querySelector('#room_number');
-  var capacity = document.querySelector('#capacity');
 
   // Функция создает список select с кол-ом гостей в соответсвии с кол-ом комнат
   var getRightNumberOfGuests = function () {
@@ -152,11 +158,8 @@
     getRightNumberOfGuests();
   };
 
-  var typeOfHabitation = document.querySelector('#type');
-  var inputMinMaxPrice = document.querySelector('#price');
-
   // Функция вставляет в разметку минмальную стоимость жилья
-  var setRightMinPriceOfDwelling = function () {
+  var setDwellingMinPrice = function () {
     inputMinMaxPrice.min = TYPES_OF_HABITATION[typeOfHabitation.value];
     inputMinMaxPrice.placeholder = TYPES_OF_HABITATION[typeOfHabitation.value];
   };
@@ -164,11 +167,8 @@
   // Функция слушатель события выбора типа жилья, которая
   // вставляет нужное значение минимальной стоимости жилья.
   var inputTypeChangeHandler = function () {
-    setRightMinPriceOfDwelling();
+    setDwellingMinPrice();
   };
-
-  var selectTimein = document.querySelector('#timein');
-  var selectTimeout = document.querySelector('#timeout');
 
   // Функция синхронизации времени въезда и отъезда гостя
   var selectTimeinChangeHandler = function () {
