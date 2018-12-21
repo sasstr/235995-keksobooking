@@ -56,7 +56,7 @@
         return compareType(ad) && comparePrice(ad) && compareRooms(ad) && compareGuests(ad) && compareFeatures(ad);
       });
       filteredPins = window.form.cutPins(filteredPins);
-      document.querySelector('.map__pins').append(window.form.showPins(filteredPins));
+      document.querySelector('.map__pins').appendChild(window.form.showPins(filteredPins));
     }
   };
 
