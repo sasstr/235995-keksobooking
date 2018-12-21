@@ -22,7 +22,7 @@
     xhr.responseType = 'json';
     xhr.timeout = TIMEOUT;
     // Функция слушатель что вернет сервер ошибку или успешную загрузку
-    xhr.addEventListener('load', function () {
+    var xhrLoadHandler = function () {
       switch (xhr.status) {
         case ServerStatusCode.SUCCESS:
           loadHandler(xhr.response);
@@ -45,8 +45,9 @@
         default:
           errorHandler(TEXT_RESPONSE_STATUS + xhr.status + ' ' + xhr.statusText);
       }
-    });
+    };
 
+    xhr.addEventListener('load', xhrLoadHandler);
     xhr.addEventListener('error', function () {
       errorHandler();
     });
