@@ -21,39 +21,35 @@
     xhr.responseType = 'json';
     xhr.timeout = TIMEOUT;
     // Функция слушатель что вернет сервер ошибку или успешную загрузку
-    var xhrLoadHandler = function () {
-      if (xhr.status === ServerStatusCode.SUCCESS) {
-        loadHandler(xhr.response);
-      } else {
-        xhr.addEventListener('error', function () {
-          var errorText;
-          switch (xhr.status) {
-            case ServerStatusCode.BAD_REQUEST:
-              errorText = 'Неверный запрос';
-              break;
-            case ServerStatusCode.UNAUTHORIZED:
-              errorText = 'Пользователь не авторизован';
-              break;
-            case ServerStatusCode.NOT_FOUND:
-              errorText = 'Ничего не найдено';
-              break;
-            case ServerStatusCode.REQUEST_TIMEOUT:
-              errorText = 'Сервер хотел бы закрыть это неиспользуемое соединение';
-              break;
-            case ServerStatusCode.INTERNAL_SERVER_ERROR:
-              errorText = 'Внутренняя ошибка сервера';
-              break;
-            case ServerStatusCode.GATEWAY_TIMEOUT:
-              errorText = 'Сервер действует как шлюз и не может получить ответ вовремя.';
-              break;
-            default:
-              errorText = 'Cтатус ответа: : ' + xhr.status + ' ' + xhr.statusText;
-          }
-          errorHandler(errorText);
-        });
+    xhr.addEventListener('load', function () {
+      switch (xhr.status) {
+        case ServerStatusCode.SUCCESS:
+          loadHandler(xhr.response);
+          break;
+        case ServerStatusCode.BAD_REQUEST:
+          errorHandler('Статус ответа: ' + xhr.status + ' В запросе ошибка.');
+          break;
+        case ServerStatusCode.UNAUTHORIZED:
+          errorHandler('Статус ответа: ' + xhr.status + ' Доступ запрещён. У вас недостаточно прав.');
+          break;
+        case ServerStatusCode.NOT_FOUND:
+          errorHandler('Статус ответа: ' + xhr.status + ' Данные по запросу не найдены.');
+          break;
+        case ServerStatusCode.SERVER_ERROR:
+          errorHandler('Статус ответа: ' + xhr.status + ' Внутренняя ошибка сервера');
+          break;
+        case ServerStatusCode.GATEWAY_TIMEOUT:
+          errorHandler('Статус ответа: ' + xhr.status + ' Сервис временно недоступен');
+          break;
+        default:
+          errorHandler('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
-    };
-    xhr.addEventListener('load', xhrLoadHandler);
+    });
+
+    xhr.addEventListener('error', function () {
+      errorHandler();
+    });
+
     xhr.addEventListener('timeout', function () {
       errorHandler('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });

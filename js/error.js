@@ -26,7 +26,6 @@
       window.map.formResetHandler();
       window.utils.checkEscKeyCode(closeErrorPopup, evt);
     };
-
     errorTemplate.querySelector('.error__message').textContent = errorText;
     main.appendChild(errorTemplate);
     errorButton.addEventListener('click', errorButtonClickHandler);
