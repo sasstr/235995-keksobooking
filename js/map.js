@@ -116,7 +116,7 @@
       y: evt.clientY
     };
     // функция отвечает за перемешение мафина
-    var MainPinMouseMoveHandler = function (moveEvt) {
+    var mainPinMouseMoveHandler = function (moveEvt) {
       moveEvt.preventDefault();
 
       var shift = {
@@ -145,14 +145,14 @@
       }
     };
     // Функция останавливает перемещение мафина при событии mouseup
-    var MainPinMouseUpHandler = function (upEvt) {
+    var mainPinMouseUpHandler = function (upEvt) {
       upEvt.preventDefault();
-      document.removeEventListener('mousemove', MainPinMouseMoveHandler);
-      document.removeEventListener('mouseup', MainPinMouseUpHandler);
+      document.removeEventListener('mousemove', mainPinMouseMoveHandler);
+      document.removeEventListener('mouseup', mainPinMouseUpHandler);
     };
 
-    document.addEventListener('mousemove', MainPinMouseMoveHandler);
-    document.addEventListener('mouseup', MainPinMouseUpHandler);
+    document.addEventListener('mousemove', mainPinMouseMoveHandler);
+    document.addEventListener('mouseup', mainPinMouseUpHandler);
   };
 
   // Функция устанавливает в поле Адрес координаты мафина
