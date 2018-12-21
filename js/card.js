@@ -53,7 +53,7 @@
   };
 
   var popupCloseKeydownEscHandler = function (evt) {
-    window.utils.checkEscKeyCode(removeCard, evt);
+    window.utils.checkEscKeyCode(evt, removeCard);
   };
 
   var popupCloseClickHandler = function () {

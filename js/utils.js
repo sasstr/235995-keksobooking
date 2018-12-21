@@ -5,7 +5,7 @@
   var ESC_KEY = 'Escape';
 
   // Функция запускает колбэк по нажатию на клавишу Esc
-  var checkEscKeyCode = function (cb, evtKey) {
+  var checkEscKeyCode = function (evtKey, cb) {
     if (evtKey.keyCode === ESC_KEYCODE || evtKey.key === ESC_KEY) {
       cb();
     }

@@ -39,17 +39,18 @@
   var mainHtmlElementRemove = function () {
     var successMessageDivElement = document.querySelector('.success');
     if (successMessageDivElement) {
+      document.removeEventListener('click', successMessageClickHandler);
+      document.removeEventListener('keydown', successMessageEscKeydownHandler);
       document.querySelector('main').removeChild(successMessageDivElement);
     }
   };
 
   // Функция слушатель нажатия на  Esc по сообщению о успешной загрзке
   var successMessageEscKeydownHandler = function (evtKey) {
-    document.addEventListener('keydown', mainHtmlElementRemove);
-    window.utils.checkEscKeyCode(mainHtmlElementRemove, evtKey);
+    window.utils.checkEscKeyCode(evtKey, mainHtmlElementRemove);
   };
-  document.addEventListener('click', successMessageEscKeydownHandler);
-  // Функция слушатель клика по сообщению о успешной загрзке
+
+  // Функция слушатель клика по сообщению о успешной загрузке
   var successMessageClickHandler = function () {
     mainHtmlElementRemove();
   };
@@ -58,7 +59,7 @@
   var submitLoad = function () {
     window.map.formResetHandler();
     document.addEventListener('click', successMessageClickHandler);
-    document.addEventListener('click', successMessageEscKeydownHandler);
+    document.addEventListener('keydown', successMessageEscKeydownHandler);
     document.querySelector('main').appendChild(successMessage);
   };
 
