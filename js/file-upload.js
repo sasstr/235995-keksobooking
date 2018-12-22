@@ -7,29 +7,25 @@
 
     var fileChooser = document.querySelector('#avatar');
     var preview = document.querySelector('.ad-form-header__preview');
+    var previewImage = document.querySelector('.ad-form-header__preview img');
 
     fileChooser.addEventListener('change', function () {
       var file = fileChooser.files[0];
       var fileName = file.name.toLowerCase();
-      console.log(fileName);
       var matches = FILE_TYPES.some(function (it) {
-        console.log(it);
         return fileName.endsWith(it);
-
       });
-      console.log(matches);
+
       if (matches) {
-        console.log('matches');
-        console.log(file);
         var reader = new FileReader();
+        reader.readAsDataURL(file);
         reader.addEventListener('load', function () {
-          reader.readAsDataURL(file);
           var avatarImage = document.createElement('img');
           avatarImage.src = reader.result;
           avatarImage.alt = 'Аватар пользователя';
           avatarImage.style = 'max-width: 40px; max-height: 44px;';
-          console.log(avatarImage);
-          preview.replaceChild(avatarImage);
+          preview.replaceChild(avatarImage, previewImage);
+          previewImage = avatarImage;
         });
       }
     });
