@@ -1,32 +1,34 @@
 'use strict';
 
 (function () {
-  window.fileUpload = function () {
+  window.fileUpload = function (/* fileChooser, previewNode, previewNodeChild, cb */) {
 
     var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
-    var fileChooser = document.querySelector('#avatar');
+    var fileChooserAvatar = document.querySelector('#avatar');
     var preview = document.querySelector('.ad-form-header__preview');
     var previewImage = document.querySelector('.ad-form-header__preview img');
 
-    fileChooser.addEventListener('change', function () {
-      var file = fileChooser.files[0];
+    fileChooserAvatar.addEventListener('change', function () {
+      var file = fileChooserAvatar.files[0];
       var fileName = file.name.toLowerCase();
       var matches = FILE_TYPES.some(function (it) {
         return fileName.endsWith(it);
       });
 
+      var createImgElement = function () {
+        var avatarImage = document.createElement('img');
+        avatarImage.src = reader.result;
+        avatarImage.alt = 'Аватар пользователя';
+        avatarImage.style = 'max-width: 40px; max-height: 44px;';
+        preview.replaceChild(avatarImage, previewImage);
+        previewImage = avatarImage;
+      };
+
       if (matches) {
         var reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.addEventListener('load', function () {
-          var avatarImage = document.createElement('img');
-          avatarImage.src = reader.result;
-          avatarImage.alt = 'Аватар пользователя';
-          avatarImage.style = 'max-width: 40px; max-height: 44px;';
-          preview.replaceChild(avatarImage, previewImage);
-          previewImage = avatarImage;
-        });
+        reader.addEventListener('load', createImgElement);
       }
     });
   };
