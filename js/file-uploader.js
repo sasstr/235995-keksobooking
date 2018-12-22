@@ -1,12 +1,11 @@
 'use strict';
 
 (function () {
-  window.fileUpload = function (/* fileChooser, previewNode, previewNodeChild, cb */) {
+  window.fileUpload = function (/* fileChooser,targetNode, cb */) {
 
     var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
     var fileChooserAvatar = document.querySelector('#avatar');
-    var preview = document.querySelector('.ad-form-header__preview');
     var previewImage = document.querySelector('.ad-form-header__preview img');
 
     fileChooserAvatar.addEventListener('change', function () {
@@ -16,19 +15,14 @@
         return fileName.endsWith(it);
       });
 
-      var createImgElement = function () {
-        var avatarImage = document.createElement('img');
-        avatarImage.src = reader.result;
-        avatarImage.alt = 'Аватар пользователя';
-        avatarImage.style = 'max-width: 40px; max-height: 44px;';
-        preview.replaceChild(avatarImage, previewImage);
-        previewImage = avatarImage;
+      var imageLoadHandler = function () {
+        previewImage.src = reader.result;
       };
 
       if (matches) {
         var reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.addEventListener('load', createImgElement);
+        reader.addEventListener('load', imageLoadHandler);
       }
     });
   };
@@ -46,4 +40,12 @@
 в блоке .ad-form__upload и показываться в блоках .ad-form__photo.
 По желанию, вы можете сделать так, чтобы фотографии жилья можно
 было сортировать с помощью перетаскивания (drag n drop API).
+
+  var avatarImage = document.createElement('img');
+  avatarImage.src = reader.result;
+  avatarImage.alt = 'Аватар пользователя';
+  avatarImage.style = 'max-width: 40px; max-height: 44px;';
+  preview.replaceChild(avatarImage, previewImage);
+  previewImage = avatarImage;
+
 */

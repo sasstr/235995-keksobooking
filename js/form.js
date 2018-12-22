@@ -8,6 +8,7 @@
   var URL_DOWNLOAD_DATA = 'https://js.dump.academy/keksobooking/data';
   var URL_SEND_DATA = 'https://js.dump.academy/keksobooking/';
   var LAST_FIVE_PINS = -5;
+  var IMAGE_SOURCE = 'img/muffin-grey.svg';
 
   var mapPinsItem = document.querySelector('.map__pins');
   var mapFilters = document.querySelector('.map__filters');
@@ -71,6 +72,7 @@
   var disableForm = function (cb) {
     setConditionForms(DISABLED_CONDITION, fieldsetList);
     setConditionForms(DISABLED_CONDITION, mapFilters.childNodes);
+    document.querySelector('.ad-form-header__preview img').src = IMAGE_SOURCE;
     mapFilters.removeEventListener('change', window.filter.fieldChangeHandler);
     roomNumber.removeEventListener('change', selectRoomsChangeHandler);
     typeOfHabitation.removeEventListener('change', inputTypeChangeHandler);
