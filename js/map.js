@@ -48,7 +48,7 @@
     window.form.removePinsFromScreen();
     window.form.resetForm();
     window.form.disableForm(window.map.mapPinMainAddListeners);
-    window.card.removeCard();
+    window.card.removeElement();
     setTimeout(function () {
       mapPinMain.style.left = START_COORDINATE_X;
       mapPinMain.style.top = START_COORDINATE_Y;
@@ -80,8 +80,8 @@
     var pinElement = document.createElement('button');
     var pinChildImage = document.createElement('img');
     var pinElementClickHandler = function () {
-      window.card.removeCard(ad);
-      window.card.showCard(ad);
+      window.card.removeElement(ad);
+      window.card.showElement(ad);
       deleteClassMapPinActive();
       pinElement.classList.add('map__pin--active');
     };

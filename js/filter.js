@@ -49,7 +49,7 @@
   };
   // Функция обновляет HtmlElement с отфильтрованными пинами.
   var getFiltredPins = function () {
-    window.card.removeCard();
+    window.card.removeElement();
     window.form.removePinsFromScreen();
     var adsLoadedClone = window.adsLoaded.slice();
 
@@ -67,6 +67,6 @@
   };
 
   window.filter = {
-    filterChangeHandler: actDebounce
+    fieldChangeHandler: actDebounce
   };
 })();

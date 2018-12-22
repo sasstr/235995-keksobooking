@@ -1,33 +1,43 @@
 'use strict';
 
 (function () {
-  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  window.fileUpload = function () {
 
-  var fileChooser = document.querySelector('#avatar');
-  var preview = document.querySelector('.ad-form-header__preview');
+    var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
-  fileChooser.addEventListener('change', function () {
-    var file = fileChooser.files[0];
-    var fileName = file.name.toLowerCase();
+    var fileChooser = document.querySelector('#avatar');
+    var preview = document.querySelector('.ad-form-header__preview');
 
-    var matches = FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
-    });
+    fileChooser.addEventListener('change', function () {
+      var file = fileChooser.files[0];
+      var fileName = file.name.toLowerCase();
+      console.log(fileName);
+      var matches = FILE_TYPES.some(function (it) {
+        console.log(it);
+        return fileName.endsWith(it);
 
-    if (matches) {
-      var reader = new FileReader();
-
-      reader.addEventListener('load', function () {
-        preview.src = reader.result;
       });
-
-      reader.readAsDataURL(file);
-    }
-  });
+      console.log(matches);
+      if (matches) {
+        console.log('matches');
+        console.log(file);
+        var reader = new FileReader();
+        reader.addEventListener('load', function () {
+          reader.readAsDataURL(file);
+          var avatarImage = document.createElement('img');
+          avatarImage.src = reader.result;
+          avatarImage.alt = 'Аватар пользователя';
+          avatarImage.style = 'max-width: 40px; max-height: 44px;';
+          console.log(avatarImage);
+          preview.replaceChild(avatarImage);
+        });
+      }
+    });
+  };
+  window.fileUpload();
 })();
 
 /*
-
 Доработайте форму подачи объявления так, чтобы в неё можно было загружать
 вашу аватарку и фотографии объявления.
 

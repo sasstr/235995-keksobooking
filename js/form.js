@@ -71,7 +71,7 @@
   var disableForm = function (cb) {
     setConditionForms(DISABLED_CONDITION, fieldsetList);
     setConditionForms(DISABLED_CONDITION, mapFilters.childNodes);
-    mapFilters.removeEventListener('change', window.filter.filterChangeHandler);
+    mapFilters.removeEventListener('change', window.filter.fieldChangeHandler);
     roomNumber.removeEventListener('change', selectRoomsChangeHandler);
     typeOfHabitation.removeEventListener('change', inputTypeChangeHandler);
     selectTimeout.removeEventListener('change', selectTimeoutChangeHandler);
@@ -115,7 +115,7 @@
     getRightNumberOfGuests();
     setDwellingMinPrice();
     setAddress(window.map.getCoordinatesOfMainPin());
-    mapFilters.addEventListener('change', window.filter.filterChangeHandler);
+    mapFilters.addEventListener('change', window.filter.fieldChangeHandler);
     roomNumber.addEventListener('change', selectRoomsChangeHandler);
     typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
     selectTimeout.addEventListener('change', selectTimeoutChangeHandler);
