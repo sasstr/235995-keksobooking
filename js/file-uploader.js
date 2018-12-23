@@ -15,28 +15,30 @@
     evt.preventDefault();
   };
 
+  var adFormLoadHandler = function (evtLoad) {
+    var image = new Image(70, 70);
+    image.src = evtLoad.target.result;
+    previewPhoto.appendChild(image);
+  };
+
   var adFormDropHandler = function (evt) {
-    targeElementStopEventHandler(evt);
+    htmlElmentDropHandler(evt, adFormLoadHandler, targeElementStopEventHandler);
+  };
+
+  var htmlElmentDropHandler = function (evt, loadHandler, stopEventHandler) {
+    stopEventHandler(evt);
     var file = evt.dataTransfer.files[0];
     var reader = new FileReader();
-    var adFormLoadHandler = function (evtLoad) {
-      var image = new Image(70, 70);
-      image.src = evtLoad.target.result;
-      adForm.appendChild(image);
-    };
-    reader.addEventListener('load', adFormLoadHandler);
+    reader.addEventListener('load', loadHandler);
     reader.readAsDataURL(file);
   };
 
+  var adFormHeaderLoadHandler = function (evtLoad) {
+    previewImage.src = evtLoad.target.result;
+  };
+
   var adFormHeaderDropHandler = function (evt) {
-    targeElementStopEventHandler(evt);
-    var file = evt.dataTransfer.files[0];
-    var reader = new FileReader();
-    var adFormHeaderLoadHandler = function (evtLoad) {
-      previewImage.src = evtLoad.target.result;
-    };
-    reader.addEventListener('load', adFormHeaderLoadHandler);
-    reader.readAsDataURL(file);
+    htmlElmentDropHandler(evt, adFormHeaderLoadHandler, targeElementStopEventHandler);
   };
 
   adFormHeader.addEventListener('dragenter', targeElementStopEventHandler);
