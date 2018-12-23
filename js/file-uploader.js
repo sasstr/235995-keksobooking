@@ -8,6 +8,15 @@
   var fileChooserPhoto = document.querySelector('.ad-form__input');
   var previewPhoto = document.querySelector('.ad-form__photo');
 
+
+  var removeAllPhotosFromScreen = function () {
+    var photoListElement = document.querySelectorAll('.ad-form__photo img');
+
+    photoListElement.forEach(function (item) {
+      item.remove();
+    });
+  };
+
   var imageOfAvatarChangeHandler = function () {
     var file = fileChooserAvatar.files[0];
     var fileName = file.name.toLowerCase();
@@ -62,6 +71,9 @@
   window.fileUploader = {
     photoOfAvatar: photoUload,
     imageOfDwelling: imageUpload,
-    removePhotoAndImageListener: removePhotoAndImageListener
+    removePhotoAndImageListener: removePhotoAndImageListener,
+    removeAllPhotosFromScreen: removeAllPhotosFromScreen
   };
 })();
+
+// И сделать универсальную функцию по загрузке картинок!

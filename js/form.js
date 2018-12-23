@@ -80,6 +80,7 @@
     selectTimein.removeEventListener('change', selectTimeinChangeHandler);
     adForm.classList.add('ad-form--disabled');
     window.fileUploader.removePhotoAndImageListener();
+    window.fileUploader.removeAllPhotosFromScreen();
     cb();
   };
 
