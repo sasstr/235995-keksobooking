@@ -49,7 +49,7 @@
   };
   // Функция обновляет HtmlElement с отфильтрованными пинами.
   var getFiltredPins = function () {
-    window.card.removeElement();
+    window.card.remove();
     window.form.removePinsFromScreen();
     var adsLoadedClone = window.adsLoaded.slice();
 
