@@ -17,47 +17,42 @@
     });
   };
 
-  var imageOfAvatarChangeHandler = function () {
-    var file = fileChooserAvatar.files[0];
+  var fileChangeHandler = function (fileChooser, cb) {
+    var file = fileChooser.files[0];
     var fileName = file.name.toLowerCase();
-    var matches = FILE_TYPES.some(function (it) {
+    var photoMatches = FILE_TYPES.some(function (it) {
       return fileName.endsWith(it);
     });
 
-    var imageOfAvatarLoadHandler = function () {
-      previewImage.src = reader.result;
-    };
-
-    if (matches) {
+    if (photoMatches) {
       var reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.addEventListener('load', imageOfAvatarLoadHandler);
+      reader.addEventListener('load', cb);
     }
+  };
+
+  var imageOfAvatarLoadHandler = function (evtLoad) {
+    previewImage.src = evtLoad.target.result;
+  };
+
+  var imageOfAvatarChangeHandler = function () {
+    fileChangeHandler(fileChooserAvatar, imageOfAvatarLoadHandler);
   };
 
   var imageUpload = function () {
     fileChooserAvatar.addEventListener('change', imageOfAvatarChangeHandler);
   };
 
-  var photoOfDwellingChangeHandler = function () {
-    var file = fileChooserPhoto.files[0];
-    var fileName = file.name.toLowerCase();
-    var photoMatches = FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
-    });
+  var photoOfDwellingLoadHandler = function (evt) {
+    var photoImage = document.createElement('img');
+    photoImage.src = evt.target.result;
+    photoImage.alt = 'Фото жилья';
+    photoImage.style = 'max-width: 70px; max-height: 70px; margin-top: 5px; float: left;';
+    previewPhoto.appendChild(photoImage);
+  };
 
-    var photoOfDwellingLoadHandler = function () {
-      var photoImage = document.createElement('img');
-      photoImage.src = reader.result;
-      photoImage.alt = 'Фото жилья';
-      photoImage.style = 'max-width: 70px; max-height: 70px; margin-top: 5px; float: left;';
-      previewPhoto.appendChild(photoImage);
-    };
-    if (photoMatches) {
-      var reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.addEventListener('load', photoOfDwellingLoadHandler);
-    }
+  var photoOfDwellingChangeHandler = function () {
+    fileChangeHandler(fileChooserPhoto, photoOfDwellingLoadHandler);
   };
 
   var photoUload = function () {
@@ -75,5 +70,3 @@
     removeAllPhotosFromScreen: removeAllPhotosFromScreen
   };
 })();
-
-// И сделать универсальную функцию по загрузке картинок!
