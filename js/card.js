@@ -101,7 +101,7 @@
   };
 
   window.card = {
-    showCard: showCard,
-    removeCard: removeCard,
+    show: showCard,
+    remove: removeCard,
   };
 })();

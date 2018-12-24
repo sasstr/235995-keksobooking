@@ -8,6 +8,7 @@
   var URL_DOWNLOAD_DATA = 'https://js.dump.academy/keksobooking/data';
   var URL_SEND_DATA = 'https://js.dump.academy/keksobooking/';
   var LAST_FIVE_PINS = -5;
+  var IMAGE_SOURCE = 'img/muffin-grey.svg';
 
   var mapPinsItem = document.querySelector('.map__pins');
   var mapFilters = document.querySelector('.map__filters');
@@ -71,12 +72,15 @@
   var disableForm = function (cb) {
     setConditionForms(DISABLED_CONDITION, fieldsetList);
     setConditionForms(DISABLED_CONDITION, mapFilters.childNodes);
-    mapFilters.removeEventListener('change', window.filter.filterChangeHandler);
+    document.querySelector('.ad-form-header__preview img').src = IMAGE_SOURCE;
+    mapFilters.removeEventListener('change', window.filter.fieldChangeHandler);
     roomNumber.removeEventListener('change', selectRoomsChangeHandler);
     typeOfHabitation.removeEventListener('change', inputTypeChangeHandler);
     selectTimeout.removeEventListener('change', selectTimeoutChangeHandler);
     selectTimein.removeEventListener('change', selectTimeinChangeHandler);
     adForm.classList.add('ad-form--disabled');
+    window.fileUploader.removePhotoAndImageListener();
+    window.fileUploader.removeAllPhotosFromScreen();
     cb();
   };
 
@@ -115,11 +119,13 @@
     getRightNumberOfGuests();
     setDwellingMinPrice();
     setAddress(window.map.getCoordinatesOfMainPin());
-    mapFilters.addEventListener('change', window.filter.filterChangeHandler);
+    mapFilters.addEventListener('change', window.filter.fieldChangeHandler);
     roomNumber.addEventListener('change', selectRoomsChangeHandler);
     typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
     selectTimeout.addEventListener('change', selectTimeoutChangeHandler);
     selectTimein.addEventListener('change', selectTimeinChangeHandler);
+    window.fileUploader.photoOfAvatar();
+    window.fileUploader.imageOfDwelling();
   };
 
   // Функция устанавливает состояние форм disabled или enabled
