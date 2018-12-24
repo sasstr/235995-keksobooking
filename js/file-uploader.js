@@ -41,12 +41,24 @@
     htmlElmentDropHandler(evt, adFormHeaderLoadHandler, targetElementStopEventHandler);
   };
 
-  adFormHeader.addEventListener('dragenter', targetElementStopEventHandler);
-  adForm.addEventListener('dragenter', targetElementStopEventHandler);
-  adFormHeader.addEventListener('dragover', targetElementStopEventHandler);
-  adForm.addEventListener('dragover', targetElementStopEventHandler);
-  adForm.addEventListener('drop', adFormDropHandler);
-  adFormHeader.addEventListener('drop', adFormHeaderDropHandler);
+  var addAllDragEventListeners = function () {
+    adFormHeader.addEventListener('dragenter', targetElementStopEventHandler);
+    adForm.addEventListener('dragenter', targetElementStopEventHandler);
+    adFormHeader.addEventListener('dragover', targetElementStopEventHandler);
+    adForm.addEventListener('dragover', targetElementStopEventHandler);
+    adForm.addEventListener('drop', adFormDropHandler);
+    adFormHeader.addEventListener('drop', adFormHeaderDropHandler);
+  };
+
+
+  var removeAllDragEventListeners = function () {
+    adFormHeader.removeEventListener('dragenter', targetElementStopEventHandler);
+    adForm.removeEventListener('dragenter', targetElementStopEventHandler);
+    adFormHeader.removeEventListener('dragover', targetElementStopEventHandler);
+    adForm.removeEventListener('dragover', targetElementStopEventHandler);
+    adForm.removeEventListener('drop', adFormDropHandler);
+    adFormHeader.removeEventListener('drop', adFormHeaderDropHandler);
+  };
 
   var removeAllPhotosFromScreen = function () {
     var photoListElement = document.querySelectorAll('.ad-form__photo img');
@@ -106,6 +118,8 @@
     photoOfAvatar: photoUload,
     imageOfDwelling: imageUpload,
     removePhotoAndImageListener: removePhotoAndImageListener,
-    removeAllPhotosFromScreen: removeAllPhotosFromScreen
+    removeAllPhotosFromScreen: removeAllPhotosFromScreen,
+    removeAllDragEventListeners: removeAllDragEventListeners,
+    addAllDragEventListeners: addAllDragEventListeners
   };
 })();

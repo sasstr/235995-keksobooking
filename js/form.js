@@ -80,6 +80,7 @@
     selectTimein.removeEventListener('change', selectTimeinChangeHandler);
     adForm.classList.add('ad-form--disabled');
     window.fileUploader.removePhotoAndImageListener();
+    window.fileUploader.removeAllDragEventListeners();
     window.fileUploader.removeAllPhotosFromScreen();
     cb();
   };
@@ -124,6 +125,7 @@
     typeOfHabitation.addEventListener('change', inputTypeChangeHandler);
     selectTimeout.addEventListener('change', selectTimeoutChangeHandler);
     selectTimein.addEventListener('change', selectTimeinChangeHandler);
+    window.fileUploader.addAllDragEventListeners();
     window.fileUploader.photoOfAvatar();
     window.fileUploader.imageOfDwelling();
   };
