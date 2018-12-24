@@ -10,7 +10,7 @@
   var adFormHeader = document.querySelector('.ad-form-header__drop-zone');
   var adForm = document.querySelector('.ad-form__drop-zone');
 
-  var targeElementStopEventHandler = function (evt) {
+  var targetElementStopEventHandler = function (evt) {
     evt.stopPropagation();
     evt.preventDefault();
   };
@@ -22,7 +22,7 @@
   };
 
   var adFormDropHandler = function (evt) {
-    htmlElmentDropHandler(evt, adFormLoadHandler, targeElementStopEventHandler);
+    htmlElmentDropHandler(evt, adFormLoadHandler, targetElementStopEventHandler);
   };
 
   var htmlElmentDropHandler = function (evt, loadHandler, stopEventHandler) {
@@ -38,13 +38,13 @@
   };
 
   var adFormHeaderDropHandler = function (evt) {
-    htmlElmentDropHandler(evt, adFormHeaderLoadHandler, targeElementStopEventHandler);
+    htmlElmentDropHandler(evt, adFormHeaderLoadHandler, targetElementStopEventHandler);
   };
 
-  adFormHeader.addEventListener('dragenter', targeElementStopEventHandler);
-  adForm.addEventListener('dragenter', targeElementStopEventHandler);
-  adFormHeader.addEventListener('dragover', targeElementStopEventHandler);
-  adForm.addEventListener('dragover', targeElementStopEventHandler);
+  adFormHeader.addEventListener('dragenter', targetElementStopEventHandler);
+  adForm.addEventListener('dragenter', targetElementStopEventHandler);
+  adFormHeader.addEventListener('dragover', targetElementStopEventHandler);
+  adForm.addEventListener('dragover', targetElementStopEventHandler);
   adForm.addEventListener('drop', adFormDropHandler);
   adFormHeader.addEventListener('drop', adFormHeaderDropHandler);
 
@@ -59,11 +59,11 @@
   var fileChangeHandler = function (fileChooser, cb) {
     var file = fileChooser.files[0];
     var fileName = file.name.toLowerCase();
-    var photoMatches = FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
+    var matches = FILE_TYPES.some(function (fileEnd) {
+      return fileName.endsWith(fileEnd);
     });
 
-    if (photoMatches) {
+    if (matches) {
       var reader = new FileReader();
       reader.readAsDataURL(file);
       reader.addEventListener('load', cb);
